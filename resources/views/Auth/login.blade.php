@@ -121,7 +121,7 @@
                                 </div>
                                 <h3 class="card-title text-center text-capitalize mb-1">Pengacara</h3>
                                 <p class="text-center">Mendaftar sebagai pengacara</p>
-                                <a href="#" class="btn btn-label-success d-grid w-100">Mendaftar</a>
+                                <a href="https://bilikhukum.com/pengacara/register" class="btn btn-label-success d-grid w-100">Mendaftar</a>
                               </div>
                             </div>
                           </div>
