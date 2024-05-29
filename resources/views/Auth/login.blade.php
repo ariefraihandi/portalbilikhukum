@@ -144,9 +144,9 @@
                           </div>
                         </div>
                       </div>
-                </div>
-                <!--/ App Wizard -->
             </div>
+            <!--/ App Wizard -->
+          </div>
         </div>
       </div>
       <!--/ Create App Modal -->
