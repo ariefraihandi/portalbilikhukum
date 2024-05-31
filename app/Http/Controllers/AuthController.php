@@ -11,7 +11,8 @@ use App\Models\District;
 use App\Models\Village;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AuthController extends Controller
 {
@@ -63,14 +64,22 @@ class AuthController extends Controller
                 'flatpickr-date' => 'required|date',                
             ]);
 
-            // Menghandle file upload
-            // if ($request->hasFile('multiStepsProfileImage')) {
-            //     $image = $request->file('multiStepsProfileImage');
-            //     $imageName = time() . '.' . $image->getClientOriginalExtension();
-            //     $image->move(public_path('profile_images'), $imageName);
-            // }
+            // Menghandle file upload dan konversi gambar
+            if ($request->hasFile('multiStepsProfileImage')) {
+                $image = $request->file('multiStepsProfileImage');
+                $imageName = $this->processImage($image);
+            } else {
+                $imageName = null;
+            }
+            $image = $request->file('multiStepsProfileImage');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            // create new manager instance with desired driver
+            $manager = new ImageManager(new Driver());
 
-            // Menyimpan data ke dalam database (asumsi Anda memiliki model User)
+            // alternatively create new manager instance by class name
+            $manager = new ImageManager(Driver::class);
+
+            // Menyimpan data ke dalam database
             // $user = new User();
             // $user->name = $request->input('multiStepsName');
             // $user->username = $request->input('multiStepsUsername');
@@ -89,7 +98,7 @@ class AuthController extends Controller
             $response = [
                 'success' => true,
                 'title' => 'Berhasil',
-                'message' => 'Customer berhasil ditambahkan.'
+                'message' => 'Customer berhasil ditambahkan.'."$imageName"
             ];
 
             return redirect()->back()->with('response', $response);
@@ -169,6 +178,27 @@ class AuthController extends Controller
     
             return redirect()->back()->with('response', $response)->withErrors($errors);
         }
+    }
+
+    private function processImage($image)
+    {
+        // Membuat instance gambar menggunakan Intervention Image
+        $img = Image::make($image);
+    
+        // Mengonversi gambar ke format WebP
+        $img->encode('webp', 75); // kualitas 75 untuk kompresi WebP
+    
+        // Memastikan ukuran gambar kurang dari 200 KB
+        while (strlen($img->encoded) > 200 * 1024) {
+            $img->resize($img->width() * 0.9, $img->height() * 0.9); // mengurangi ukuran gambar
+            $img->encode('webp', 75); // re-encode dengan kualitas 75
+        }
+    
+        // Menyimpan gambar sementara di storage
+        $imageName = time() . '.webp';
+        $img->save(public_path('profile_images/' . $imageName));
+    
+        return $imageName;
     }
 
     public function logout(Request $request)
