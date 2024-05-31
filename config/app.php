@@ -104,18 +104,6 @@ return [
             explode(',', env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
-
-    'providers' => [
-        // Other Service Providers
-    
-        Intervention\Image\ImageServiceProvider::class
-    ],
-
-    'providers' => [
-        // Other Service Providers
-        'Image' => Intervention\Image\Facades\Image::class
-    ],
-    
     
 
     'maintenance' => [
