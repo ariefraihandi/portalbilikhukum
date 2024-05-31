@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\WebpEncoder;
 
 class AuthController extends Controller
 {
@@ -60,24 +61,21 @@ class AuthController extends Controller
                 'multiStepsRegency' => 'required|string',
                 'multiStepsDistrict' => 'required|string',
                 'multiStepsVillage' => 'required|string',
-                'multiStepsProfileImage' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',                
+                'multiStepsProfileImage' => 'required|image|mimes:jpeg,png,jpg,gif,svg',                
                 'flatpickr-date' => 'required|date',                
             ]);
 
-            // Menghandle file upload dan konversi gambar
-            if ($request->hasFile('multiStepsProfileImage')) {
-                $image = $request->file('multiStepsProfileImage');
-                $imageName = $this->processImage($image);
-            } else {
-                $imageName = null;
-            }
+            // Menghandle file upload dan konversi gamba
+            
             $image = $request->file('multiStepsProfileImage');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            // create new manager instance with desired driver
-            $manager = new ImageManager(new Driver());
-
-            // alternatively create new manager instance by class name
-            $manager = new ImageManager(Driver::class);
+            $image->move('temp', $imageName);
+            $imgManager = new ImageManager(new Driver());
+            $profile = $imgManager->read('temp/'. $imageName);
+            $profilea = $profile->width();            
+            $encodedImage = $profile->encode(new WebpEncoder(quality: 65));             
+            $encodedImage->save(public_path('assets/img/member/'. $profilea.'.webp'));        
+            
 
             // Menyimpan data ke dalam database
             // $user = new User();
