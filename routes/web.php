@@ -12,13 +12,11 @@ Route::get('login',                         [AuthController::class, 'showLoginFo
 Route::get('/register/member',              [AuthController::class, 'showRegisterMember'])->name('showRegisterMember');
 Route::get('/register/pengacara',           [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
 Route::get('/verify-email',                 [AuthController::class, 'verifyEmail'])->name('verify.email');
-
-
+Route::post('submit-form-daftar',           [AuthController::class, 'submitFormDaftar'])->name('submitFormDaftar');
+Route::post('/register/member',             [AuthController::class, 'registerMember'])->name('registerMember');
 
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showIndex');
-Route::post('submit-form-daftar',           [AuthController::class, 'submitFormDaftar'])->name('submitFormDaftar');
-Route::post('/register/member',             [AuthController::class, 'registerMember'])->name('registerMember');
 
 // getData
     Route::get('/provinces',                [AuthController::class, 'getProvinces'])->name('getProvinces');
