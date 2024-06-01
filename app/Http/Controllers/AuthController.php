@@ -56,7 +56,7 @@ class AuthController extends Controller
             $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
         } else {
             // Application is running on the server
-            $url = "https://bilikhukum.com/verify-email?uniqueid=";
+            $url = "https://portal.bilikhukum.com/verify-email?uniqueid=";
         }
     
         $data = [

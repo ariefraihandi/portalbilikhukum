@@ -38,7 +38,7 @@
                                 <div class="divider">
                                     <div class="divider-text">Detil Pengguna</div>
                                 </div>
-                                <input type="text" name="url" id="url"  value="{{$url}}" />
+                                <input type="hidden" name="url" id="url"  value="{{$url}}" />
                                 <div class="col-sm-6">
                                     <label class="form-label" for="multiStepsName">Nama Lengkap</label>
                                     <input type="text" required name="multiStepsName" id="multiStepsName" class="form-control" placeholder="Nama Saya, S.H., M.H." />
