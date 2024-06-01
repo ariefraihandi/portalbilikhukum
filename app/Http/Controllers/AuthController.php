@@ -46,7 +46,7 @@ class AuthController extends Controller
 
     public function showRegisterMember()
     {
-        if (config('app.env') === 'local') {
+        if (config('app.url') === 'http://localhost') {
             // Application is running in a local environment
             $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
         } else {
