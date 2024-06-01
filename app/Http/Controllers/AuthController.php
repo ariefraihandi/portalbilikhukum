@@ -4,19 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\District;
 use App\Models\Village;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Validator;
+use App\Models\EmailVerificationToken;
+use App\Models\MailingList;
+use App\Mail\VerificationMail; 
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
 
 class AuthController extends Controller
 {
+
     public function showLoginForm()
     {
         return view('Auth.login');
@@ -37,7 +46,21 @@ class AuthController extends Controller
 
     public function showRegisterMember()
     {
-        return view('Auth.register');
+        if (config('app.env') === 'local') {
+            // Application is running in a local environment
+            $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
+        } else {
+            // Application is running on the server
+            $url = "https://bilikhukum.com/verify-email?uniqueid=";
+        }
+    
+        $data = [
+            'title' => 'Register Member',
+            'subTitle' => 'Bilik Hukum',
+            'url' => $url
+        ];
+    
+        return view('Auth.register', $data);
     }
     
     public function showRegisterPengacara()
@@ -47,8 +70,7 @@ class AuthController extends Controller
 
     public function registerMember(Request $request)
     {
-        try {
-            // Validasi data input
+        try {            
             $validatedData = $request->validate([
                 'multiStepsName' => 'required|string|max:255',
                 'multiStepsUsername' => 'required|string|max:255|unique:users,username',
@@ -61,47 +83,89 @@ class AuthController extends Controller
                 'multiStepsRegency' => 'required|string',
                 'multiStepsDistrict' => 'required|string',
                 'multiStepsVillage' => 'required|string',
-                'multiStepsProfileImage' => 'required|image|mimes:jpeg,png,jpg,gif,svg',                
-                'flatpickr-date' => 'required|date',                
+                'multiStepsProfileImage' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+                'flatpickr-date' => 'required|date',
             ]);
-
-            // Menghandle file upload dan konversi gamba
-            
+    
+            // Transaksi database
+            \DB::beginTransaction();
+    
+            // Pengolahan gambar
             $image = $request->file('multiStepsProfileImage');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $newName = time();
+    
+            // Simpan gambar sementara
             $image->move('temp', $imageName);
-            $imgManager = new ImageManager(new Driver());
-            $profile = $imgManager->read('temp/'. $imageName);
-            $profilea = $profile->width();            
-            $encodedImage = $profile->encode(new WebpEncoder(quality: 65));             
-            $encodedImage->save(public_path('assets/img/member/'. $profilea.'.webp'));        
-            
 
-            // Menyimpan data ke dalam database
-            // $user = new User();
-            // $user->name = $request->input('multiStepsName');
-            // $user->username = $request->input('multiStepsUsername');
-            // $user->email = $request->input('multiStepsEmail');
-            // $user->whatsapp = $request->input('multiStepsWhatsapp');
-            // $user->password = Hash::make($request->input('multiStepsPass'));
-            // $user->province = $request->input('multiStepsProvince');
-            // $user->regency = $request->input('multiStepsRegency');
-            // $user->district = $request->input('multiStepsDistrict');
-            // $user->village = $request->input('multiStepsVillage');
-            // $user->profile_image = $imageName;
-            // $user->birthdate = $request->input('flatpickr-date');
-            // $user->save();
+            try {
+                $imgManager = new ImageManager(new Driver());
+                $profile = $imgManager->read('temp/'. $imageName);                            
+                $encodedImage = $profile->encode(new WebpEncoder(quality: 65));             
+                $encodedImage->save(public_path('assets/img/member/'. $newName.'.webp'));        
 
+                // Hapus gambar sementara
+                unlink('temp/' . $imageName);
+            } catch (\Exception $e) {
+                // Hapus gambar sementara jika terjadi kesalahan
+                if (file_exists('temp/' . $imageName)) {
+                    unlink('temp/' . $imageName);
+                }
+                throw $e;
+            }
+    
+            // Buat pengguna baru
+            $user = User::create([
+                'name' => $request->input('multiStepsName'),
+                'username' => $request->input('multiStepsUsername'),
+                'email' => $request->input('multiStepsEmail'),
+                'whatsapp' => $request->input('multiStepsWhatsapp'),
+                'password' => Hash::make($request->input('multiStepsPass')),
+                'address' => $request->input('multiStepsVillage'),
+                'image' => $newName . '.webp',
+                'role' => 1,
+                'dob' => $request->input('flatpickr-date'),
+                'verified' => 0,
+                'email_verified_at' => null,
+            ]);
+    
+            $token = Str::random(64);
+            $emailVerificationToken = EmailVerificationToken::create([
+                'user_id' => $user->id,
+                'token' => $token,
+                'email' => $request->input('multiStepsEmail'),
+                'expires_at' => now()->addHours(24),
+            ]);
+    
+            // Membuat entri di dalam tabel MailingList
+            MailingList::create([
+                'user_id' => $user->id,
+                'email' => $request->input('multiStepsEmail'),
+                'status' => 1, // Default status is 1
+            ]);
+    
+            // Kirim email verifikasi
+            $email = $request->input('multiStepsEmail');
+            $name = $request->input('multiStepsName');
+            $url = $request->input('url');
+            $encryptedParams = base64_encode("email=$email&token=$token");
+    
+            Mail::to($email)->send(new VerificationMail($name, $url, $encryptedParams));
+    
+            \DB::commit();
+    
             // Menyusun respon sukses
             $response = [
                 'success' => true,
                 'title' => 'Berhasil',
-                'message' => 'Customer berhasil ditambahkan.'."$imageName"
+                'message' => 'Akun anda berhasil terdaftar. Check Mailbox untuk verifikasi dan Login.',
             ];
-
-            return redirect()->back()->with('response', $response);
+    
+            return redirect()->route('login')->with('response', $response);
     
         } catch (\Illuminate\Validation\ValidationException $e) {
+            \DB::rollBack();
+    
             // Menangani error validasi
             $errors = $e->errors();
             $errorMessage = 'Terdapat kesalahan dalam input data Anda: ';
@@ -113,10 +177,22 @@ class AuthController extends Controller
             $response = [
                 'success' => false,
                 'title' => 'Gagal',
-                'message' => $errorMessage
+                'message' => $errorMessage,
             ];
     
             return redirect()->back()->with('response', $response)->withErrors($errors);
+    
+        } catch (\Exception $e) {
+            \DB::rollBack();
+    
+            // Menangani error lainnya
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => 'Terjadi kesalahan pada server. Silakan coba lagi nanti.',
+            ];
+    
+            return redirect()->back()->with('response', $response);
         }
     }
 
@@ -178,27 +254,72 @@ class AuthController extends Controller
         }
     }
 
-    private function processImage($image)
+    public function verifyEmail(Request $request)
     {
-        // Membuat instance gambar menggunakan Intervention Image
-        $img = Image::make($image);
+        try {
+            $uniqueId = $request->query('uniqueid');
+            $decodedParams = base64_decode($uniqueId);
     
-        // Mengonversi gambar ke format WebP
-        $img->encode('webp', 75); // kualitas 75 untuk kompresi WebP
+            // Mendekode string menjadi array asosiatif
+            parse_str($decodedParams, $params);
     
-        // Memastikan ukuran gambar kurang dari 200 KB
-        while (strlen($img->encoded) > 200 * 1024) {
-            $img->resize($img->width() * 0.9, $img->height() * 0.9); // mengurangi ukuran gambar
-            $img->encode('webp', 75); // re-encode dengan kualitas 75
+            // Mendapatkan email dan token dari array
+            $email = $params['email'];
+            $token = $params['token'];
+    
+            // Menggunakan transaksi untuk mengelola pengecualian secara keseluruhan
+            DB::beginTransaction();
+    
+            // Mengambil token verifikasi
+            $verificationToken = EmailVerificationToken::where('email', $email)
+                ->where('token', $token)
+                ->first();
+    
+            // Jika token tidak ditemukan atau sudah kadaluarsa
+            if (!$verificationToken || $verificationToken->expires_at < now()) {
+                throw new \Exception('Token verifikasi email tidak valid atau sudah kadaluarsa.');
+            }
+    
+            // Ubah status verifikasi email pada user
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                throw new \Exception('User tidak ditemukan.');
+            }
+            $user->verified = 1;
+            $user->email_verified_at = now(); // Isi dengan waktu verifikasi email
+            $user->save();
+    
+            // Hapus token verifikasi dari database
+            EmailVerificationToken::where('email', $email)->delete();
+    
+            // Commit transaksi jika tidak ada pengecualian
+            DB::commit();
+    
+            // Set response untuk pesan sukses
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Akun anda berhasil Terverifikasi. Silahkan Login',
+            ];
+    
+            // Redirect pengguna ke halaman login dengan pesan sukses
+            return redirect()->route('login')->with('response', $response);
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi pengecualian
+            DB::rollBack();
+    
+            // Set response untuk pesan kesalahan
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => $e->getMessage(),
+            ];
+    
+            // Redirect pengguna ke halaman login dengan pesan kesalahan
+            return redirect()->route('login')->with('response', $response);
         }
-    
-        // Menyimpan gambar sementara di storage
-        $imageName = time() . '.webp';
-        $img->save(public_path('profile_images/' . $imageName));
-    
-        return $imageName;
     }
-
+    
     public function logout(Request $request)
     {
         Auth::logout();

@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/bs-stepper/bs-stepper.css" />
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/bootstrap-select/bootstrap-select.css" />
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/select2/select2.css" />
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/@form-validation/umd/styles/index.min.css" />
-    {{-- <link rel="stylesheet" href="{{ asset('assets') }}/vendor/css/pages/page-auth.css" /> --}}
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/@form-validation/umd/styles/index.min.css" />    
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/animate-css/animate.css" />
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" />
 @endpush
@@ -39,6 +38,7 @@
                                 <div class="divider">
                                     <div class="divider-text">Detil Pengguna</div>
                                 </div>
+                                <input type="text" name="url" id="url"  value="{{$url}}" />
                                 <div class="col-sm-6">
                                     <label class="form-label" for="multiStepsName">Nama Lengkap</label>
                                     <input type="text" required name="multiStepsName" id="multiStepsName" class="form-control" placeholder="Nama Saya, S.H., M.H." />

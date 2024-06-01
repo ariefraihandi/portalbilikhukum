@@ -11,6 +11,9 @@ use App\Http\Controllers\Pengacara\PengacaraController;
 Route::get('login',                         [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/register/member',              [AuthController::class, 'showRegisterMember'])->name('showRegisterMember');
 Route::get('/register/pengacara',           [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
+Route::get('/verify-email',                 [AuthController::class, 'verifyEmail'])->name('verify.email');
+
+
 
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showIndex');

@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/typeahead-js/typeahead.css" />
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/@form-validation/umd/styles/index.min.css" />
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/css/pages/page-auth.css" />
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/animate-css/animate.css" />
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" />
 @endpush
 
 @section('content')
@@ -157,7 +159,7 @@
     <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/bundle/popular.min.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js"></script>
-    <script src="{{ asset('portal_assets/assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
 @endpush
 
 @push('footer-Sec-script')
@@ -190,9 +192,19 @@
     </script>
     
     <script>
-        @if(session('response'))
-            var response = @json(session('response'));
-            showSweetAlert(response);
-        @endif
-    </script>  
+      function showSweetAlert(response) {
+          Swal.fire({
+              icon: response.success ? 'success' : 'error',
+              title: response.title,
+              text: response.message,
+          });
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+          @if(session('response'))
+              var response = @json(session('response'));
+              showSweetAlert(response);
+          @endif
+      });
+      </script> 
 @endpush
