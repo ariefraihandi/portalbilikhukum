@@ -28,7 +28,12 @@ class AuthController extends Controller
 
     public function showLoginForm()
     {
-        return view('Auth.login');
+        $data = [
+            'title' => 'Login',
+            'subTitle' => 'Bilik Hukum',  
+        ];
+
+        return view('Auth.login', $data);
     }
 
     public function login(Request $request)
@@ -84,7 +89,7 @@ class AuthController extends Controller
                 'multiStepsDistrict' => 'required|string',
                 'multiStepsVillage' => 'required|string',
                 'multiStepsProfileImage' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-                'flatpickr-date' => 'required|date',
+                'dob' => 'required|date',
             ]);
     
             // Transaksi database
@@ -124,7 +129,7 @@ class AuthController extends Controller
                 'address' => $request->input('multiStepsVillage'),
                 'image' => $newName . '.webp',
                 'role' => 1,
-                'dob' => $request->input('flatpickr-date'),
+                'dob' => $request->input('dob'),
                 'verified' => 0,
                 'email_verified_at' => null,
             ]);

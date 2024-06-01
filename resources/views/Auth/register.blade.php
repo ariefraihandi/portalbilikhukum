@@ -68,8 +68,8 @@
                                     <small class="error-message text-danger"></small>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label for="flatpickr-date" class="form-label">Tanggal Lahir</label>
-                                    <input type="text" class="form-control" required placeholder="YYYY-MM-DD" id="flatpickr-date" name="flatpickr-date" />
+                                    <label for="dob" class="form-label">Tanggal Lahir</label>
+                                    <input type="text" class="form-control" required placeholder="YYYY-MM-DD" id="flatpickr-date" name="dob" />
                                     <small class="error-message text-danger"></small>
                                 </div>
                                 <!-- Password -->
