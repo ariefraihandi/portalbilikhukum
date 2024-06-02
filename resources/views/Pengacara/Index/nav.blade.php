@@ -26,7 +26,7 @@
             <li><a href="services.html">Services</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact Us</a></li>
-            <li><a href="{{ route('showRegisterPengacara') }}" class="btn btn-primary">Bergabung Bersama Kami</a></li>
+            <li><a href="{{ route('showRegister') }}" class="btn btn-primary">Bergabung Bersama Kami</a></li>
           </ul>
 
           <a

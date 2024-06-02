@@ -48,7 +48,16 @@ class AuthController extends Controller
         // Jika otentikasi gagal
         return back()->withErrors(['email' => 'Invalid email or password.']);
     }
+    public function showRegister()
+    {
+        $data = [
+            'title' => 'Metode Pendaftaran',
+            'subTitle' => 'Bilik Hukum',  
+        ];
 
+        return view('Auth.register', $data);
+    }
+    
     public function showRegisterMember()
     {
         if (config('app.url') === 'http://localhost') {
@@ -60,17 +69,31 @@ class AuthController extends Controller
         }
     
         $data = [
-            'title' => 'Register Member',
+            'title' => 'Pendaftaran Member',
             'subTitle' => 'Bilik Hukum',
             'url' => $url
         ];
     
-        return view('Auth.register', $data);
+        return view('Auth.registerMember', $data);
     }
     
     public function showRegisterPengacara()
     {
-        return view('Auth.registerPengacara');
+        if (config('app.url') === 'http://localhost') {
+            // Application is running in a local environment
+            $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
+        } else {
+            // Application is running on the server
+            $url = "https://portal.bilikhukum.com/verify-email?uniqueid=";
+        }
+    
+        $data = [
+            'title' => 'Pendaftaran Pengacara',
+            'subTitle' => 'Bilik Hukum',
+            'url' => $url
+        ];
+
+        return view('Auth.registerPengacara', $data);
     }
 
     public function registerMember(Request $request)
