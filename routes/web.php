@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Pengacara\PengacaraController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return redirect('https://bilikhukum.com');
+});
+
 
 Route::get('login',                         [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/register',                     [AuthController::class, 'showRegister'])->name('showRegister');
