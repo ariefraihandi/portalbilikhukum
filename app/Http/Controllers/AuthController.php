@@ -38,16 +38,62 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email-username', 'password');
+    
+        // Cek apakah input adalah email atau username
+        $loginField = filter_var($credentials['email-username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+    
+        // Buat array untuk kredensial berdasarkan input pengguna
+        $credentialsToAttempt = [
+            $loginField => $credentials['email-username'],
+            'password' => $credentials['password']
+        ];
+    
+        // Coba melakukan autentikasi
+        if (Auth::attempt($credentialsToAttempt)) {
+            // Periksa apakah akun pengguna telah diverifikasi melalui email
+            $user = User::where($loginField, $credentials['email-username'])->first();
+    
+            if ($user && !$user->verified) {
+                // Akun belum diverifikasi, kirimkan pesan kesalahan
+                $errorMessage = 'Email belum diverifikasi.';
+                $response = [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => $errorMessage,
+                ];
+                return response()->json($response, 403);
+            }
+    
+                 // Set user ID ke dalam session
+                //  session([
+                //     'id' => $user->id,
+                //     'role' => $user->role
+                // ]);
 
-        if (Auth::attempt($credentials)) {
-            // Jika otentikasi berhasil
-            return redirect()->intended('/');
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Anda berhasil login.',
+            ];
+            return redirect()->intended('dashboard')->with('response', $response);
         }
-
-        // Jika otentikasi gagal
-        return back()->withErrors(['email' => 'Invalid email or password.']);
+    
+        // Autentikasi gagal, buat pesan kesalahan
+        $errorMessage = 'Username/Email dan Password Salah';
+    
+        // Buat respons untuk SweetAlert
+        $response = [
+            'success' => false,
+            'title' => 'Gagal',
+            'message' => $errorMessage,
+        ];
+    
+        // Kembalikan respons ke halaman login
+        return redirect()->back()->with('response', $response);
     }
+    
+    
     public function showRegister()
     {
         $data = [
@@ -151,7 +197,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->input('multiStepsPass')),
                 'address' => $request->input('multiStepsVillage'),
                 'image' => $newName . '.webp',
-                'role' => 1,
+                'role' => 3,
                 'dob' => $request->input('dob'),
                 'verified' => 0,
                 'email_verified_at' => null,
@@ -353,7 +399,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/login');
     }
 
     //Get Data
