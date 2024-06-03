@@ -62,7 +62,7 @@ class AuthController extends Controller
                     'title' => 'Gagal',
                     'message' => $errorMessage,
                 ];
-                return response()->json($response, 403);
+                return redirect()->back()->with('response', $response);
             }
     
                  // Set user ID ke dalam session
