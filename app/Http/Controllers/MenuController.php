@@ -101,7 +101,7 @@ class MenuController extends Controller
             
                 // Create a new access menu record
                 $accessMenu = new AccessMenu([
-                    'role_id' => 1, // Assuming role_id 1 is for the admin role
+                    'role_id' => 1,
                     'menu_id' => $menu->id,
                 ]);
         

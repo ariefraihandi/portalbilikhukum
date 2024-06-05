@@ -35,12 +35,13 @@ Route::get('/logout',                        [AuthController::class, 'logout'])-
 //     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
 // });
 
-Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
-    Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
-    Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
 
 Route::middleware([AuthMiddleware::class])->group(function () {
-    
+    Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
+        Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
+        Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
+        Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
+        //as
     Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
     
