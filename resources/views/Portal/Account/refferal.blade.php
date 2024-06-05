@@ -19,7 +19,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between">
             <div class="content-left">
-                <h3 class="mb-0">Rp. 234.242,-</h3>
+                <h3 class="mb-0">Rp. 0,-</h3>
                 <small>Total Pendapatan</small>
             </div>
             <span class="badge bg-label-primary rounded-circle p-2">
@@ -34,7 +34,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between">
             <div class="content-left">
-                <h3 class="mb-0">Rp. 39.000</h3>
+                <h3 class="mb-0">Rp. 0</h3>
                 <small>Pembayaran Selanjutnya</small>
             </div>
             <span class="badge bg-label-success rounded-circle p-2">
@@ -49,7 +49,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between">
             <div class="content-left">
-                <h3 class="mb-0">2,367 Member</h3>
+                <h3 class="mb-0">Member</h3>
                 <small>Refferal</small>
             </div>
             <span class="badge bg-label-danger rounded-circle p-2">
@@ -64,7 +64,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between">
             <div class="content-left">
-                <h3 class="mb-0">Rp. 400.000,-</h3>
+                <h3 class="mb-0">Rp. 0,-</h3>
                 <small>Pembayaran Tertunda</small>
             </div>
             <span class="badge bg-label-info rounded-circle p-2">

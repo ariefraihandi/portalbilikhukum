@@ -229,9 +229,9 @@
                                 @if(!is_null($hasReferralCode))
                                   <h4 class="card-title mb-3">Dompet</h4>
                                   <div class="d-flex align-items-end mb-1 gap-1">
-                                      <h4 class="text-primary mb-0">Rp. 500.300,-</h4>
+                                      <h4 class="text-primary mb-0">Rp. 0,-</h4>
                                   </div>
-                                  <p class="text-muted mb-0 text-truncate">Total Penarikan Rp. 50.000.400,-</p>
+                                  <p class="text-muted mb-0 text-truncate">Total Penarikan Rp. 0,-</p>
                                   @else
                                   <h4 class="card-title mb-3">Ikuti Program Loyalitas</h4>
                                   <div class="d-flex align-items-end mb-1 gap-1">
