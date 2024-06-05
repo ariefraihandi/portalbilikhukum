@@ -76,7 +76,7 @@ class AuthController extends Controller
                 'title' => 'Berhasil',
                 'message' => 'Anda berhasil login.',
             ];
-            return redirect()->intended('dashboard')->with('response', $response);
+            return redirect()->intended('account')->with('response', $response);
         }
     
         // Autentikasi gagal, buat pesan kesalahan
@@ -92,7 +92,6 @@ class AuthController extends Controller
         // Kembalikan respons ke halaman login
         return redirect()->back()->with('response', $response);
     }
-    
     
     public function showRegister()
     {
@@ -156,8 +155,10 @@ class AuthController extends Controller
                 'multiStepsProvince' => 'required|string',
                 'multiStepsRegency' => 'required|string',
                 'multiStepsDistrict' => 'required|string',
+                'gender' => 'required',
                 'multiStepsVillage' => 'required|string',
                 'multiStepsProfileImage' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+                'multiStepsProfileImage' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg', // Make image nullable
                 'dob' => 'required|date',
             ]);
     
@@ -187,19 +188,20 @@ class AuthController extends Controller
                 }
                 throw $e;
             }
-    
+            
             // Buat pengguna baru
             $user = User::create([
-                'name' => $request->input('multiStepsName'),
-                'username' => $request->input('multiStepsUsername'),
-                'email' => $request->input('multiStepsEmail'),
-                'whatsapp' => $request->input('multiStepsWhatsapp'),
-                'password' => Hash::make($request->input('multiStepsPass')),
-                'address' => $request->input('multiStepsVillage'),
-                'image' => $newName . '.webp',
-                'role' => 3,
-                'dob' => $request->input('dob'),
-                'verified' => 0,
+                'name'              => $request->input('multiStepsName'),
+                'username'          => $request->input('multiStepsUsername'),
+                'email'             => $request->input('multiStepsEmail'),
+                'whatsapp'          => $request->input('multiStepsWhatsapp'),
+                'password'          => Hash::make($request->input('multiStepsPass')),
+                'address'           => $request->input('multiStepsVillage'),
+                'gender'            => $request->input('gender'),
+                'image'             => $newName . '.webp',
+                'role'              => 3,
+                'dob'               => $request->input('dob'),
+                'verified'          => 0,
                 'email_verified_at' => null,
             ]);
     

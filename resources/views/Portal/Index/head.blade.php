@@ -32,5 +32,6 @@
   
     <!-- Config -->
     <script src="{{ asset('assets') }}/js/config.js"></script>    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
   </head>
   

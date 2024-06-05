@@ -26,3 +26,4 @@ class AccessSubChild extends Model
         return $this->belongsTo(MenuSubChild::class, 'childsubmenu_id');
     }
 }
+

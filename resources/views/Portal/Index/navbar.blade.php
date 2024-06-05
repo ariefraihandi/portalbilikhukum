@@ -20,129 +20,9 @@ id="layout-navbar">
   <!-- /Search -->
 
   <ul class="navbar-nav flex-row align-items-center ms-auto">
-    <!-- Language -->
-    <li class="nav-item dropdown-language dropdown me-2 me-xl-0">
-      <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-        <i class="bx bx-globe bx-sm"></i>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);" data-language="en">
-            <span class="align-middle">English</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);" data-language="fr">
-            <span class="align-middle">French</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);" data-language="de">
-            <span class="align-middle">German</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);" data-language="pt">
-            <span class="align-middle">Portuguese</span>
-          </a>
-        </li>
-      </ul>
-    </li>
-    <!-- /Language -->
+    
 
-    <!-- Quick links  -->
-    <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown me-2 me-xl-0">
-      <a
-        class="nav-link dropdown-toggle hide-arrow"
-        href="javascript:void(0);"
-        data-bs-toggle="dropdown"
-        data-bs-auto-close="outside"
-        aria-expanded="false">
-        <i class="bx bx-grid-alt bx-sm"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-end py-0">
-        <div class="dropdown-menu-header border-bottom">
-          <div class="dropdown-header d-flex align-items-center py-3">
-            <h5 class="text-body mb-0 me-auto">Shortcuts</h5>
-            <a
-              href="javascript:void(0)"
-              class="dropdown-shortcuts-add text-body"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Add shortcuts"
-              ><i class="bx bx-sm bx-plus-circle"></i
-            ></a>
-          </div>
-        </div>
-        <div class="dropdown-shortcuts-list scrollable-container">
-          <div class="row row-bordered overflow-visible g-0">
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-calendar fs-4"></i>
-              </span>
-              <a href="app-calendar.html" class="stretched-link">Calendar</a>
-              <small class="text-muted mb-0">Appointments</small>
-            </div>
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-food-menu fs-4"></i>
-              </span>
-              <a href="app-invoice-list.html" class="stretched-link">Invoice App</a>
-              <small class="text-muted mb-0">Manage Accounts</small>
-            </div>
-          </div>
-          <div class="row row-bordered overflow-visible g-0">
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-user fs-4"></i>
-              </span>
-              <a href="app-user-list.html" class="stretched-link">User App</a>
-              <small class="text-muted mb-0">Manage Users</small>
-            </div>
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-check-shield fs-4"></i>
-              </span>
-              <a href="app-access-roles.html" class="stretched-link">Role Management</a>
-              <small class="text-muted mb-0">Permission</small>
-            </div>
-          </div>
-          <div class="row row-bordered overflow-visible g-0">
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-pie-chart-alt-2 fs-4"></i>
-              </span>
-              <a href="index.html" class="stretched-link">Dashboard</a>
-              <small class="text-muted mb-0">User Profile</small>
-            </div>
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-cog fs-4"></i>
-              </span>
-              <a href="pages-account-settings-account.html" class="stretched-link">Setting</a>
-              <small class="text-muted mb-0">Account Settings</small>
-            </div>
-          </div>
-          <div class="row row-bordered overflow-visible g-0">
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-help-circle fs-4"></i>
-              </span>
-              <a href="pages-faq.html" class="stretched-link">FAQs</a>
-              <small class="text-muted mb-0">FAQs & Articles</small>
-            </div>
-            <div class="dropdown-shortcuts-item col">
-              <span class="dropdown-shortcuts-icon bg-label-secondary rounded-circle mb-2">
-                <i class="bx bx-window-open fs-4"></i>
-              </span>
-              <a href="modal-examples.html" class="stretched-link">Modals</a>
-              <small class="text-muted mb-0">Useful Popups</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </li>
-    <!-- Quick links -->
+    
 
     <!-- Style Switcher -->
     <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-0">
@@ -170,7 +50,7 @@ id="layout-navbar">
     <!-- / Style Switcher-->
 
     <!-- Notification -->
-    <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
+    {{-- <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
       <a
         class="nav-link dropdown-toggle hide-arrow"
         href="javascript:void(0);"
@@ -406,13 +286,24 @@ id="layout-navbar">
           <button class="btn btn-primary text-uppercase w-100">view all notifications</button>
         </li>
       </ul>
-    </li>
+    </li> --}}
     <!--/ Notification -->
     <!-- User -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
+      @php
+        $userId = session('id');
+        $user = App\Models\User::find($userId);
+        $userImage = $user->image ?? 'default.jpg'; // Use default image if no image is found
+
+        // Find the user's role
+        $role = App\Models\Role::find($user->role);
+
+        // Get the role name
+        $roleName = $role ? $role->name : 'Unknown Role';
+      @endphp
       <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
         <div class="avatar avatar-online">
-          <img src="{{ asset('assets') }}/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+          <img src="{{ asset('assets/img/member/' . $userImage) }}" alt="{{ $user->name }}" class="w-px-40 h-auto rounded-circle" />
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
@@ -421,12 +312,12 @@ id="layout-navbar">
             <div class="d-flex">
               <div class="flex-shrink-0 me-3">
                 <div class="avatar avatar-online">
-                  <img src="{{ asset('assets') }}/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                  <img src="{{ asset('assets/img/member/' . $userImage) }}" alt="{{ $user->name }}" class="w-px-40 h-auto rounded-circle" />
                 </div>
               </div>
               <div class="flex-grow-1">
-                <span class="fw-medium d-block">John Doe</span>
-                <small class="text-muted">Admin</small>
+                <span class="fw-medium d-block">{{ $user->name }}</span>
+                <small class="text-muted">{{ $roleName }}</small>
               </div>
             </div>
           </a>

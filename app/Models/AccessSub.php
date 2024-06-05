@@ -11,15 +11,19 @@ class AccessSub extends Model
         'submenu_id',
     ];
 
-    // Relasi dengan model Role
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    // Relasi dengan model MenuSub
     public function menuSub()
     {
         return $this->belongsTo(MenuSub::class, 'submenu_id');
     }
+
+    public function accessSubChildren()
+    {
+        return $this->hasMany(AccessSubChild::class, 'role_id', 'role_id');
+    }
 }
+

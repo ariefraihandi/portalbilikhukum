@@ -4,7 +4,12 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Models\AccessMenu;
+use App\Models\AccessSub;
+use App\Models\AccessSubChild;
+use App\Models\MenuSub;
+use App\Models\MenuSubChild;
 
 class SidebarMiddleware
 {
@@ -15,23 +20,60 @@ class SidebarMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
-    {
-        // Periksa apakah session memiliki 'role'
-        if ($request->session()->has('role')) {
-            // Dapatkan role dari session
-            $role = $request->session()->get('role');
-            
-            // Tambahkan role ke request agar bisa diakses di controller
-            $request->merge(['userRole' => $role]);
 
-            // Ambil akses menu berdasarkan role
-            $accessMenus = AccessMenu::where('role_id', $role)->with('menu')->get();
+     public function handle(Request $request, Closure $next)
+     {
+         if ($request->session()->has('role')) {
+             $role = $request->session()->get('role');
+     
+             $request->merge(['userRole' => $role]);
+     
+             $accessMenus = AccessMenu::where('role_id', $role)
+                 ->with(['menu', 'accessSubs.accessSubChildren'])
+                 ->get();
+     
+             $request->attributes->set('accessMenus', $accessMenus);
+     
+             $currentRouteName = $request->route()->getName();
+     
+             $childMenuSub = MenuSubChild::where('url', $currentRouteName)->first();
+     
+             // Jika child submenu ditemukan
+             if ($childMenuSub) {
+                // Cari akses langsung ke child submenu untuk role pengguna yang login
+                $accessSubChild = AccessSubChild::where('role_id', $role)
+                    ->where('childsubmenu_id', $childMenuSub->id)
+                    ->first();
+    
+                // Jika akses ditemukan, biarkan permintaan dilanjutkan
+                if ($accessSubChild) {
+                    $request->attributes->set('authorized', true);
+                    return $next($request);
+                }
+            } else {
+                 $menuSub = MenuSub::where('url', $currentRouteName)->first();
+     
+                 $accessSub = AccessSub::where('role_id', $role)
+                                ->where('submenu_id', $menuSub->id)
+                                ->first();
 
-            // Tambahkan akses menu ke request agar bisa diakses di controller
-            $request->attributes->set('accessMenus', $accessMenus);
-        }
+                if ($accessSub) {
+                    $request->attributes->set('authorized', true);
+                    return $next($request);
+                }
+             }
+         } else {
+             return redirect()->route('login');
+         }
+     
+         $response = [
+            'success' => false,
+            'title' => 'Not Authorized',
+            'message' => 'Anda tidak memiliki akses ke halaman Ini',
+        ];
 
-        return $next($request);
-    }
+         return redirect()->route('account.profile')->with('response', $response);
+     }
+    
+    
 }

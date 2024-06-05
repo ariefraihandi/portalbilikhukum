@@ -118,10 +118,17 @@
                                         <option value="" selected disabled>Pilih Desa</option>
                                     </select>
                                 </div>
-                                <!-- Gambar Profil -->
-                                <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="gender">Jenis Kelamin</label>
+                                    <select class="form-select" required id="gender" name="gender">
+                                    <option value="" selected disabled>Pilih Jenis Kelamin</option>
+                                    <option value="1">Laki-laki</option>
+                                    <option value="2">Perempuan</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
                                     <label class="form-label" for="multiStepsProfileImage">Gambar Profil</label>
-                                    <input type="file" required name="multiStepsProfileImage" id="multiStepsProfileImage" class="form-control" accept="image/*">
+                                    <input type="file" name="multiStepsProfileImage" id="multiStepsProfileImage" class="form-control" accept="image/*">
                                     <div id="imagePreview" class="mt-2"></div>
                                 </div>
                             </div>                       

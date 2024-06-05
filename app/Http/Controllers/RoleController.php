@@ -5,80 +5,138 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Menu;
+use App\Models\MenuSub;
+use App\Models\MenuSubChild;
+use App\Models\AccessMenu;
+use App\Models\AccessSub;
+use App\Models\AccessSubChild;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function showRole()
-    {
-        $roles = Role::with('users')->get(); // Mengambil semua role beserta user terkait
+    //View
+        public function showRole(Request $request)
+        {
+            $accessMenus        = $request->get('accessMenus');
+            $roles              = Role::where('id', '!=', 1)->with('users')->get();
 
-        $data = [
-            'title' => 'Role List',
-            'subtitle' => 'Bilik Hukum',
-            'roles' => $roles,
-        ];
-
-        return view('Portal.Role.roleIndex', $data);
-    }
-
-    public function create()
-    {
-        // Tampilkan formulir untuk membuat role baru
-    }
-
-    public function rolesStore(Request $request)
-    {
-        // Validasi input
-        $validated = $request->validate([
-            'modalRoleName' => 'required|string|max:255',
-        ]);
-
-        try {
-            // Buat role baru
-            $role = new Role;
-            $role->name = $request->input('modalRoleName');
-            $role->save();
-
-            // Buat pesan sukses
-            $response = [
-                'success' => true,
-                'title' => 'Berhasil',
-                'message' => 'Role berhasil ditambahkan.',
+            $data = [
+                'title' => 'Role List',
+                'subtitle' => 'Bilik Hukum',
+                'roles' => $roles,
+                'sidebar' => $accessMenus,
             ];
 
-            // Redirect ke halaman sebelumnya dengan pesan sukses
-            return redirect()->back()->with('response', $response);
-        } catch (\Exception $e) {
-            // Buat pesan kesalahan
-            $response = [
-                'success' => false,
-                'title' => 'Gagal',
-                'message' => 'Eror: ' . $e->getMessage(),
-            ];
-
-            // Redirect ke halaman sebelumnya dengan pesan kesalahan
-            return redirect()->back()->with('response', $response);
+            return view('Portal.Role.roleIndex', $data);
         }
-    }
+        
+        public function showRoleAccess(Request $request)
+        {
+            $accessMenus        = $request->get('accessMenus');          
+            $roles              = Role::where('id', '!=', 1)->with('users')->get();
+            $menus              = Menu::all();
+            $subMenus           = MenuSub::all();
+            $childMenus         = MenuSubChild::all();
 
-    public function show(Role $role)
-    {
-        // Tampilkan detail role tertentu
-    }
+            $data = [
+                'title'         => 'Role Access',
+                'subtitle'      => 'Bilik Hukum',
+                'roles'         => $roles,
+                'sidebar'       => $accessMenus,
+                'menus'         => $menus,
+                'subMenus'      => $subMenus,
+                'childMenus'    => $childMenus,
+            ];
 
-    public function edit(Role $role)
-    {
-        // Tampilkan formulir untuk mengedit role
-    }
+            return view('Portal.Role.roleAccess', $data);
+        }
+    //!View
 
-    public function update(Request $request, Role $role)
+    public function changeAccess(Request $request)
     {
-        // Simpan perubahan pada role ke dalam database
-    }
+        // Ambil data dari permintaan
+        $roleId = $request->input('roleId');
+        $menuId = $request->input('menuId');        
+        $type   = $request->input('type');     
+        // Cari nama peran berdasarkan ID
+        $roleName = Role::find($roleId)->name;
+        
+        if ($type == 'menu') { 
+            $menuName           = Menu::find($menuId)->menu_name;
+            $existingAccess     = AccessMenu::where('role_id', $roleId)->where('menu_id', $menuId)->first();           
 
-    public function destroy(Role $role)
-    {
-        // Hapus role dari database
+            $response = '';
+
+            if ($existingAccess) {             
+                $existingAccess->delete();
+                $response = 'delete';
+            } else {
+                // Jika akses menu belum ada, tambahkan
+                $newAccess = new AccessMenu();
+                $newAccess->role_id = $roleId;
+                $newAccess->menu_id = $menuId;
+                $newAccess->save();
+                $response = 'adding';
+            }
+        
+            return response()->json([
+                'response' => $response,
+                'roleName' => $roleName,
+                'menuName' => $menuName
+            ]);
+        } elseif ($type === 'submenu') {
+            $submenuName = MenuSub::find($menuId)->title;
+
+            // Cek apakah akses menu sudah ada dalam database
+            $existingAccess = AccessSub::where('role_id', $roleId)->where('submenu_id', $menuId)->first();
+
+            $response = '';
+
+            if ($existingAccess) {
+                // Jika akses menu sudah ada, hapus
+                $existingAccess->delete();
+                $response = 'delete';
+            } else {
+                // Jika akses menu belum ada, tambahkan
+                $newAccess = new AccessSub();
+                $newAccess->role_id = $roleId;
+                $newAccess->submenu_id = $menuId;
+                $newAccess->save();
+                $response = 'adding';
+            }
+        
+            // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
+            return response()->json([
+                'response' => $response,
+                'roleName' => $roleName,
+                'menuName' => $submenuName
+            ]);
+
+        } elseif ($type === 'childsubmenu') {
+            $childSubName = MenuSubChild::find($menuId)->title;
+         
+            $existingAccess = AccessSubChild::where('role_id', $roleId)->where('childsubmenu_id', $menuId)->first();
+
+            $response = '';
+
+            if ($existingAccess) {             
+                $existingAccess->delete();
+                $response = 'delete';
+            } else {    
+                $newAccess = new AccessSubChild();
+                $newAccess->role_id = $roleId;
+                $newAccess->childsubmenu_id = $menuId;
+                $newAccess->save();
+                $response = 'adding';
+            }
+        
+            // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
+            return response()->json([
+                'response' => $response,
+                'roleName' => $roleName,
+                'menuName' => $childSubName
+            ]);
+        }
     }
 }

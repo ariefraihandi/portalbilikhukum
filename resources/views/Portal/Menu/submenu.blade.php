@@ -63,12 +63,12 @@
               data-bs-target="#modalAddChildSubmenus"
               data-bs-toggle="modal"
               class="btn btn-primary mt-1 text-nowrap add-new-role">
-              Add Child
+              Add Child Menu
             </button>
             </div>
             <div class="d-flex justify-content-between align-items-end">
               <div class="role-heading">
-                <h3 class="mb-1">Child</h3>
+                <h3 class="mb-1">Child Menu</h3>
               </div>              
             </div>
           </div>
@@ -76,15 +76,15 @@
       </div>
       <div class="col-xl-12 col-lg-12 col-md-12 order-0 order-md-1">
         <ul class="nav nav-pills flex-column flex-md-row mb-3">
-          <li class="nav-item col-4">
-              <a class="nav-link" href="/menu"><i class="bx bx-menu-alt-left me-1"></i>Menu</a>
-          </li>
-          <li class="nav-item col-4">
-              <a class="nav-link active" href="/menu/submenu"><i class="bx bx-menu me-1"></i>Submenu</a>
-          </li>
-          <li class="nav-item col-4">
-              <a class="nav-link" href="/menu/child"><i class="bx bx-menu-alt-right me-1"></i>Childs Submenu</a>
-          </li>
+            <li class="nav-item col-4">
+                <a class="nav-link" href="/menu"><i class="bx bx-menu-alt-left me-1"></i>Menu</a>
+            </li>
+            <li class="nav-item col-4">
+                <a class="nav-link active" href="/menu/submenu"><i class="bx bx-menu me-1"></i>Submenu</a>
+            </li>
+            <li class="nav-item col-4">
+                <a class="nav-link" href="/menu/childmenu"><i class="bx bx-menu-alt-right me-1"></i>Child Menu</a>
+            </li>
         </ul>
         <!-- Role Table -->
         <div class="card">
@@ -259,6 +259,32 @@
       });
   });
 </script>
+
+<script>
+    function moveItem(itemId, direction, event) {
+        event.preventDefault();
+        // Logic to move the item up or down
+        // You might want to send an AJAX request to your server to update the order in the database
+        $.ajax({
+            url: '/move-submenu',
+            method: 'POST',
+            data: {
+                id: itemId,
+                direction: direction,
+                _token: '{{ csrf_token() }}' // Include CSRF token if using Laravel
+            },
+            success: function(response) {
+                // Jika berhasil, perbarui datatabel
+                $('#menus-table').DataTable().ajax.reload();
+            },
+            error: function(xhr) {
+                // Handle error
+                alert('An error occurred while moving the item.');
+            }
+        });
+    }
+</script>
+
 <script>
   function showDeleteConfirmation(url, message) {
       Swal.fire({

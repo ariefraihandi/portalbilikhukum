@@ -16,11 +16,6 @@
 @section('content')
 <div class="authentication-wrapper authentication-cover">
     <div class="authentication-inner row m-0">
-        <!-- Image on Top -->
-        
-            
-        
-        <!-- /Image on Top -->
         
         <div class="col-12 d-flex align-items-center justify-content-center authentication-bg p-sm-5 p-3">
             <div class="w-px-700">

@@ -59,8 +59,74 @@
           </div>
 
           <div class="menu-inner-shadow"></div>
+          @if (!function_exists('isActiveSubMenu'))
+              @php
+                  function isActiveSubMenu($title)
+                  {
+                      $currentUrl = request()->path();
+                      $urlParts = explode('/', $currentUrl);
+
+                      // Check if the title matches the first segment of the URL
+                      return $title == $urlParts[0] ? 'active' : '';
+                  }
+              @endphp
+          @endif
+
+          @if (!function_exists('isActiveChildSubMenu'))
+              @php
+                  function isActiveChildSubMenu($childRoute)
+                  {
+                      $currentUrl = str_replace('/', '.', request()->path());
+                      return $childRoute == $currentUrl ? 'active' : '';
+                  }
+              @endphp
+          @endif
 
           <ul class="menu-inner py-1">
+            @php                
+              $sortedSidebar = $sidebar->sortBy('menu.order');
+            @endphp
+            @foreach($sortedSidebar as $accessMenu)
+                <li class="menu-header small text-uppercase">
+                    <span class="menu-header-text">{{ $accessMenu->menu->menu_name }}</span>
+                </li>
+                @php                    
+                    $sortedAccessSubs = $accessMenu->accessSubs->sortBy('menuSub.order');
+                @endphp
+                @foreach($sortedAccessSubs as $accessSub)
+                    @if($accessSub->menuSub->menu_id == $accessMenu->menu_id)
+                        <li class="menu-item {{ isActiveSubMenu($accessSub->menuSub->title) }}">
+                            <a href="{{ $accessSub->menuSub->itemsub != 1 ? $accessSub->menuSub->url : 'javascript:void(0);' }}" class="menu-link {{ $accessSub->menuSub->itemsub != 0 ? 'menu-toggle' : '' }}">
+                                <i class="menu-icon tf-icons {{ $accessSub->menuSub->icon }}"></i>                
+                                <div class="text-truncate" data-i18n="{{ ucfirst($accessSub->menuSub->title) }}">{{ ucfirst($accessSub->menuSub->title) }}</div>
+                            </a>
+                            @if($accessSub->menuSub->itemsub != 0)
+                                @php                                    
+                                    $sortedAccessSubChildren = $accessSub->accessSubChildren->sortBy('menuSubChild.order');                        
+                                @endphp
+                                <ul class="menu-sub">
+                                    @foreach($sortedAccessSubChildren as $accessSubChild)
+                                        @if($accessSubChild->menuSubChild->id_submenu == $accessSub->menuSub->id) <!-- Check to ensure child belongs to the correct submenu -->
+                                            <li class="menu-item {{ isActiveChildSubMenu($accessSubChild->menuSubChild->url) }}">
+                                                <a href="{{ route($accessSubChild->menuSubChild->url) }}" class="menu-link">
+                                                    <div class="text-truncate" data-i18n="{{ ucfirst($accessSubChild->menuSubChild->title) }}">{{ ucfirst($accessSubChild->menuSubChild->title) }}</div>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </li>
+                    @endif
+                @endforeach
+            @endforeach
+
+        </ul>
+            
+        
+        
+        
+          {{-- <ul class="menu-inner py-1">
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Dashboard</span>
             </li>
@@ -248,6 +314,6 @@
                 </li>               
               </ul>
             </li>
-          </ul>
+          </ul> --}}
         </aside>
         <!-- / Menu -->

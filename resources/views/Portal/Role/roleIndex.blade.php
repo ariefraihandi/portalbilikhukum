@@ -63,19 +63,18 @@
       <!-- Role Table -->
       <div class="card">
         <div class="card-datatable table-responsive">
-          <table class="datatables-users table border-top">
+          <table id="user-table" class="datatables-users table border-top">
             <thead>
-              <tr>
-                <th></th>
-                <th>User</th>
-                <th>Role</th>
-                <th>Plan</th>
-                <th>Billing</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
+                <tr>
+                    <th>No</th>
+                    <th>User</th>
+                    <th>Role</th>                  
+                    <th>since</th>                  
+                    <th>Status</th>                  
+                    <th>Action</th>
+                </tr>
             </thead>
-          </table>
+        </table>
         </div>
       </div>
       <!--/ Role Table -->
@@ -134,7 +133,26 @@
 @endpush
 
 @push('footer-Sec-script')
-<script src="{{ asset('assets') }}/js/app-access-roles.js"></script>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      $('#user-table').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: '{!! route('getDataUser') !!}',
+          columns: [
+            { data: 'no', name: 'no' },
+            { data: 'user', name: 'user' },
+            { data: 'role', name: 'role' },        
+            { data: 'since', name: 'since' },
+            { data: 'status', name: 'status' },
+            { data: 'action', name: 'action' },
+        ]
+    });
+});
+</script>
+
 <script>
   function showSweetAlert(response) {
       Swal.fire({
