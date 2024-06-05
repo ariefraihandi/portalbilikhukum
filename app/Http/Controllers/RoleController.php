@@ -53,6 +53,29 @@ class RoleController extends Controller
         }
     //!View
 
+    public function rolesStore(Request $request)
+    {
+        // Validasi data yang diterima dari formulir
+        $request->validate([
+            'modalRoleName' => 'required|string|max:255|unique:roles,name', // Pastikan nama peran unik dalam tabel roles
+        ]);
+
+        // Buat objek Role baru
+        $role = new Role();
+        $role->name = $request->input('modalRoleName');
+
+        // Simpan data peran baru ke dalam database
+        $role->save();
+        return redirect()->route('role')->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Success',
+                'message' => 'Role added successfully',
+            ],
+        ]);
+        // Redirect ke halaman atau tindakan yang sesuai setelah penyimpanan berhasil        
+    }
+
     public function changeAccess(Request $request)
     {
         // Ambil data dari permintaan
