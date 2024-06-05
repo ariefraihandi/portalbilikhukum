@@ -25,7 +25,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Menu List',
                 'subtitle'          => 'Bilik Hukum',
-                'sidebar'           => $accessMenus,
+                // 'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,
@@ -44,7 +44,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Submenu List',
                 'subtitle'          => 'Bilik Hukum',
-                'sidebar'           => $accessMenus,
+                // 'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,
@@ -63,7 +63,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Child Menu List',
                 'subtitle'          => 'Bilik Hukum',
-                'sidebar'           => $accessMenus,
+                // 'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,
