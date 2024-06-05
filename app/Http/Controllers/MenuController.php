@@ -17,7 +17,7 @@ class MenuController extends Controller
     // View Code
         public function showMenu(Request $request)
         {
-            // $accessMenus    = $request->get('accessMenus');
+            $accessMenus    = $request->get('accessMenus');
             $menus = Menu::all();
             $menuSubs = MenuSub::all();
             $menuSubChildren = MenuSubChild::all();
@@ -25,7 +25,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Menu List',
                 'subtitle'          => 'Bilik Hukum',
-                // 'sidebar'           => $accessMenus,
+                'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,
@@ -101,7 +101,7 @@ class MenuController extends Controller
             
                 // Create a new access menu record
                 $accessMenu = new AccessMenu([
-                    'role_id' => 1,
+                    'role_id' => 1, // Assuming role_id 1 is for the admin role
                     'menu_id' => $menu->id,
                 ]);
         

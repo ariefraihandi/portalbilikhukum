@@ -3,7 +3,7 @@
 //Controllers
     use Illuminate\Support\Facades\Route;
     use App\Http\Middleware\AuthMiddleware;
-    // use App\Http\Middleware\SidebarMiddleware;
+    use App\Http\Middleware\SidebarMiddleware;
     use App\Http\Middleware\RedirectIfAuthenticated;
     use App\Http\Controllers\AuthController;
     use App\Http\Controllers\DashboardController;
@@ -23,25 +23,20 @@ Route::get('/login',                    [AuthController::class, 'showLoginForm']
 Route::post('/login',                        [AuthController::class, 'login'])->name('submitLogin');
 Route::get('/logout',                        [AuthController::class, 'logout'])->name('logout');
 
-// Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(function () {
-//     Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
-//     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
-//     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
-//     Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
-//     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
-//     Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
-//     Route::get('/rolase',                   [RoleController::class, 'showRole'])->name('pengacara.list');
-//     Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
-//     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
-// });
-
+Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(function () {
+    Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
+    Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
+    Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
+    Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
+    Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
+    Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
+    Route::get('/rolase',                   [RoleController::class, 'showRole'])->name('pengacara.list');
+    Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
+    Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
+});
 
 Route::middleware([AuthMiddleware::class])->group(function () {
-    Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
-        Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
-        Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
-        Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
-    });       //as
+    
     Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
     
@@ -71,7 +66,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/getdata/childmenu',        [MenuController::class, 'getDataChildMenu'])->name('getDataChildMenu');
         Route::get('/getdata/user',             [UserController::class, 'getDataUser'])->name('getDataUser');
     //Get Data
-// });
+});
 
 Route::get('/register',                     [AuthController::class, 'showRegister'])->name('showRegister');
 Route::get('/register/member',              [AuthController::class, 'showRegisterMember'])->name('showRegisterMember');
