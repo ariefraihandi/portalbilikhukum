@@ -34,6 +34,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     // Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
 });
+
 Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
 Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
 Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
