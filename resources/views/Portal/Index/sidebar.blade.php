@@ -96,7 +96,7 @@
                 @foreach($sortedAccessSubs as $accessSub)
                     @if($accessSub->menuSub->menu_id == $accessMenu->menu_id)
                         <li class="menu-item {{ isActiveSubMenu($accessSub->menuSub->title) }}">
-                            <a href="{{ $accessSub->menuSub->itemsub != 1 ? $accessSub->menuSub->url : 'javascript:void(0);' }}" class="menu-link {{ $accessSub->menuSub->itemsub != 0 ? 'menu-toggle' : '' }}">
+                            <a href="{{ $accessSub->menuSub->itemsub != 1 ? {{ route($accessSub->menuSub->url) }} : 'javascript:void(0);' }}" class="menu-link {{ $accessSub->menuSub->itemsub != 0 ? 'menu-toggle' : '' }}">
                                 <i class="menu-icon tf-icons {{ $accessSub->menuSub->icon }}"></i>                
                                 <div class="text-truncate" data-i18n="{{ ucfirst($accessSub->menuSub->title) }}">{{ ucfirst($accessSub->menuSub->title) }}</div>
                             </a>
