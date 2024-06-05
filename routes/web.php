@@ -41,7 +41,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
         Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
         Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
-        //as
+    });       //as
     Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
     
@@ -71,7 +71,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/getdata/childmenu',        [MenuController::class, 'getDataChildMenu'])->name('getDataChildMenu');
         Route::get('/getdata/user',             [UserController::class, 'getDataUser'])->name('getDataUser');
     //Get Data
-});
+// });
 
 Route::get('/register',                     [AuthController::class, 'showRegister'])->name('showRegister');
 Route::get('/register/member',              [AuthController::class, 'showRegisterMember'])->name('showRegisterMember');
