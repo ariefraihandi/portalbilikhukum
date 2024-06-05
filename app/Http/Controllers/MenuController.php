@@ -17,7 +17,7 @@ class MenuController extends Controller
     // View Code
         public function showMenu(Request $request)
         {
-            // $accessMenus    = $request->get('accessMenus');
+            $accessMenus    = $request->get('accessMenus');
             $menus = Menu::all();
             $menuSubs = MenuSub::all();
             $menuSubChildren = MenuSubChild::all();
@@ -25,7 +25,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Menu List',
                 'subtitle'          => 'Bilik Hukum',
-                // 'sidebar'           => $accessMenus,
+                'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,
@@ -36,7 +36,7 @@ class MenuController extends Controller
     
         public function showsubMenu(Request $request)
         {
-            // $accessMenus            = $request->get('accessMenus');
+            $accessMenus            = $request->get('accessMenus');
             $menus                  = Menu::all();
             $menuSubs               = MenuSub::all();
             $menuSubChildren        = MenuSubChild::all();
@@ -44,7 +44,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Submenu List',
                 'subtitle'          => 'Bilik Hukum',
-                // 'sidebar'           => $accessMenus,
+                'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,
@@ -55,7 +55,7 @@ class MenuController extends Controller
         
         public function showchildMenu(Request $request)
         {
-            // $accessMenus            = $request->get('accessMenus');
+            $accessMenus            = $request->get('accessMenus');
             $menus                  = Menu::all();
             $menuSubs               = MenuSub::all();
             $menuSubChildren        = MenuSubChild::all();
@@ -63,7 +63,7 @@ class MenuController extends Controller
             $data = [
                 'title'             => 'Child Menu List',
                 'subtitle'          => 'Bilik Hukum',
-                // 'sidebar'           => $accessMenus,
+                'sidebar'           => $accessMenus,
                 'menus'             => $menus,
                 'menuSubs'          => $menuSubs,
                 'menuSubChildren'   => $menuSubChildren,

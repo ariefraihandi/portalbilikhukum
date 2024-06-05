@@ -23,22 +23,17 @@ Route::get('/login',                    [AuthController::class, 'showLoginForm']
 Route::post('/login',                        [AuthController::class, 'login'])->name('submitLogin');
 Route::get('/logout',                        [AuthController::class, 'logout'])->name('logout');
 
-// Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(function () {
-//     Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
-//     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
-//     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
-//     Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
-//     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
-//     Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
-//     Route::get('/rolase',                   [RoleController::class, 'showRole'])->name('pengacara.list');
-//     Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
-//     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
-// });
-
-Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
-Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
-Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
-Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
+Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(function () {
+    Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
+    Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
+    Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
+    Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
+    Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
+    Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
+    Route::get('/rolase',                   [RoleController::class, 'showRole'])->name('pengacara.list');
+    Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
+    Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
+});
 
 Route::middleware([AuthMiddleware::class])->group(function () {
     
