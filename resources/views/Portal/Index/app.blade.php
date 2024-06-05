@@ -16,7 +16,7 @@
         <div class="layout-container">
             {{-- @include('Portal.Index.sidebar') --}}
             <div class="layout-page">
-                @include('Portal.Index.navbar')
+                {{-- @include('Portal.Index.navbar') --}}
                 <div class="content-wrapper">
                     @yield('content')
                     @include('Portal.Index.footer')
