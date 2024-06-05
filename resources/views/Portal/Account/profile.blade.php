@@ -13,9 +13,13 @@
 
 @section('content')
             <div class="container-xxl flex-grow-1 container-p-y">
+              <div
+              class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between mb-4 text-center text-sm-start gap-2">                
               <h4 class="py-3 mb-4">
                 <span class="text-muted fw-light">Account /</span> {{$title}}
               </h4>
+                <button type="button" class="btn btn-label-success">Daftarkan Kantor Hukum Anda</button>
+              </div>
               <div class="row">
                 <!-- Customer-detail Sidebar -->
                 <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
@@ -111,15 +115,19 @@
                             <span class="fw-medium me-2">Status:</span>
                             <span class="badge bg-label-success">Active</span>
                           </li>
+                          @if($userDetils->whatsapp !== 'default_value')
                           <li class="mb-3">
-                            <span class="fw-medium me-2">Contact:</span>
-                            <span>{{$userDetils->whatsapp}}</span>
+                              <span class="fw-medium me-2">Contact:</span>
+                              <span>{{$userDetils->whatsapp}}</span>
                           </li>
+                          @endif
 
+                          @if(!empty($regencyName))
                           <li class="mb-3">
-                            <span class="fw-medium me-2">Alamat:</span>
-                            <span>{{$regencyName}}</span>
+                              <span class="fw-medium me-2">Alamat:</span>
+                              <span>{{$regencyName}}</span>
                           </li>
+                          @endif
                         </ul>
                         <div class="d-flex justify-content-center">
                           <a
@@ -136,7 +144,7 @@
                   <!-- /Customer-detail Card -->
                   <!-- Plan Card -->
 
-                  <div class="card mb-4 bg-gradient-primary">
+                  {{-- <div class="card mb-4 bg-gradient-primary">
                     <div class="card-body">
                       <div class="row justify-content-between mb-3">
                         <div
@@ -157,7 +165,7 @@
                         Upgrade Sekarang
                       </button>
                     </div>
-                  </div>
+                  </div> --}}
 
                   <!-- /Plan Card -->
                 </div>
@@ -167,14 +175,23 @@
                 <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
                   <!-- Customer Pills -->
                   <ul class="nav nav-pills flex-column flex-md-row mb-4">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i>Overview</a>
+                    <li class="nav-item position-relative">
+                      <a class="nav-link active" href="{{ route('account.profile') }}"><i class="bx bx-user me-1"></i>Profile</a>
+                      
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="app-ecommerce-customer-details-security.html"
-                        ><i class="bx bx-lock-alt me-1"></i>Security</a
-                      >
+                    <li class="nav-item position-relative">
+                      <a class="nav-link" href="{{ route('account.detil') }}">
+                          <i class="bx bxs-user-detail me-1"></i>Detils
+                  
+                          @if($erorDetil > 0)
+                              <span class="badge badge-center bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $erorDetil }}</span>
+                          @endif
+                      </a>
                     </li>
+                  
+                  
+                  
+                  
                     <li class="nav-item">
                       <a class="nav-link" href="app-ecommerce-customer-details-billing.html"
                         ><i class="bx bx-detail me-1"></i>Address & Billing</a
@@ -192,25 +209,41 @@
                   <div class="row text-nowrap">
                     <div class="col-md-6 mb-4">
                       <div class="card h-100">
-                        <div class="card-body">
-                          <div class="card-icon mb-3">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-primary">
-                                <i class="bx bx-wallet-alt bx-sm"></i>
+                          <div class="card-body">
+                              <div class="card-icon mb-3">
+                                  @if(!is_null($hasReferralCode))
+                                  <div class="avatar">
+                                      <div class="avatar-initial rounded bg-label-primary">
+                                          <i class="bx bx-wallet-alt bx-sm"></i>
+                                      </div>
+                                  </div>
+                                  @else
+                                  <div class="avatar">
+                                      <div class="avatar-initial rounded bg-label-primary">
+                                          <i class="bx bx-user-plus bx-sm"></i>
+                                      </div>
+                                  </div>
+                                  @endif
                               </div>
-                            </div>
+                              <div class="card-info">
+                                @if(!is_null($hasReferralCode))
+                                  <h4 class="card-title mb-3">Dompet</h4>
+                                  <div class="d-flex align-items-end mb-1 gap-1">
+                                      <h4 class="text-primary mb-0">Rp. 500.300,-</h4>
+                                  </div>
+                                  <p class="text-muted mb-0 text-truncate">Total Penarikan Rp. 50.000.400,-</p>
+                                  @else
+                                  <h4 class="card-title mb-3">Ikuti Program Loyalitas</h4>
+                                  <div class="d-flex align-items-end mb-1 gap-1">
+                                    <a href="{{ route('refferal') }}" class="btn btn-primary">Berbagi dan Dapatkan Keuntungan</a>
+                                  </div>
+                                  {{-- <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>                                   --}}
+                                  @endif
+                              </div>
                           </div>
-                          <div class="card-info">
-                            <h4 class="card-title mb-3">Dompet</h4>
-                            <div class="d-flex align-items-end mb-1 gap-1">
-                              <h4 class="text-primary mb-0">Rp. 500.300,-</h4>                              
-                            </div>
-                            <p class="text-muted mb-0 text-truncate">Total Penarikan Rp. 50.000.400,-</p>
-                          </div>
-                        </div>
                       </div>
                     </div>
-                    <div class="col-md-6 mb-4">
+                                      <div class="col-md-6 mb-4">
                       <div class="card">
                         <div class="card-body">
                           <div class="card-icon mb-3">

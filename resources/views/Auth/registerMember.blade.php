@@ -480,5 +480,5 @@
             showSweetAlert(response);
         @endif
     });
-    </script>
+</script>
 @endpush

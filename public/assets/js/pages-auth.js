@@ -11,24 +11,35 @@ document.addEventListener('DOMContentLoaded', function (e) {
     if (formAuthentication) {
       const fv = FormValidation.formValidation(formAuthentication, {
         fields: {
-          username: {
+          name: {
             validators: {
               notEmpty: {
-                message: 'Please enter username'
+                message: 'Harap input nama lengkap Anda'
               },
               stringLength: {
                 min: 5,
-                message: 'Username must be more than 5 characters'
+                message: 'Nama minimal menggunakan 5 karakter'
+              }
+            }
+          },
+          username: {
+            validators: {
+              notEmpty: {
+                message: 'Harap input username'
+              },
+              stringLength: {
+                min: 5,
+                message: 'Username minimal menggunakan 5 karakter'
               }
             }
           },
           email: {
             validators: {
               notEmpty: {
-                message: 'Please enter your email'
+                message: 'Harap input email'
               },
               emailAddress: {
-                message: 'Please enter valid email address'
+                message: 'Email tidak valid'
               }
             }
           },
@@ -46,28 +57,28 @@ document.addEventListener('DOMContentLoaded', function (e) {
           password: {
             validators: {
               notEmpty: {
-                message: 'Please enter your password'
+                message: 'Harap input password'
               },
               stringLength: {
                 min: 6,
-                message: 'Password must be more than 6 characters'
+                message: 'Password minimal 6 karakter'
               }
             }
           },
           'confirm-password': {
             validators: {
               notEmpty: {
-                message: 'Please confirm password'
+                message: 'Harap konfirmasi password'
               },
               identical: {
                 compare: function () {
                   return formAuthentication.querySelector('[name="password"]').value;
                 },
-                message: 'The password and its confirm are not the same'
+                message: 'Password tidak cocok'
               },
               stringLength: {
                 min: 6,
-                message: 'Password must be more than 6 characters'
+                message: 'Password minimal 6 karakter'
               }
             }
           },

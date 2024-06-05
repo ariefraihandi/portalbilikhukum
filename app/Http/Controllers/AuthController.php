@@ -76,7 +76,7 @@ class AuthController extends Controller
                 'title' => 'Berhasil',
                 'message' => 'Anda berhasil login.',
             ];
-            return redirect()->intended('account')->with('response', $response);
+            return redirect()->intended('account/profile')->with('response', $response);
         }
     
         // Autentikasi gagal, buat pesan kesalahan
@@ -103,6 +103,135 @@ class AuthController extends Controller
         return view('Auth.register', $data);
     }
     
+    public function showRegisterJoin(Request $request)
+    {
+        // Ambil token dari query string
+        $token = $request->query('token');
+
+        // Jika token ada di query string, simpan ke session
+        if ($token) {
+            session(['referral_token' => $token]);
+        }
+    
+        $token = session('referral_token');
+
+        if (config('app.url') === 'http://localhost') {
+            // Application is running in a local environment
+            $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
+        } else {
+            // Application is running on the server
+            $url = "https://portal.bilikhukum.com/verify-email?uniqueid=";
+        }
+
+        $data = [
+            'title' => 'Pendaftaran Member',
+            'subTitle' => 'Bilik Hukum',
+            'url' => $url,
+            'token' => $token
+        ];
+
+        return view('Auth.join', $data);
+    }
+
+    public function registerJoin(Request $request)
+    {
+        try {
+            $token = $request->input('token');
+            if (empty($token)) {
+                // Jika tidak ada, kembalikan respons dengan pesan tautan pendaftaran tidak valid
+                $response = [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Tautan pendaftaran Anda tidak valid.',
+                ];
+                return redirect()->back()->with('response', $response);
+            }
+
+            
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+                'terms' => 'accepted',
+            ]);
+    
+            // Cek apakah persyaratan disetujui
+            if ($request->has('terms')) {                
+                $username = strtolower($validatedData['username']);
+    
+                DB::beginTransaction();
+    
+                $user = User::create([
+                    'username' => $username,
+                    'referedby' => $token,
+                    'name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'password' => bcrypt($validatedData['password']),   
+                    'role'              => 3,
+                    'verified'          => 0,
+                    'email_verified_at' => null,
+                    'whatsapp'          => 'default_value',
+                    'address'           => 'default_value',
+                    'gender'            => 'default_value',
+                    'image'             => 'default.webp',
+                    'dob'               => null, // or '1900-01-01'         
+                ]);
+    
+                $token = Str::random(64);
+                $emailVerificationToken = EmailVerificationToken::create([
+                    'user_id' => $user->id,
+                    'token' => $token,
+                    'email' => $request->input('email'),
+                    'expires_at' => now()->addHours(24),
+                ]);
+    
+                MailingList::create([
+                    'user_id' => $user->id,
+                    'email' => $request->input('email'),
+                    'status' => 1, // Default status is 1
+                ]);
+    
+                $email = $request->input('email');
+                $name = $request->input('name');
+                $url = $request->input('url');
+                $encryptedParams = base64_encode("email=$email&token=$token");
+    
+                Mail::to($email)->send(new VerificationMail($name, $url, $encryptedParams));
+    
+                DB::commit();
+    
+                $response = [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Akun anda berhasil terdaftar. Check Mailbox untuk verifikasi dan Login.',
+                ];
+                return redirect()->route('login')->with('response', $response);
+            } else {
+                // Redirect kembali ke halaman sebelumnya jika persyaratan tidak disetujui
+                return redirect()->back()->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Error',
+                        'message' => 'Silakan centang persyaratan dan ketentuan.',
+                    ],
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi error
+            DB::rollback();
+    
+            // Tampilkan pesan kesalahan dengan sweet alert dan redirect kembali
+            $response = [
+                'success' => false,
+                'title' => 'Error',
+                'message' => 'Terjadi kesalahan saat proses registrasi: ' . $e->getMessage(),
+            ];
+            return redirect()->back()->with('response', $response);
+        }
+    }
+
+
     public function showRegisterMember()
     {
         if (config('app.url') === 'http://localhost') {
@@ -121,7 +250,8 @@ class AuthController extends Controller
     
         return view('Auth.registerMember', $data);
     }
-    
+
+//eror    
     public function showRegisterPengacara()
     {
         if (config('app.url') === 'http://localhost') {
@@ -329,7 +459,7 @@ class AuthController extends Controller
             return redirect()->back()->with('response', $response)->withErrors($errors);
         }
     }
-
+//eror
     public function verifyEmail(Request $request)
     {
         try {

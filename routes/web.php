@@ -31,7 +31,8 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
     Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
     Route::get('/rolase',                   [RoleController::class, 'showRole'])->name('pengacara.list');
-    Route::get('/account',                  [AccountController::class, 'showAccount'])->name('account.profile');
+    Route::get('/account/profile',          [AccountController::class, 'showAccount'])->name('account.profile');
+    Route::get('/account/detil',            [AccountController::class, 'showAccountDetil'])->name('account.detil');
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
 });
 
@@ -39,6 +40,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
+
+    Route::post('/refferal/generate',           [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
     
     //Menu
         //Add
@@ -76,8 +79,10 @@ Route::get('/verify-email',                 [AuthController::class, 'verifyEmail
 Route::post('submit-form-daftar',           [AuthController::class, 'submitFormDaftar'])->name('submitFormDaftar');
 Route::post('/register/member',             [AuthController::class, 'registerMember'])->name('registerMember');
 
+Route::get('/join',                         [AuthController::class, 'showRegisterJoin'])->name('join');
+Route::post('/join',                        [AuthController::class, 'registerJoin'])->name('join.post');
+
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
-Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showIndex');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showIndex');
 
 

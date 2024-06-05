@@ -33,6 +33,8 @@ class User extends Authenticatable
         'image',
         'role',
         'dob',
+        'gender',
+        'referedby',
         'email_verified_at',
         'verified',
     ];
