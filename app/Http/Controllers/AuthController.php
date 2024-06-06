@@ -63,20 +63,14 @@ class AuthController extends Controller
                     'message' => $errorMessage,
                 ];
                 return redirect()->back()->with('response', $response);
-            }
-    
-                 // Set user ID ke dalam session
-                //  session([
-                //     'id' => $user->id,
-                //     'role' => $user->role
-                // ]);
-
+            }             
+            
             $response = [
                 'success' => true,
                 'title' => 'Berhasil',
                 'message' => 'Anda berhasil login.',
             ];
-            return redirect()->intended('account/profile')->with('response', $response);
+            return redirect()->route('account.profile')->with('response', $response);
         }
     
         // Autentikasi gagal, buat pesan kesalahan
