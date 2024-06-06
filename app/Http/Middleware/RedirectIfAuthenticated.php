@@ -26,7 +26,7 @@ class RedirectIfAuthenticated
             ];
 
             // Redirect authenticated users with the response
-            return redirect('/account')->with('response', $response);
+            return redirect()->route('account.profile')->with('response', $response);
         }
 
         return $next($request);
