@@ -13,7 +13,7 @@ class AccountController extends Controller
     public function showAccount(Request $request)
     {        
         $accessMenus    = $request->get('accessMenus');        
-        $id             = $request->session()->get('id');
+        $id             = $request->session()->get('user_id');
         $user           = User::find($id);           
         $referralCode   = RefferalCode::where('user_id', $id)->first();  
        

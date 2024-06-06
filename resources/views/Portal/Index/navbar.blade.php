@@ -291,7 +291,7 @@ id="layout-navbar">
     <!-- User -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
       @php
-        $userId = session('id');
+        $userId = session('user_id');
         $user = App\Models\User::find($userId);
         $userImage = $user->image ?? 'default.jpg'; // Use default image if no image is found
 

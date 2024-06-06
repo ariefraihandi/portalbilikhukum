@@ -24,7 +24,7 @@ class AuthMiddleware
             
             // Set session dengan role pengguna
             $request->session()->put('role', $user->role);
-            $request->session()->put('id', $user->id);
+            $request->session()->put('user_id', $user->id);
             
             // Lanjutkan ke rute yang diminta
             return $next($request);
