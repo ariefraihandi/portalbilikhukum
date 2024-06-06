@@ -42,6 +42,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
 
     Route::post('/refferal/generate',           [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
+
+    Route::get('/account/update',            [AccountController::class, 'showAccountDetil'])->name('account.update');    
+
     
     //Menu
         //Add

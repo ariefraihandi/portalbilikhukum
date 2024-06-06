@@ -176,22 +176,17 @@
                   <!-- Customer Pills -->
                   <ul class="nav nav-pills flex-column flex-md-row mb-4">
                     <li class="nav-item position-relative">
-                      <a class="nav-link active" href="{{ route('account.profile') }}"><i class="bx bx-user me-1"></i>Profile</a>
+                      <a class="nav-link" href="{{ route('account.profile') }}"><i class="bx bx-user me-1"></i>Profile</a>
                       
                     </li>
                     <li class="nav-item position-relative">
-                      <a class="nav-link" href="{{ route('account.detil') }}">
+                      <a class="nav-link active" href="{{ route('account.detil') }}">
                           <i class="bx bxs-user-detail me-1"></i>Detils
-                  
                           @if($erorDetil > 4)
                               <span class="badge badge-center bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $erorDetil }}</span>
                           @endif
                       </a>
-                    </li>
-                  
-                  
-                  
-                  
+                    </li>                 
                     <li class="nav-item">
                       <a class="nav-link" href="app-ecommerce-customer-details-billing.html"
                         ><i class="bx bx-detail me-1"></i>Address & Billing</a
@@ -206,127 +201,145 @@
                   <!--/ Customer Pills -->
 
                   <!-- / Customer cards -->
-                  <div class="row text-nowrap">
-                    <div class="col-md-6 mb-4">
-                      <div class="card h-100">
-                          <div class="card-body">
-                              <div class="card-icon mb-3">
-                                  @if(!is_null($hasReferralCode))
-                                  <div class="avatar">
-                                      <div class="avatar-initial rounded bg-label-primary">
-                                          <i class="bx bx-wallet-alt bx-sm"></i>
-                                      </div>
-                                  </div>
-                                  @else
-                                  <div class="avatar">
-                                      <div class="avatar-initial rounded bg-label-primary">
-                                          <i class="bx bx-user-plus bx-sm"></i>
-                                      </div>
-                                  </div>
-                                  @endif
-                              </div>
-                              <div class="card-info">
-                                @if(!is_null($hasReferralCode))
-                                  <h4 class="card-title mb-3">Dompet</h4>
-                                  <div class="d-flex align-items-end mb-1 gap-1">
-                                      <h4 class="text-primary mb-0">Rp. 0,-</h4>
-                                  </div>
-                                  <p class="text-muted mb-0 text-truncate">Total Penarikan Rp. 0,-</p>
-                                  @else
-                                  <h4 class="card-title mb-3">Ikuti Program Loyalitas</h4>
-                                  <div class="d-flex align-items-end mb-1 gap-1">
-                                    <a href="{{ route('refferal') }}" class="btn btn-primary">Berbagi dan Dapatkan Keuntungan</a>
-                                  </div>
-                                  {{-- <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>                                   --}}
-                                  @endif
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-                                      <div class="col-md-6 mb-4">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="card-icon mb-3">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-warning">
-                                <i class="bx bxs-calendar-event bx-sm"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h4 class="card-title mb-3">Next Event</h4>
-                            <span class="badge bg-label-warning mb-1">Coming Soon..!</span>
-                            <p class="text-muted mb-0">Nantikan kegiatan seru lainnya</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {{-- <div class="col-md-6 mb-4">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="card-icon mb-3">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-warning">
-                                <i class="bx bx-star bx-sm"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h4 class="card-title mb-3">Wishlist</h4>
-                            <div class="d-flex align-items-end mb-1 gap-1">
-                              <h4 class="text-warning mb-0">15</h4>
-                              <p class="mb-0">Items in wishlist</p>
-                            </div>
-                            <p class="text-muted mb-0 text-truncate">Receive notification when items go on sale</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="card-icon mb-3">
-                            <div class="avatar">
-                              <div class="avatar-initial rounded bg-label-info">
-                                <i class="bx bxs-discount bx-sm"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="card-info">
-                            <h4 class="card-title mb-3">Coupons</h4>
-                            <div class="d-flex align-items-end mb-1 gap-1">
-                              <h4 class="text-info mb-0">21</h4>
-                              <p class="mb-0">Coupons you win</p>
-                            </div>
-
-                            <p class="text-muted mb-0 text-truncate">Use coupon on next purchase</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div> --}}
-                  </div>
-
-                  <!-- / customer cards -->
-
-                  <!-- Invoice table -->
+                  
                   <div class="card mb-4">
-                    <div class="table-responsive mb-3">
-                      <table class="table datatables-customer-order border-top">
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th></th>
-                            <th>Order</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Spent</th>
-                            <th class="text-md-center">Actions</th>
-                          </tr>
-                        </thead>
-                      </table>
+                    <h5 class="card-header">Profil Detil</h5>
+                    <div class="card-body">
+                        <form id="formChangePassword" method="POST" action="{{ route('account.update') }}" enctype="multipart/form-data">                        
+                            @csrf                        
+                        <div class="row g-3">
+                                                       
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsName">Nama Lengkap</label>
+                                <input type="text" required name="multiStepsName" id="multiStepsName" class="form-control" value="{{$userDetils->name}}" />
+                                <small class="error-message text-danger"></small>
+                            </div>
+                            <!-- Username -->
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsUsername">Username</label>
+                                <input type="text" required name="multiStepsUsername" id="multiStepsUsername" class="form-control" value="{{$userDetils->username}}" readonly/>
+                                <small class="error-message text-danger"></small>
+                            </div>
+                            <!-- Email -->
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center lh-1 mb-3 mb-sm-0">
+                                    <label class="form-label me-3" for="multiStepsEmail">Email</label>
+                                </div>
+                                <input type="email" required name="multiStepsEmail" id="multiStepsEmail" class="form-control" value="{{ $userDetils->email }}" readonly aria-label="john.doe" />
+                                <small class="error-message text-danger">
+                                    @if($userDetils->verified == 0)
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Verified
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="gender">Jenis Kelamin</label>
+                                <select class="form-select" required id="gender" name="gender">
+                                    <option value="" selected disabled>Pilih Jenis Kelamin</option>
+                                    <option value="1" {{ $userDetils->gender == 1 ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="2" {{ $userDetils->gender == 2 ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                                <small class="error-message text-danger">
+                                    @if($userDetils->gender == 'default_value')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            
+                            <!-- Whatsapp -->
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsWhatsapp">Whatsapp</label>
+                                <input type="text" required name="whatsapp" id="whatsapp" class="form-control" 
+                                value="{{ $userDetils->whatsapp == 'default_value' ? '08xxxxxxxxxx' : $userDetils->whatsapp }}" />
+                                <small class="error-message text-danger">
+                                    @if($userDetils->whatsapp == 'default_value')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="dob" class="form-label">Tanggal Lahir</label>
+                                <?php
+                                
+
+                                // Ambil tanggal lahir dari $userDetails dan konversi ke objek Carbon
+                                $userDob = $userDetils->dob ? Carbon::parse($userDetils->dob)->format('Y-m-d') : '';
+                                ?>
+                                <input type="date" class="form-control" required placeholder="YYYY-MM-DD" id="flatpickr-date" name="dob" value="{{ $userDob }}" />
+                                <small class="error-message text-danger">
+                                    @if($userDetils->dob == '')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>                            
+                            <!-- Provinsi -->
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsProvince">Provinsi</label>
+                                <select class="form-select select2" required id="multiStepsProvince" name="multiStepsProvince">
+                                    <option value="" selected disabled>Pilih Provinsi</option>
+                                </select>
+                                <small class="error-message text-danger">
+                                    @if($userDetils->address == 'default_value')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsRegency">Kabupaten/Kota</label>
+                                <select class="form-select select2" required id="multiStepsRegency" name="multiStepsRegency" disabled>
+                                    <option value="" selected disabled>Pilih Kabupaten/Kota</option>
+                                </select>
+                                <small class="error-message text-danger">
+                                    @if($userDetils->address == 'default_value')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsDistrict">Kecamatan</label>
+                                <select class="form-select select2" required id="multiStepsDistrict" name="multiStepsDistrict" disabled>
+                                    <option value="" selected disabled>Pilih Kecamatan</option>
+                                </select>
+                                <small class="error-message text-danger">
+                                    @if($userDetils->address == 'default_value')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsVillage">Desa</label>
+                                <select class="form-select select2" required id="multiStepsVillage" name="multiStepsVillage" disabled>
+                                    <option value="" selected disabled>Pilih Desa</option>
+                                </select>
+                                <small class="error-message text-danger">
+                                    @if($userDetils->address == 'default_value')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="multiStepsProfileImage">Gambar Profil</label>
+                                <input type="file" required name="multiStepsProfileImage" id="multiStepsProfileImage" class="form-control" accept="image/*">
+                                <div id="imagePreview" class="mt-2"></div>
+                                <small class="error-message text-danger">
+                                    @if($userDetils->image == 'default.webp')
+                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
+                                    @endif
+                                </small>
+                            </div>
+                            
+                        </div>                       
+                        <div class="row g-3 mt-1">
+                            <div class="d-grid gap-2 col-lg-12 mx-auto">    
+                                <button type="submit" class="btn btn-success">Update Data</button>
+                            </div>
+                        </div>
+                      </form>
                     </div>
                   </div>
-                  <!-- /Invoice table -->
+                  </div>
+
+                  
                 </div>
                 <!--/ Customer Content -->
               </div>
@@ -558,6 +571,210 @@
     <script src="{{ asset('assets') }}/js/app-ecommerce-customer-detail.js"></script>
     <script src="{{ asset('assets') }}/js/app-ecommerce-customer-detail-overview.js"></script>
     <script>
+            $(document).ready(function() {
+                var select2 = $('.select2');
+                var address = "{{ $userDetils->address }}";
+                var addressParts = address.split('.');
+        
+                var provinceCode = addressParts[0];
+                var regencyCode = addressParts.length > 1 ? addressParts[0] + '.' + addressParts[1] : '';
+                var districtCode = addressParts.length > 2 ? addressParts[0] + '.' + addressParts[1] + '.' + addressParts[2] : '';
+                var villageCode = addressParts.length > 3 ? addressParts[0] + '.' + addressParts[1] + '.' + addressParts[2] + '.' + addressParts[3] : '';
+        
+                function initSelect2() {
+                    select2.each(function () {
+                        var $this = $(this);
+                        $this.wrap('<div class="position-relative"></div>');
+                        $this.select2({
+                            placeholder: 'Select an option',
+                            dropdownParent: $this.parent()
+                        });
+                    });
+                }
+        
+                function fetchData(url, params, callback) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json',
+                        data: params,
+                        success: function(data) {
+                            callback(data);
+                        }
+                    });
+                }
+        
+                function setSelectedOption($element, value, text) {
+                    var option = new Option(text, value, true, true);
+                    $element.append(option).trigger('change');
+                }
+        
+                function loadRegencies(provinceCode) {
+                    $('#multiStepsRegency').val(null).trigger('change').prop('disabled', true);
+                    $('#multiStepsDistrict').val(null).trigger('change').prop('disabled', true);
+                    $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+                    if (provinceCode) {
+                        fetchData('{{ route("getRegencies") }}', { province_code: provinceCode }, function(data) {
+                            data.forEach(function(regency) {
+                                var text = regency.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                                $('#multiStepsRegency').append(new Option(text, regency.code, false, regency.code === regencyCode));
+                            });
+                            $('#multiStepsRegency').prop('disabled', false);
+                            if (regencyCode) {
+                                $('#multiStepsRegency').val(regencyCode).trigger('change');
+                            }
+                        });
+                    }
+                }
+        
+                function loadDistricts(regencyCode) {
+                    $('#multiStepsDistrict').val(null).trigger('change').prop('disabled', true);
+                    $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+                    if (regencyCode) {
+                        fetchData('{{ route("getDistricts") }}', { regency_code: regencyCode }, function(data) {
+                            data.forEach(function(district) {
+                                var text = district.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                                $('#multiStepsDistrict').append(new Option(text, district.code, false, district.code === districtCode));
+                            });
+                            $('#multiStepsDistrict').prop('disabled', false);
+                            if (districtCode) {
+                                $('#multiStepsDistrict').val(districtCode).trigger('change');
+                            }
+                        });
+                    }
+                }
+        
+                function loadVillages(districtCode) {
+                    $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+                    if (districtCode) {
+                        fetchData('{{ route("getVillages") }}', { district_code: districtCode }, function(data) {
+                            data.forEach(function(village) {
+                                var text = village.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                                $('#multiStepsVillage').append(new Option(text, village.code, false, village.code === villageCode));
+                            });
+                            $('#multiStepsVillage').prop('disabled', false);
+                            if (villageCode) {
+                                $('#multiStepsVillage').val(villageCode).trigger('change');
+                            }
+                        });
+                    }
+                }
+        
+                initSelect2();
+        
+                $('#multiStepsProvince').select2({
+                    placeholder: 'Pilih Provinsi',
+                    allowClear: true,
+                    ajax: {
+                        url: '{{ route("getProvinces") }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        processResults: function(data) {
+                            var formattedData = data.map(function(province) {
+                                var text = province.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                                return {
+                                    id: province.code,
+                                    text: text
+                                };
+                            });
+                            return {
+                                results: formattedData
+                            };
+                        }
+                    }
+                }).on('select2:select', function(e) {
+                    var provinceCode = e.params.data.id;
+                    loadRegencies(provinceCode);
+                });
+        
+                $('#multiStepsRegency').on('select2:select', function(e) {
+                    var regencyCode = e.params.data.id;
+                    loadDistricts(regencyCode);
+                });
+        
+                $('#multiStepsDistrict').on('select2:select', function(e) {
+                    var districtCode = e.params.data.id;
+                    loadVillages(districtCode);
+                });
+        
+                // Set initial values based on address
+                if (provinceCode) {
+                    fetchData('{{ route("getProvinces") }}', {}, function(data) {
+                        var province = data.find(p => p.code === provinceCode);
+                        if (province) {
+                            setSelectedOption($('#multiStepsProvince'), province.code, province.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                            loadRegencies(provinceCode);
+                        }
+                    });
+                }
+                if (regencyCode) {
+                    fetchData('{{ route("getRegencies") }}', { province_code: provinceCode }, function(data) {
+                        var regency = data.find(r => r.code === regencyCode);
+                        if (regency) {
+                            setSelectedOption($('#multiStepsRegency'), regency.code, regency.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                            loadDistricts(regencyCode);
+                        }
+                    });
+                }
+                if (districtCode) {
+                    fetchData('{{ route("getDistricts") }}', { regency_code: regencyCode }, function(data) {
+                        var district = data.find(d => d.code === districtCode);
+                        if (district) {
+                            setSelectedOption($('#multiStepsDistrict'), district.code, district.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                            loadVillages(districtCode);
+                        }
+                    });
+                }
+                if (villageCode) {
+                fetchData('{{ route("getVillages") }}', { district_code: districtCode }, function(data) {
+                    var village = data.find(v => villageCode === v.code);
+                    if (village) {
+                        setSelectedOption($('#multiStepsVillage'), village.code, village.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                    }
+                });
+            }
+        });
+        function previewImage(input, previewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#' + previewId).html('<img src="' + e.target.result + '" class="img-fluid" style="max-height: 200px;" />');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Mengaktifkan event onchange pada input file
+        $('#multiStepsProfileImage').change(function () {
+            previewImage(this, 'imagePreview');
+        });
+
+
+      document.getElementById('multiStepsProfileImage').addEventListener('change', function() {
+        var file = this.files[0];
+        var imageType = /image.*/;
+
+        if (file.type.match(imageType)) {
+          if (file.size <= 2 * 1024 * 1024) { // Ukuran maksimum 2MB (2 * 1024 * 1024 bytes)
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; max-height: 200px;">';
+            };
+            reader.readAsDataURL(file);
+          } else {
+            alert('Ukuran gambar melebihi batas 2MB.');
+            this.value = '';
+          }
+        } else {
+          alert('Hanya file gambar yang diizinkan.');
+          this.value = '';
+        }
+      });
+    </script>
+
+
+
+    <script>
       function showSweetAlert(response) {
           Swal.fire({
               icon: response.success ? 'success' : 'error',
@@ -572,5 +789,5 @@
               showSweetAlert(response);
           @endif
       });
-      </script>
+    </script>
 @endpush
