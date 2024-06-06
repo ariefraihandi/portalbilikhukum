@@ -36,6 +36,8 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
 });
 
+
+
 Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
