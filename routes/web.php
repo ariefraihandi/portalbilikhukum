@@ -43,10 +43,10 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
 
-    Route::post('/refferal/generate',           [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
+    Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
 
-    Route::get('/account/update',            [AccountController::class, 'showAccountDetil'])->name('account.update');    
-
+    Route::get('/account/update',           [AccountController::class, 'showAccountDetil'])->name('account.update');    
+    Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
     
     //Menu
         //Add

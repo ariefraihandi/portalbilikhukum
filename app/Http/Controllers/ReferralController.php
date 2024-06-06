@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use App\Models\RefferalCode;
 use App\Models\Role;
+use App\Models\User;
 
 
 class ReferralController extends Controller
@@ -16,9 +17,36 @@ class ReferralController extends Controller
     {        
         $accessMenus = $request->get('accessMenus');        
 
-        // Dapatkan ID pengguna yang login
-        $userId = auth()->id();        
-        $referralCode = RefferalCode::where('user_id', $userId)->first();    
+        $id             = auth()->id();        
+        $referralCode   = RefferalCode::where('user_id', $id)->first();  
+        $user           = User::find($id);    
+
+        // Menghitung Eror
+            $countDefaultValues = 0;
+            $countNullValues = 0;
+
+            foreach ($user->getAttributes() as $attribute => $value) {
+                if ($value === 'default_value') {
+                    $countDefaultValues++;
+                } elseif ($value === null) {
+                    $countNullValues++;
+                }
+            }
+
+            $erorDetil = $countDefaultValues + $countNullValues + 3;
+
+            if ($erorDetil > 4) {
+                return redirect()->route('account.detil')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Profile Tidak Lengkap',
+                        'message' => 'Harap Lengkapi Detil Profile dahulu sebelum mengakses halaman refferal',
+                    ],
+                ]);
+            }
+        //! Menghitung Eror
+
+
 
         $data = [
             'title'             => 'Referral',

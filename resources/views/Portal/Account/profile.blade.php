@@ -187,11 +187,7 @@
                               <span class="badge badge-center bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $erorDetil }}</span>
                           @endif
                       </a>
-                    </li>
-                  
-                  
-                  
-                  
+                    </li>                                                        
                     <li class="nav-item">
                       <a class="nav-link" href="app-ecommerce-customer-details-billing.html"
                         ><i class="bx bx-detail me-1"></i>Address & Billing</a

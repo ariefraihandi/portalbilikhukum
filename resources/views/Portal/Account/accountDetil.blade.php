@@ -177,7 +177,6 @@
                   <ul class="nav nav-pills flex-column flex-md-row mb-4">
                     <li class="nav-item position-relative">
                       <a class="nav-link" href="{{ route('account.profile') }}"><i class="bx bx-user me-1"></i>Profile</a>
-                      
                     </li>
                     <li class="nav-item position-relative">
                       <a class="nav-link active" href="{{ route('account.detil') }}">
@@ -200,8 +199,29 @@
                   </ul>
                   <!--/ Customer Pills -->
 
-                  <!-- / Customer cards -->
-                  
+                  <div class="card mb-4">      
+                    <form id="uploadForm" action="{{ route('upload.avatar') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="card-body">
+                            <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                <img src="{{ asset('assets') }}/img/member/{{ $userDetils->image }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
+                                <div class="button-wrapper">
+                                    <label for="upload" class="btn btn-secondary me-2 mb-4" tabindex="0">
+                                        <span class="d-none d-sm-block">Ganti photo</span>
+                                        <i class="bx bx-upload d-block d-sm-none"></i>
+                                        <input type="file" id="upload" name="avatar" hidden class="account-file-input" accept="image/png, image/jpeg" />
+                                    </label>
+                                    <p class="text-muted mb-0">Allowed Square JPG, GIF or PNG. Max size of 2MB</p>
+                                    <small class="error-message text-danger">
+                                      @if($userDetils->image == 'default.webp')
+                                          <span class="badge badge-dot bg-danger me-1"></span> Anda belum mengganti foto profile
+                                      @endif
+                                  </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                  </div>
                   <div class="card mb-4">
                     <h5 class="card-header">Profil Detil</h5>
                     <div class="card-body">
@@ -316,18 +336,7 @@
                                         <span class="badge badge-dot bg-danger me-1"></span> Not Set
                                     @endif
                                 </small>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="form-label" for="multiStepsProfileImage">Gambar Profil</label>
-                                <input type="file" required name="multiStepsProfileImage" id="multiStepsProfileImage" class="form-control" accept="image/*">
-                                <div id="imagePreview" class="mt-2"></div>
-                                <small class="error-message text-danger">
-                                    @if($userDetils->image == 'default.webp')
-                                        <span class="badge badge-dot bg-danger me-1"></span> Not Set
-                                    @endif
-                                </small>
-                            </div>
-                            
+                            </div>                           
                         </div>                       
                         <div class="row g-3 mt-1">
                             <div class="d-grid gap-2 col-lg-12 mx-auto">    
@@ -570,209 +579,175 @@
     <script src="{{ asset('assets') }}/js/modal-edit-user.js"></script>
     <script src="{{ asset('assets') }}/js/app-ecommerce-customer-detail.js"></script>
     <script src="{{ asset('assets') }}/js/app-ecommerce-customer-detail-overview.js"></script>
+    
     <script>
-            $(document).ready(function() {
-                var select2 = $('.select2');
-                var address = "{{ $userDetils->address }}";
-                var addressParts = address.split('.');
-        
-                var provinceCode = addressParts[0];
-                var regencyCode = addressParts.length > 1 ? addressParts[0] + '.' + addressParts[1] : '';
-                var districtCode = addressParts.length > 2 ? addressParts[0] + '.' + addressParts[1] + '.' + addressParts[2] : '';
-                var villageCode = addressParts.length > 3 ? addressParts[0] + '.' + addressParts[1] + '.' + addressParts[2] + '.' + addressParts[3] : '';
-        
-                function initSelect2() {
-                    select2.each(function () {
-                        var $this = $(this);
-                        $this.wrap('<div class="position-relative"></div>');
-                        $this.select2({
-                            placeholder: 'Select an option',
-                            dropdownParent: $this.parent()
-                        });
+      $(document).ready(function() {
+        var select2 = $('.select2');
+        var address = "{{ $userDetils->address }}";
+        var addressParts = address.split('.');
+
+        var provinceCode = addressParts[0];
+        var regencyCode = addressParts.length > 1 ? addressParts[0] + '.' + addressParts[1] : '';
+        var districtCode = addressParts.length > 2 ? addressParts[0] + '.' + addressParts[1] + '.' + addressParts[2] : '';
+        var villageCode = addressParts.length > 3 ? addressParts[0] + '.' + addressParts[1] + '.' + addressParts[2] + '.' + addressParts[3] : '';
+
+        function initSelect2() {
+            select2.each(function () {
+                var $this = $(this);
+                $this.wrap('<div class="position-relative"></div>');
+                $this.select2({
+                    placeholder: 'Select an option',
+                    dropdownParent: $this.parent()
+                });
+            });
+        }
+
+        function fetchData(url, params, callback) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                data: params,
+                success: function(data) {
+                    callback(data);
+                }
+            });
+        }
+
+        function setSelectedOption($element, value, text) {
+            var option = new Option(text, value, true, true);
+            $element.append(option).trigger('change');
+        }
+
+        function loadRegencies(provinceCode) {
+            $('#multiStepsRegency').val(null).trigger('change').prop('disabled', true);
+            $('#multiStepsDistrict').val(null).trigger('change').prop('disabled', true);
+            $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+            if (provinceCode) {
+                fetchData('{{ route("getRegencies") }}', { province_code: provinceCode }, function(data) {
+                    data.forEach(function(regency) {
+                        var text = regency.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                        $('#multiStepsRegency').append(new Option(text, regency.code, false, regency.code === regencyCode));
                     });
-                }
-        
-                function fetchData(url, params, callback) {
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        dataType: 'json',
-                        data: params,
-                        success: function(data) {
-                            callback(data);
-                        }
-                    });
-                }
-        
-                function setSelectedOption($element, value, text) {
-                    var option = new Option(text, value, true, true);
-                    $element.append(option).trigger('change');
-                }
-        
-                function loadRegencies(provinceCode) {
-                    $('#multiStepsRegency').val(null).trigger('change').prop('disabled', true);
-                    $('#multiStepsDistrict').val(null).trigger('change').prop('disabled', true);
-                    $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
-                    if (provinceCode) {
-                        fetchData('{{ route("getRegencies") }}', { province_code: provinceCode }, function(data) {
-                            data.forEach(function(regency) {
-                                var text = regency.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
-                                $('#multiStepsRegency').append(new Option(text, regency.code, false, regency.code === regencyCode));
-                            });
-                            $('#multiStepsRegency').prop('disabled', false);
-                            if (regencyCode) {
-                                $('#multiStepsRegency').val(regencyCode).trigger('change');
-                            }
-                        });
-                    }
-                }
-        
-                function loadDistricts(regencyCode) {
-                    $('#multiStepsDistrict').val(null).trigger('change').prop('disabled', true);
-                    $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+                    $('#multiStepsRegency').prop('disabled', false);
                     if (regencyCode) {
-                        fetchData('{{ route("getDistricts") }}', { regency_code: regencyCode }, function(data) {
-                            data.forEach(function(district) {
-                                var text = district.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
-                                $('#multiStepsDistrict').append(new Option(text, district.code, false, district.code === districtCode));
-                            });
-                            $('#multiStepsDistrict').prop('disabled', false);
-                            if (districtCode) {
-                                $('#multiStepsDistrict').val(districtCode).trigger('change');
-                            }
-                        });
-                    }
-                }
-        
-                function loadVillages(districtCode) {
-                    $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
-                    if (districtCode) {
-                        fetchData('{{ route("getVillages") }}', { district_code: districtCode }, function(data) {
-                            data.forEach(function(village) {
-                                var text = village.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
-                                $('#multiStepsVillage').append(new Option(text, village.code, false, village.code === villageCode));
-                            });
-                            $('#multiStepsVillage').prop('disabled', false);
-                            if (villageCode) {
-                                $('#multiStepsVillage').val(villageCode).trigger('change');
-                            }
-                        });
-                    }
-                }
-        
-                initSelect2();
-        
-                $('#multiStepsProvince').select2({
-                    placeholder: 'Pilih Provinsi',
-                    allowClear: true,
-                    ajax: {
-                        url: '{{ route("getProvinces") }}',
-                        type: 'GET',
-                        dataType: 'json',
-                        processResults: function(data) {
-                            var formattedData = data.map(function(province) {
-                                var text = province.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
-                                return {
-                                    id: province.code,
-                                    text: text
-                                };
-                            });
-                            return {
-                                results: formattedData
-                            };
-                        }
-                    }
-                }).on('select2:select', function(e) {
-                    var provinceCode = e.params.data.id;
-                    loadRegencies(provinceCode);
-                });
-        
-                $('#multiStepsRegency').on('select2:select', function(e) {
-                    var regencyCode = e.params.data.id;
-                    loadDistricts(regencyCode);
-                });
-        
-                $('#multiStepsDistrict').on('select2:select', function(e) {
-                    var districtCode = e.params.data.id;
-                    loadVillages(districtCode);
-                });
-        
-                // Set initial values based on address
-                if (provinceCode) {
-                    fetchData('{{ route("getProvinces") }}', {}, function(data) {
-                        var province = data.find(p => p.code === provinceCode);
-                        if (province) {
-                            setSelectedOption($('#multiStepsProvince'), province.code, province.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
-                            loadRegencies(provinceCode);
-                        }
-                    });
-                }
-                if (regencyCode) {
-                    fetchData('{{ route("getRegencies") }}', { province_code: provinceCode }, function(data) {
-                        var regency = data.find(r => r.code === regencyCode);
-                        if (regency) {
-                            setSelectedOption($('#multiStepsRegency'), regency.code, regency.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
-                            loadDistricts(regencyCode);
-                        }
-                    });
-                }
-                if (districtCode) {
-                    fetchData('{{ route("getDistricts") }}', { regency_code: regencyCode }, function(data) {
-                        var district = data.find(d => d.code === districtCode);
-                        if (district) {
-                            setSelectedOption($('#multiStepsDistrict'), district.code, district.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
-                            loadVillages(districtCode);
-                        }
-                    });
-                }
-                if (villageCode) {
-                fetchData('{{ route("getVillages") }}', { district_code: districtCode }, function(data) {
-                    var village = data.find(v => villageCode === v.code);
-                    if (village) {
-                        setSelectedOption($('#multiStepsVillage'), village.code, village.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                        $('#multiStepsRegency').val(regencyCode).trigger('change');
                     }
                 });
-            }
-        });
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#' + previewId).html('<img src="' + e.target.result + '" class="img-fluid" style="max-height: 200px;" />');
-                }
-                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // Mengaktifkan event onchange pada input file
-        $('#multiStepsProfileImage').change(function () {
-            previewImage(this, 'imagePreview');
+        function loadDistricts(regencyCode) {
+            $('#multiStepsDistrict').val(null).trigger('change').prop('disabled', true);
+            $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+            if (regencyCode) {
+                fetchData('{{ route("getDistricts") }}', { regency_code: regencyCode }, function(data) {
+                    data.forEach(function(district) {
+                        var text = district.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                        $('#multiStepsDistrict').append(new Option(text, district.code, false, district.code === districtCode));
+                    });
+                    $('#multiStepsDistrict').prop('disabled', false);
+                    if (districtCode) {
+                        $('#multiStepsDistrict').val(districtCode).trigger('change');
+                    }
+                });
+            }
+        }
+
+        function loadVillages(districtCode) {
+            $('#multiStepsVillage').val(null).trigger('change').prop('disabled', true);
+            if (districtCode) {
+                fetchData('{{ route("getVillages") }}', { district_code: districtCode }, function(data) {
+                    data.forEach(function(village) {
+                        var text = village.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                        $('#multiStepsVillage').append(new Option(text, village.code, false, village.code === villageCode));
+                    });
+                    $('#multiStepsVillage').prop('disabled', false);
+                    if (villageCode) {
+                        $('#multiStepsVillage').val(villageCode).trigger('change');
+                    }
+                });
+            }
+        }
+
+        initSelect2();
+
+        $('#multiStepsProvince').select2({
+            placeholder: 'Pilih Provinsi',
+            allowClear: true,
+            ajax: {
+                url: '{{ route("getProvinces") }}',
+                type: 'GET',
+                dataType: 'json',
+                processResults: function(data) {
+                    var formattedData = data.map(function(province) {
+                        var text = province.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                        return {
+                            id: province.code,
+                            text: text
+                        };
+                    });
+                    return {
+                        results: formattedData
+                    };
+                }
+            }
+        }).on('select2:select', function(e) {
+            var provinceCode = e.params.data.id;
+            loadRegencies(provinceCode);
         });
 
+        $('#multiStepsRegency').on('select2:select', function(e) {
+            var regencyCode = e.params.data.id;
+            loadDistricts(regencyCode);
+        });
 
-      document.getElementById('multiStepsProfileImage').addEventListener('change', function() {
-        var file = this.files[0];
-        var imageType = /image.*/;
+        $('#multiStepsDistrict').on('select2:select', function(e) {
+            var districtCode = e.params.data.id;
+            loadVillages(districtCode);
+        });
 
-        if (file.type.match(imageType)) {
-          if (file.size <= 2 * 1024 * 1024) { // Ukuran maksimum 2MB (2 * 1024 * 1024 bytes)
-            var reader = new FileReader();
-            reader.onload = function(e) {
-              document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; max-height: 200px;">';
-            };
-            reader.readAsDataURL(file);
-          } else {
-            alert('Ukuran gambar melebihi batas 2MB.');
-            this.value = '';
-          }
-        } else {
-          alert('Hanya file gambar yang diizinkan.');
-          this.value = '';
+        // Set initial values based on address
+        if (provinceCode) {
+            fetchData('{{ route("getProvinces") }}', {}, function(data) {
+                var province = data.find(p => p.code === provinceCode);
+                if (province) {
+                    setSelectedOption($('#multiStepsProvince'), province.code, province.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                    loadRegencies(provinceCode);
+                }
+            });
+        }
+        if (regencyCode) {
+            fetchData('{{ route("getRegencies") }}', { province_code: provinceCode }, function(data) {
+                var regency = data.find(r => r.code === regencyCode);
+                if (regency) {
+                    setSelectedOption($('#multiStepsRegency'), regency.code, regency.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                    loadDistricts(regencyCode);
+                }
+            });
+        }
+        if (districtCode) {
+            fetchData('{{ route("getDistricts") }}', { regency_code: regencyCode }, function(data) {
+                var district = data.find(d => d.code === districtCode);
+                if (district) {
+                    setSelectedOption($('#multiStepsDistrict'), district.code, district.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+                    loadVillages(districtCode);
+                }
+            });
+        }
+        if (villageCode) {
+        fetchData('{{ route("getVillages") }}', { district_code: districtCode }, function(data) {
+            var village = data.find(v => villageCode === v.code);
+            if (village) {
+                setSelectedOption($('#multiStepsVillage'), village.code, village.name.toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); }));
+            }
+          });
         }
       });
+      document.getElementById('upload').addEventListener('change', function() {
+        document.getElementById('uploadForm').submit();
+      });
     </script>
-
-
 
     <script>
       function showSweetAlert(response) {
