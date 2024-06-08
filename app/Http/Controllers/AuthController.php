@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Exception;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\Office;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\District;
@@ -226,24 +228,85 @@ class AuthController extends Controller
     }
 
 
-    public function showRegisterMember()
-    {
-        if (config('app.url') === 'http://localhost') {
-            // Application is running in a local environment
-            $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
-        } else {
-            // Application is running on the server
-            $url = "https://portal.bilikhukum.com/verify-email?uniqueid=";
-        }
-    
-        $data = [
-            'title' => 'Pendaftaran Member',
-            'subTitle' => 'Bilik Hukum',
-            'url' => $url
-        ];
-    
-        return view('Auth.registerMember', $data);
+
+
+public function submitFormDaftar(Request $request)
+{
+    // Memulai transaksi database
+    DB::beginTransaction();
+
+    try {
+        // Validasi data
+        $validatedData = $request->validate([
+            'officeName' => 'required|string|max:255',
+            'officeEmail' => 'required|email|max:255',
+            'officePhone' => 'required|string|max:15',
+            'flatpickr-date' => 'required|date',
+            'officeAddress' => 'required|string|max:255',
+            'postCode' => 'required|string|max:10',
+            'officeProvince' => 'required|string',
+            'officeRegency' => 'required|string',
+            'officeDistrict' => 'required|string',
+            'officeVillage' => 'required|string',
+            'website' => 'nullable|url|max:255',
+            'slogan' => 'required|string|max:255',
+            'setuju' => 'required|accepted',
+        ]);
+
+        // Membuat kantor baru
+        $office = Office::create([
+            'user_id' => auth()->id(), // Asumsi user sudah login
+            'nama_kantor' => $request->officeName,
+            'email_kantor' => $request->officeEmail,
+            'hp_whatsapp' => $request->officePhone,
+            'tanggal_pendirian' => $request->input('flatpickr-date'),
+            'alamat' => $request->officeAddress,
+            'kode_pos' => $request->postCode,
+            'provinsi' => $request->officeProvince,
+            'kabupaten_kota' => $request->officeRegency,
+            'kecamatan' => $request->officeDistrict,
+            'desa' => $request->officeVillage,
+            'website' => $request->website,
+            'slogan' => $request->slogan,
+            'agreement' => $request->setuju,
+            'referedby' => auth()->user()->referedby,
+            'logo' => 'default.webp', 
+            'cover' => 'profile-banner.png', 
+            'type' => 1, 
+            'status' => 0,
+        ]);
+
+        // Membuat entri OfficeMember untuk pengguna yang sedang login sebagai Direktur
+        $officeMember = OfficeMember::create([
+            'id_user' => auth()->id(), // Mendapatkan id pengguna yang sedang login
+            'id_office' => $office->id, // Mendapatkan id kantor yang baru saja dibuat
+            'level' => 'Direktur', // Level sesuai dengan yang diinginkan
+        ]);
+
+        // Commit transaksi database jika semua operasi berhasil
+        DB::commit();
+
+        return redirect()->route('lawyer')->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Pendaftaran Kantor Berhasil, Segera Lengkapi Profil Kantor Anda',
+            ],
+        ]);
+    } catch (Exception $e) {
+        // Rollback transaksi database jika terjadi kesalahan
+        DB::rollback();
+
+        // Mengembalikan pesan kesalahan
+        return redirect()->back()->with([
+            'response' => [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => 'Pendaftaran Kantor Gagal. Mohon coba lagi nanti.',
+            ],
+        ])->withErrors($e->getMessage());
     }
+}
 
 //eror    
     public function showRegisterPengacara()
@@ -396,63 +459,6 @@ class AuthController extends Controller
         }
     }
 
-    public function submitFormDaftar(Request $request)
-    {
-        try {
-            $validatedData = $request->validate([
-                'multiStepsName' => 'required|string',
-                'multiStepsUsername' => 'required|string',
-                'multiStepsEmail' => 'required|email',
-                'multiStepsWhatsapp' => 'required|string',
-                'multiStepsPass' => 'required|string|min:8',
-                'multiStepsConfirmPass' => 'required|string|same:multiStepsPass',
-                'multiStepsProvince' => 'required|string',
-                'multiStepsRegency' => 'required|string',
-                'multiStepsDistrict' => 'required|string',
-                'multiStepsVillage' => 'required|string',
-                'multiStepsProfileImage' => 'required|image',
-                'officeName' => 'required|string',
-                'officeEmail' => 'required|email',
-                'officePhone' => 'required|string',
-                'flatpickr-date' => 'required|date',
-                'officeAddress' => 'required|string',
-                'postCode' => 'required|string',
-                'officeProvince' => 'required|string',
-                'officeRegency' => 'required|string',
-                'officeDistrict' => 'required|string',
-                'officeVillage' => 'required|string',
-                'website' => 'nullable|url',
-                'slogan' => 'required|string',
-                'logo' => 'required|image',
-                'legalDocument' => 'required|file|mimes:pdf,jpeg,png,jpg',
-                'setuju' => 'required|accepted',
-            ]);
-    
-            $response = [
-                'success' => true,
-                'title' => 'Berhasil',
-                'message' => 'Customer berhasil ditambahkan.'
-            ];
-    
-            return redirect()->back()->with('response', $response);
-    
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $errors = $e->errors();
-            $errorMessage = 'Terdapat kesalahan dalam input data Anda: ';
-    
-            foreach ($errors as $field => $messages) {
-                $errorMessage .= implode(', ', $messages) . ' ';
-            }
-    
-            $response = [
-                'success' => false,
-                'title' => 'Gagal',
-                'message' => $errorMessage
-            ];
-    
-            return redirect()->back()->with('response', $response)->withErrors($errors);
-        }
-    }
 //eror
     public function verifyEmail(Request $request)
     {

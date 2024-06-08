@@ -4,7 +4,19 @@
   
     <title>{{$title}} | {{$subtitle}}</title>
   
-    <meta name="description" content="" />
+    <meta name="description" content="{{$description ?? 'Deskripsi konten halaman Anda'}}" />
+    <meta name="keywords" content="{{$keywords ?? 'kata kunci yang relevan, dipisahkan dengan koma'}}" />
+    <meta name="author" content="{{$author ?? 'Nama Anda atau nama perusahaan'}}" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="{{ url()->current() }}" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{$title}}" />
+    <meta property="og:description" content="{{$description ?? 'Deskripsi konten halaman Anda'}}" />
+    <meta property="og:image" content="{{ asset('assets') }}/img/og-image.jpg" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon/favicon.ico" />
   

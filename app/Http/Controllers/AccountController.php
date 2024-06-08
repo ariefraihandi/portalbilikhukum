@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Models\RefferalCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
+use App\Models\User;
+use App\Models\RefferalCode;
+use App\Models\Session;
+use App\Models\Office;
 
 class AccountController extends Controller
 {
@@ -20,9 +22,11 @@ class AccountController extends Controller
         {        
             $accessMenus    = $request->get('accessMenus');        
             $id             = $request->session()->get('user_id');
-            $user           = User::find($id);           
+            $user           = User::find($id);    
+            $sessions       = Session::where('user_id', $id)->get();          
             $referralCode   = RefferalCode::where('user_id', $id)->first();  
-        
+            $office         = Office::where('user_id', $id)->get();   
+            
             //Count Eror
                 $countDefaultValues = 0;
                 $countNullValues = 0;
@@ -44,7 +48,9 @@ class AccountController extends Controller
                 'sidebar'           => $accessMenus,
                 'userDetils'        => $user,
                 'hasReferralCode'   => $referralCode,
-                'erorDetil'         => $erorDetil
+                'erorDetil'         => $erorDetil,
+                'sessions'          => $sessions,
+                'office'            => $office
                 
             ];
 
@@ -57,8 +63,10 @@ class AccountController extends Controller
             $accessMenus    = $request->get('accessMenus');        
             $id             = $request->session()->get('user_id');
             $user           = User::find($id);           
+            $office         = Office::where('user_id', $id)->get(); 
             $referralCode   = RefferalCode::where('user_id', $id)->first();  
-        
+            $office         = Office::where('user_id', $id)->get();   
+            
             //Count Eror
                 $countDefaultValues = 0;
                 $countNullValues = 0;
@@ -80,7 +88,8 @@ class AccountController extends Controller
                 'sidebar'           => $accessMenus,
                 'userDetils'        => $user,
                 'hasReferralCode'   => $referralCode,
-                'erorDetil'         => $erorDetil
+                'erorDetil'         => $erorDetil,
+                'office'            => $office
                 
             ];
 
@@ -149,6 +158,39 @@ class AccountController extends Controller
                 'success' => false,
                 'title' => 'Gagal Merubah Avatar',
                 'message' => 'Gagal mengunggah avatar',
+            ],
+        ]);
+    }
+
+    public function accountUpdate(Request $request)
+    {
+        // Validasi data yang diterima dari form
+        $validatedData = $request->validate([
+            'multiStepsName' => 'required|string|max:255',
+            'gender' => 'required|in:1,2',
+            'whatsapp' => 'required|string|max:15',
+            'dob' => 'required|date',
+            'multiStepsVillage' => 'required',
+            
+        ]);
+
+        // Ubah data user sesuai inputan form
+        $user = User::findOrFail(auth()->id()); // Mendapatkan user yang sedang login
+
+        $user->name = $validatedData['multiStepsName'];
+        $user->gender = $validatedData['gender'];
+        $user->whatsapp = $validatedData['whatsapp'];
+        $user->dob = $validatedData['dob'];
+        $user->address = $validatedData['multiStepsVillage'];
+
+        // Simpan perubahan
+        $user->save();
+
+        return redirect()->route('account.detil')->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Profile Berhasil Diperbaharui',
             ],
         ]);
     }

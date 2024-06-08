@@ -68,7 +68,7 @@
 </div>
 
 <!-- Register Option Modal -->
-  <div class="modal fade" id="createApp" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="officeRegister" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-simple modal-upgrade-plan">
       <div class="modal-content p-3 p-md-5">
         <div class="modal-body p-2">
