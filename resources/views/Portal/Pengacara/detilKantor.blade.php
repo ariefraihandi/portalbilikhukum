@@ -517,8 +517,11 @@
         });
       }
     });
-    document.getElementById('upload').addEventListener('change', function() {
-      document.getElementById('uploadForm').submit();
+    document.getElementById('uploadLogo').addEventListener('change', function() {
+        document.getElementById('uploadLogoForm').submit();
+    });
+    document.getElementById('uploadCover').addEventListener('change', function() {
+        document.getElementById('uploadCoverForm').submit();
     });
 </script>
 

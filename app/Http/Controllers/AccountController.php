@@ -54,7 +54,6 @@ class AccountController extends Controller
                 
             ];
 
-
             return view('Portal.Account.profile', $data);
         }
     

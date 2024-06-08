@@ -44,14 +44,14 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
-    Route::post('/role',                        [RoleController::class, 'rolesStore'])->name('roles.store');
-    Route::post('/role/change/access',          [RoleController::class, 'changeAccess'])->name('change.access');
+    Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');
+    Route::post('/role/change/access',      [RoleController::class, 'changeAccess'])->name('change.access');
 
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
 
     Route::post('/office/update',           [LawyerController::class, 'officeUpdate'])->name('office.update');    
-    Route::post('/office/update/logo',      [LawyerController::class, 'officeUpdate'])->name('upload.logo');    
-    Route::post('/office/update/cover',     [LawyerController::class, 'officeUpdate'])->name('upload.cover');    
+    Route::post('/office/update/logo',      [LawyerController::class, 'uploadOfficeLogo'])->name('upload.logo');    
+    Route::post('/office/update/cover',     [LawyerController::class, 'uploadOfficeCover'])->name('upload.cover');    
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
     
