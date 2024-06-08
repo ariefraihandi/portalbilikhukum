@@ -324,7 +324,7 @@
                   <th>User</th>
                   <th>IP Address</th>
                   <th>User Agent</th>
-                  <th>Last Activity</th>
+                  
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -345,7 +345,7 @@
                         echo $device;
                         @endphp
                     </td>
-                    <td>{{ \Carbon\Carbon::parse($session->last_activity)->format('Y-m-d H:i:s') }}</td>
+                    
                 </tr>
                 @endforeach
             </tbody>
