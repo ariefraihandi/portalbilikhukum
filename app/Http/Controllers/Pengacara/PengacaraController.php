@@ -6,24 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Province;
 use App\Models\Regency;
+use App\Models\Office;
 
 class PengacaraController extends Controller
 {
     public function showIndex()
     {
-        $referedBy = 'ariefraihandi';
+        // $referedBy = 'ariefraihandi';
         $title = 'Cari Pengacara';
         $subTitle = 'Bilik Hukum';
+        $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
+        // dd($offices);
     
         $data = [
-            'referedBy' => $referedBy,
+            // 'referedBy' => $referedBy,
             'title' => $title,
-            'subTitle' => $subTitle,
-            // Tambahkan variabel lain ke array $data
+            'subTitle' => $subTitle,            
+            'offices' => $offices,            
         ];
 
         return view('Pengacara.cariPengacara', compact('data'));
-        
     }
 
 

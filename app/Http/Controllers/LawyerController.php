@@ -34,6 +34,8 @@ class LawyerController extends Controller
                                 ->orderBy('created_at', 'desc')
                                 ->limit(10)
                                 ->get();
+            $officeDocuments    = OfficeDocument::where('office_id', $officeId)->get();
+
             $data = [
                 'title'             => 'Pengacara',
                 'subtitle'          => 'Bilik Hukum',
@@ -41,12 +43,18 @@ class LawyerController extends Controller
                 'office'            => $office,
                 'joinedDate'        => $joinedDate,
                 'officeActivities'  => $officeActivities,
+                'officeDocuments'   => $officeDocuments,
             ];
 
             return view('Portal.Pengacara.index', $data);
         } else {
-            // Jika tidak ditemukan, berikan tanggapan atau tindakan yang sesuai
-            return response()->json(['error' => 'Anda belum terdaftar sebagai anggota kantor.']);
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda belum terdaftar sebagai anggota kantor.',
+                ],
+            ]);      
         }
     }
     
@@ -58,13 +66,12 @@ class LawyerController extends Controller
         $officeMember   = OfficeMember::where('id_user', $userId)->first();
 
         if ($officeMember) {
-            $officeId = $officeMember->id_office;
-            
-            $office = Office::where('type', 1)->find($officeId);
+            $officeId           = $officeMember->id_office;
+            $office             = Office::where('type', 1)->find($officeId);            
+            $joinedDate         = Carbon::parse($office->created_at)->translatedFormat('F Y');
+            $OfficeActivity     = OfficeActivity::where('office_id', $officeId)->get();
+            $officeDocuments    = OfficeDocument::where('office_id', $officeId)->get();
 
-            // dd($office);
-            $joinedDate     = Carbon::parse($office->created_at)->translatedFormat('F Y');
-            $OfficeActivity = OfficeActivity::where('office_id', $officeId)->get();
             $data = [
                 'title'             => 'Pengacara',
                 'subtitle'          => 'Bilik Hukum',
@@ -72,12 +79,18 @@ class LawyerController extends Controller
                 'office'            => $office,
                 'joinedDate'        => $joinedDate,
                 'officeActivities'  => $OfficeActivity,
+                'officeDocuments'   => $officeDocuments,
             ];
 
             return view('Portal.Pengacara.detilKantor', $data);
         } else {
-            // Jika tidak ditemukan, berikan tanggapan atau tindakan yang sesuai
-            return response()->json(['error' => 'Anda belum terdaftar sebagai anggota kantor.']);
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda belum terdaftar sebagai anggota kantor.',
+                ],
+            ]);    
         }
     }
 
@@ -309,88 +322,129 @@ class LawyerController extends Controller
     }
 
     public function officeDocuments(Request $request)
-{
-    $request->validate([
-        'group-a.*.document_name' => 'required|string|max:255',
-        'group-a.*.document_file' => 'required|file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:2048',
-    ]);
+    {
+        $request->validate([
+            'group-a.*.document_name' => 'required|string|max:255',
+            'group-a.*.document_file' => 'required|file|mimes:pdf,doc,docx,jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $user = Auth::user();
-    $office = Office::where('user_id', $user->id)->first();
+        $user = Auth::user();
+        $office = Office::where('user_id', $user->id)->first();
 
-    if ($office) {
-        DB::beginTransaction();
+        if ($office) {
+            DB::beginTransaction();
 
-        try {
-            if ($request->hasFile('group-a.*.document_file')) {
-                $documents = [];
-                foreach ($request->input('group-a') as $key => $group) {
-                    if ($request->hasFile("group-a.$key.document_file")) {
-                        $file = $request->file("group-a.$key.document_file");
-                        $fileName = time() . '_' . $file->getClientOriginalName();
-                        $filePath = public_path('assets/img/office/document/' . $fileName);
-                        
-                        $file->move(public_path('assets/img/office/document'), $fileName);
+            try {
+                if ($request->hasFile('group-a.*.document_file')) {
+                    $documents = [];
+                    foreach ($request->input('group-a') as $key => $group) {
+                        if ($request->hasFile("group-a.$key.document_file")) {
+                            $file = $request->file("group-a.$key.document_file");
+                            $fileName = time() . '_' . $file->getClientOriginalName();
+                            $filePath = public_path('assets/img/office/document/' . $fileName);
+                            
+                            $file->move(public_path('assets/img/office/document'), $fileName);
 
-                        $documents[] = [
-                            'office_id' => $office->id,
-                            'name' => $group['document_name'],
-                            'file' => $fileName,
-                            'url' => null,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
+                            $documents[] = [
+                                'office_id' => $office->id,
+                                'name' => $group['document_name'],
+                                'file' => $fileName,
+                                'url' => null,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        }
                     }
+
+                    OfficeDocument::insert($documents);
+
+                    // Tambahkan aktivitas kantor
+                    OfficeActivity::create([
+                        'office_id' => $office->id,
+                        'name' => 'Dokumen Ditambahkan',
+                        'description' => 'Dokumen kantor baru telah ditambahkan.',
+                        'badge' => 'info',
+                        'status' => '1',
+                    ]);
+
+                    DB::commit();
+
+                    return redirect()->back()->with([
+                        'response' => [
+                            'success' => true,
+                            'title' => 'Berhasil',
+                            'message' => 'Dokumen berhasil disimpan',
+                        ],
+                    ]);
+                } else {
+                    DB::rollBack();
+                    return redirect()->back()->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Gagal',
+                            'message' => 'Tidak ada dokumen yang diunggah',
+                        ],
+                    ]);
                 }
-
-                OfficeDocument::insert($documents);
-
-                // Tambahkan aktivitas kantor
-                OfficeActivity::create([
-                    'office_id' => $office->id,
-                    'name' => 'Dokumen Ditambahkan',
-                    'description' => 'Dokumen kantor baru telah ditambahkan.',
-                    'badge' => 'info',
-                    'status' => '1',
-                ]);
-
-                DB::commit();
-
-                return redirect()->back()->with([
-                    'response' => [
-                        'success' => true,
-                        'title' => 'Berhasil',
-                        'message' => 'Dokumen berhasil disimpan',
-                    ],
-                ]);
-            } else {
+            } catch (\Exception $e) {
                 DB::rollBack();
                 return redirect()->back()->with([
                     'response' => [
                         'success' => false,
                         'title' => 'Gagal',
-                        'message' => 'Tidak ada dokumen yang diunggah',
+                        'message' => 'Terjadi kesalahan saat menyimpan dokumen',
                     ],
                 ]);
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
+        }
+
+        return redirect()->back()->with([
+            'response' => [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => 'Kantor tidak ditemukan',
+            ],
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $document = OfficeDocument::find($id);
+
+        if (!$document) {
             return redirect()->back()->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Gagal',
-                    'message' => 'Terjadi kesalahan saat menyimpan dokumen',
+                    'message' => 'Dokumen tidak ditemukan.',
                 ],
             ]);
         }
-    }
 
-    return redirect()->back()->with([
-        'response' => [
-            'success' => false,
-            'title' => 'Gagal',
-            'message' => 'Kantor tidak ditemukan',
-        ],
-    ]);
-}
+        // Hapus file fisik jika perlu
+        $filePath = public_path('assets/img/office/document/' . $document->file);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        // Catat aktivitas kantor
+        OfficeActivity::create([
+            'office_id' => $document->office_id,
+            'name' => 'Penghapusan Dokumen',
+            'description' => 'Dokumen ' . $document->name . ' telah dihapus.',
+            'badge' => 'danger',
+            'status' => 1,
+        ]);
+
+        // Hapus data dokumen dari database
+        $document->delete();      
+
+        return redirect()->back()->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Dokumen berhasil dihapus.',
+            ],
+        ]);
+    }
 }

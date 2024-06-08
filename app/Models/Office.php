@@ -40,4 +40,24 @@ class Office extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class, 'desa', 'code');
+    }
+    
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'kecamatan', 'code');
+    }
+
+    public function regency()
+    {
+        return $this->belongsTo(Regency::class, 'kabupaten_kota', 'code');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'provinsi', 'code');
+    }
 }

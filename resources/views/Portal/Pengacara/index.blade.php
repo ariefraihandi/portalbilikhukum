@@ -87,9 +87,9 @@
                         <i class="bx bx-user-check me-1"></i>Verified
                     </a>
                 @else
-                    <a href="javascript:void(0)" class="btn btn-warning text-nowrap">
-                        <i class='bx bxs-user-x me-1'></i>Not Verified
-                    </a>
+                <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
+                    <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
+                </a>                
                 @endif
 
             </div>
@@ -110,7 +110,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('lawyer.detil') }}"><i class="bx bxs-business me-1"></i> Detil Kantor</a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="pages-profile-projects.html"
             ><i class="bx bx-grid-alt me-1"></i> Projects</a
             >
@@ -119,7 +119,7 @@
             <a class="nav-link" href="pages-profile-connections.html"
             ><i class="bx bx-link-alt me-1"></i> Connections</a
             >
-        </li>
+        </li> --}}
         </ul>
     </div>
     </div>
@@ -227,8 +227,25 @@
 @endpush
 
 @push('footer-Sec-script')
+<script>
+    document.getElementById('verifyButton').addEventListener('click', function() {
+        var officeDocuments = @json($officeDocuments);
+    
+        if (officeDocuments.length === 0) {
+            // Jika tidak ada dokumen, tampilkan pesan error menggunakan SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Dokumen Kantor Belum Diperbaharui'
+            });
+            window.location.href = "{{ route('lawyer.detil') }}";
+        } else {
+            // Jika ada dokumennya, arahkan ke route office.askverified
+            window.location.href = "{{ route('office.askverified') }}";
+        }
+    });
+</script>
     <script>
-      
         function showSweetAlert(response) {
             Swal.fire({
                 icon: response.success ? 'success' : 'error',
@@ -243,5 +260,5 @@
                 showSweetAlert(response);
             @endif
         });
-      </script>
+    </script>
 @endpush

@@ -19,9 +19,9 @@
     </h4>
     
     @if($office->isEmpty())
-        <button type="button" class="btn btn-label-warning" data-bs-toggle="modal" data-bs-target="#daftarKantorModal">
-            Daftarkan Kantor Hukum Anda
-        </button>
+    <button type="button" class="btn btn-label-warning" data-bs-toggle="modal" data-bs-target="#officeRegister">
+      Daftarkan Kantor Hukum Anda
+    </button>
     @else
         <button type="button" class="btn btn-label-success">
             Kelola Kantor Hukum Anda

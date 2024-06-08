@@ -89,9 +89,9 @@
                         <i class="bx bx-user-check me-1"></i>Verified
                     </a>
                 @else
-                    <a href="javascript:void(0)" class="btn btn-warning text-nowrap">
-                        <i class='bx bxs-user-x me-1'></i>Not Verified
-                    </a>
+                    <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
+                        <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
+                    </a>                
                 @endif
 
             </div>
@@ -112,7 +112,7 @@
         <li class="nav-item">
             <a class="nav-link active" href="{{ route('lawyer.detil') }}"><i class="bx bxs-business me-1"></i> Detil Kantor</a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="pages-profile-projects.html"
             ><i class="bx bx-grid-alt me-1"></i> Projects</a
             >
@@ -121,7 +121,7 @@
             <a class="nav-link" href="pages-profile-connections.html"
             ><i class="bx bx-link-alt me-1"></i> Connections</a
             >
-        </li>
+        </li> --}}
         </ul>
     </div>
     </div>
@@ -169,8 +169,43 @@
             </div>
             </div>
             <div class="card mb-4">
-                <h5 class="card-header">Input Dokumen Kantor</h5>
+                @if($officeDocuments->isEmpty())
+                
+                @else
                 <div class="card-body">
+                    <h5 class="card-header">Daftar Dokumen Kantor</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Dokumen</th>                                  
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($officeDocuments as $document)
+                                @php
+                                    $baseUrl = asset('assets/img/office/document/');
+                                    $fileUrl = $baseUrl . '/' . $document->file;
+                                @endphp
+                                    <tr>
+                                        <td><a href="{{ $fileUrl }}" target="_blank">{{ $document->name }}</a></td>
+                                        <td>
+                                            <a href="#" class="text-body" onclick="event.preventDefault(); if(confirm('Hapus dokumen ini?')) { document.getElementById('delete-form-{{ $document->id }}').submit(); }">
+                                                <i class="bx bx-trash"></i>
+                                            </a>
+                                            <form id="delete-form-{{ $document->id }}" action="{{ route('office.documents.delete', $document->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+                <div class="card-body">
+                    <h5 class="card-header">Input Dokumen Pendirian Kantor</h5>
                     <form class="form-repeater" action="{{ route('office.documents') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div data-repeater-list="group-a">
@@ -193,11 +228,11 @@
                                 <div class="d-flex justify-content-between">
                                     <button class="btn btn-primary col-5" type="button" data-repeater-create>
                                         <i class="bx bx-plus me-1"></i>
-                                        <span class="align-middle">Tambah Dokumen</span>
+                                        <span class="align-middle">Tambah</span>
                                     </button>
                                     <button class="btn btn-success col-5" type="submit">
                                         <i class="bx bx-send me-1"></i>
-                                        <span class="align-middle">Kirim Dokumen</span>
+                                        <span class="align-middle">Kirim</span>
                                     </button>
                                 </div>
                             </div>
@@ -386,29 +421,13 @@
     <script src="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/flatpickr/flatpickr.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/pickr/pickr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/select2/select2.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
 @endpush
 
 @push('footer-Sec-script')
-<script>
-    $(document).ready(function () {
-        $('.form-repeater').repeater({
-            show: function () {
-                $(this).slideDown();
-            },
-            hide: function (deleteElement) {
-                // We don't need delete functionality, so this can be empty
-            },
-            ready: function (setIndexes) {
-                // Called when the repeater is initialized
-            }
-        });
-    });
-</script>
-
 
 <script>
     $(document).ready(function() {
@@ -581,6 +600,44 @@
         document.getElementById('uploadCoverForm').submit();
     });
 </script>
+
+<script>
+    document.getElementById('verifyButton').addEventListener('click', function() {
+        var officeDocuments = @json($officeDocuments);
+    
+        if (officeDocuments.length === 0) {
+            // Jika tidak ada dokumen, tampilkan pesan error menggunakan SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Dokumen Kantor Belum Diperbaharui'
+            });
+            window.location.href = "{{ route('lawyer.detil') }}";
+        } else {
+            // Jika ada dokumennya, arahkan ke route office.askverified
+            window.location.href = "{{ route('office.askverified') }}";
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.form-repeater').repeater({
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                // We don't need delete functionality, so this can be empty
+            },
+            ready: function (setIndexes) {
+                // Called when the repeater is initialized
+            }
+        });
+    });
+</script>
+
+
+
 
     <script>   
         function showSweetAlert(response) {
