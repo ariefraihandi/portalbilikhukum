@@ -194,7 +194,7 @@
               @endif
           </a>
         </li>                 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a class="nav-link" href="app-ecommerce-customer-details-billing.html"
             ><i class="bx bx-detail me-1"></i>Address & Billing</a
           >
@@ -203,7 +203,7 @@
           <a class="nav-link" href="app-ecommerce-customer-details-notifications.html"
             ><i class="bx bx-bell me-1"></i>Notifications</a
           >
-        </li>
+        </li> --}}
       </ul>
       <!--/ Customer Pills -->
 
@@ -361,211 +361,76 @@
     <!--/ Customer Content -->
   </div>
 
-  <!-- Modal -->
-  <!-- Edit User Modal -->
-  <div class="modal fade" id="editUser" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-      <div class="modal-content p-3 p-md-5">
-        <div class="modal-body">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div class="text-center mb-4">
-            <h3>Edit User Information</h3>
-            <p>Updating user details will receive a privacy audit.</p>
-          </div>
-          <form id="editUserForm" class="row g-3" onsubmit="return false">
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserFirstName">First Name</label>
-              <input
-                type="text"
-                id="modalEditUserFirstName"
-                name="modalEditUserFirstName"
-                class="form-control"
-                placeholder="John" />
-            </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserLastName">Last Name</label>
-              <input
-                type="text"
-                id="modalEditUserLastName"
-                name="modalEditUserLastName"
-                class="form-control"
-                placeholder="Doe" />
-            </div>
-            <div class="col-12">
-              <label class="form-label" for="modalEditUserName">Username</label>
-              <input
-                type="text"
-                id="modalEditUserName"
-                name="modalEditUserName"
-                class="form-control"
-                placeholder="john.doe.007" />
-            </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserEmail">Email</label>
-              <input
-                type="text"
-                id="modalEditUserEmail"
-                name="modalEditUserEmail"
-                class="form-control"
-                placeholder="example@domain.com" />
-            </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserStatus">Status</label>
-              <select
-                id="modalEditUserStatus"
-                name="modalEditUserStatus"
-                class="form-select"
-                aria-label="Default select example">
-                <option selected>Status</option>
-                <option value="1">Active</option>
-                <option value="2">Inactive</option>
-                <option value="3">Suspended</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditTaxID">Tax ID</label>
-              <input
-                type="text"
-                id="modalEditTaxID"
-                name="modalEditTaxID"
-                class="form-control modal-edit-tax-id"
-                placeholder="123 456 7890" />
-            </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserPhone">Phone Number</label>
-              <div class="input-group input-group-merge">
-                <span class="input-group-text">+1</span>
-                <input
-                  type="text"
-                  id="modalEditUserPhone"
-                  name="modalEditUserPhone"
-                  class="form-control phone-number-mask"
-                  placeholder="202 555 0111" />
+  
+</div>
+
+<div class="modal fade" id="officeRegister" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-simple modal-upgrade-plan">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body p-2">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="rounded-top">
+          <h2 class="text-center mb-2 mt-0 mt-md-4 px-2">Pilih Jenis Kantor Hukum Anda</h2>
+          <p class="text-center pb-3 px-2">
+              Silahkan pilih jenis pendaftaran yang ingin Anda lakukan.
+          </p>
+          <div class="row mx-0 gy-3">
+            <!-- Basic -->
+            <div class="col-lg mb-md-0 mb-4">
+              <div class="card border rounded shadow-none">
+                <div class="card-body position-relative">
+                  <div class="my-3 pt-2 text-center">
+                    <img
+                      src="{{ asset('assets') }}/img/icons/unicons/mediator.png"
+                      alt="Starter Image"
+                      height="80" />
+                  </div>
+                  <h3 class="card-title text-center text-capitalize mb-1">Mediator</h3>
+                  <p class="text-center">Mendaftar sebagai mediator</p>  
+                  <button type="button" class="btn btn-label-success d-grid w-100" data-bs-toggle="modal" data-bs-target="#twoFactorAuthOne">Mendaftar</button>                                                       
+                </div>
               </div>
             </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserLanguage">Language</label>
-              <select
-                id="modalEditUserLanguage"
-                name="modalEditUserLanguage"
-                class="select2 form-select"
-                multiple>
-                <option value="">Select</option>
-                <option value="english" selected>English</option>
-                <option value="spanish">Spanish</option>
-                <option value="french">French</option>
-                <option value="german">German</option>
-                <option value="dutch">Dutch</option>
-                <option value="hebrew">Hebrew</option>
-                <option value="sanskrit">Sanskrit</option>
-                <option value="hindi">Hindi</option>
-              </select>
+            <!-- Pro -->
+            <div class="col-lg mb-md-0 mb-4">
+              <div class="card border-primary border shadow-none">
+                <div class="card-body position-relative">                               
+                  <div class="my-3 pt-2 text-center">
+                    <img
+                      src="{{ asset('assets') }}/img/icons/unicons/lawyer.png"
+                      alt="Pro Image"
+                      height="80" />
+                  </div>
+                  <h3 class="card-title text-center text-capitalize mb-1">Pengacara</h3>
+                  <p class="text-center">Mendaftar sebagai pengacara</p>
+                  <a href="#" class="btn btn-label-success d-grid w-100 btn-mendaftar">Mendaftar</a>
+                </div>
+              </div>
             </div>
-            <div class="col-12 col-md-6">
-              <label class="form-label" for="modalEditUserCountry">Country</label>
-              <select
-                id="modalEditUserCountry"
-                name="modalEditUserCountry"
-                class="select2 form-select"
-                data-allow-clear="true">
-                <option value="">Select</option>
-                <option value="Australia">Australia</option>
-                <option value="Bangladesh">Bangladesh</option>
-                <option value="Belarus">Belarus</option>
-                <option value="Brazil">Brazil</option>
-                <option value="Canada">Canada</option>
-                <option value="China">China</option>
-                <option value="France">France</option>
-                <option value="Germany">Germany</option>
-                <option value="India">India</option>
-                <option value="Indonesia">Indonesia</option>
-                <option value="Israel">Israel</option>
-                <option value="Italy">Italy</option>
-                <option value="Japan">Japan</option>
-                <option value="Korea">Korea, Republic of</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Philippines">Philippines</option>
-                <option value="Russia">Russian Federation</option>
-                <option value="South Africa">South Africa</option>
-                <option value="Thailand">Thailand</option>
-                <option value="Turkey">Turkey</option>
-                <option value="Ukraine">Ukraine</option>
-                <option value="United Arab Emirates">United Arab Emirates</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United States">United States</option>
-              </select>
-            </div>
-            <div class="col-12">
-              <label class="switch">
-                <input type="checkbox" class="switch-input" />
-                <span class="switch-toggle-slider">
-                  <span class="switch-on"></span>
-                  <span class="switch-off"></span>
-                </span>
-                <span class="switch-label">Use as a billing address?</span>
-              </label>
-            </div>
-            <div class="col-12 text-center">
-              <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
-              <button
-                type="reset"
-                class="btn btn-label-secondary"
-                data-bs-dismiss="modal"
-                aria-label="Close">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--/ Edit User Modal -->
 
-  <!-- Add New Credit Card Modal -->
-  <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-simple modal-upgrade-plan">
-      <div class="modal-content p-3 p-md-5">
-        <div class="modal-body">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div class="text-center mb-4">
-            <h3>Upgrade Plan</h3>
-            <p>Choose the best plan for user.</p>
-          </div>
-          <form id="upgradePlanForm" class="row g-3" onsubmit="return false">
-            <div class="col-sm-9">
-              <label class="form-label" for="choosePlan">Choose Plan</label>
-              <select id="choosePlan" name="choosePlan" class="form-select" aria-label="Choose Plan">
-                <option selected>Choose Plan</option>
-                <option value="standard">Standard - $99/month</option>
-                <option value="exclusive">Exclusive - $249/month</option>
-                <option value="Enterprise">Enterprise - $499/month</option>
-              </select>
+            <!-- Enterprise -->
+            <div class="col-lg">
+              <div class="card border rounded shadow-none">
+                <div class="card-body">
+                  <div class="my-3 pt-2 text-center">
+                    <img
+                      src="{{ asset('assets') }}/img/icons/unicons/notary.png"
+                      alt="Pro Image"
+                      height="80" />
+                  </div>
+                  <h3 class="card-title text-center text-capitalize mb-1">Notaris</h3>
+                  <p class="text-center">Mendaftar sebagai notaris</p>
+                  <a href="#" class="btn btn-label-success d-grid w-100">Mendaftar</a>
+                </div>
+              </div>
             </div>
-            <div class="col-sm-3 d-flex align-items-end">
-              <button type="submit" class="btn btn-primary">Upgrade</button>
-            </div>
-          </form>
-        </div>
-        <hr class="mx-md-n5 mx-n3" />
-        <div class="modal-body">
-          <h6 class="mb-0">User current plan is standard plan</h6>
-          <div class="d-flex justify-content-between align-items-center flex-wrap">
-            <div class="d-flex justify-content-center me-2 mt-3">
-              <sup class="h5 pricing-currency pt-1 mt-3 mb-0 me-1 text-primary">$</sup>
-              <h1 class="display-3 mb-0 text-primary">99</h1>
-              <sub class="h5 pricing-duration mt-auto mb-2">/month</sub>
-            </div>
-            <button class="btn btn-label-danger cancel-subscription mt-3">Cancel Subscription</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!--/ Add New Credit Card Modal -->
-
-  <!-- /Modal -->
 </div>
+
 @endsection
 
 @push('footer-script') 

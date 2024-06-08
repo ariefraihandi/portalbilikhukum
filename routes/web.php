@@ -50,6 +50,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
 
     Route::post('/office/update',           [LawyerController::class, 'officeUpdate'])->name('office.update');    
+    Route::post('/office/documents',        [LawyerController::class, 'officeDocuments'])->name('office.documents');    
     Route::post('/office/update/logo',      [LawyerController::class, 'uploadOfficeLogo'])->name('upload.logo');    
     Route::post('/office/update/cover',     [LawyerController::class, 'uploadOfficeCover'])->name('upload.cover');    
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    

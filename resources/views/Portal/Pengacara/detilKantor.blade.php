@@ -14,7 +14,7 @@
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="py-3 mb-4"><span class="text-muted fw-light">Office / {{$title}} /</span> Beranda</h4>
+    <h4 class="py-3 mb-4"><span class="text-muted fw-light">Office / {{$title}} /</span> Detil Kantor</h4>
 
     <!-- Header -->
     <div class="row">
@@ -168,7 +168,46 @@
                 </ul>           
             </div>
             </div>
-            <!--/ About User -->       
+            <div class="card mb-4">
+                <h5 class="card-header">Input Dokumen Kantor</h5>
+                <div class="card-body">
+                    <form class="form-repeater" action="{{ route('office.documents') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div data-repeater-list="group-a">
+                            <div data-repeater-item>
+                                <div class="row">
+                                    <div class="mb-3 col-lg-6 col-xl-6 col-12 mb-0">
+                                        <label class="form-label" for="document-name">Nama Dokumen</label>
+                                        <input type="text" id="document-name" name="group-a[][document_name]" class="form-control" placeholder="Nama Dokumen" required />
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-xl-6 col-12 mb-0">
+                                        <label class="form-label" for="document-file">File Dokumen</label>
+                                        <input type="file" id="document-file" name="group-a[][document_file]" class="form-control" required />
+                                    </div>
+                                </div>
+                                <hr />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-primary col-5" type="button" data-repeater-create>
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Tambah Dokumen</span>
+                                    </button>
+                                    <button class="btn btn-success col-5" type="submit">
+                                        <i class="bx bx-send me-1"></i>
+                                        <span class="align-middle">Kirim Dokumen</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+                        
+            
         </div>
         <div class="col-xl-8 col-lg-7 col-md-7">
             <div class="card card-action mb-4"> 
@@ -239,7 +278,7 @@
             
                             <div class="col-sm-6">
                                 <label class="form-label" for="officeEmail">Email Kantor</label>
-                                <input type="email" required name="officeEmail" id="officeEmail" class="form-control" value="{{ $office->email_kantor }}" />
+                                <input type="email" readonly name="officeEmail" id="officeEmail" class="form-control" value="{{ $office->email_kantor }}" />
                                 <small class="error-message text-danger"></small>
                             </div>
             
@@ -349,9 +388,27 @@
     <script src="{{ asset('assets') }}/vendor/libs/pickr/pickr.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/select2/select2.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
 @endpush
 
 @push('footer-Sec-script')
+<script>
+    $(document).ready(function () {
+        $('.form-repeater').repeater({
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                // We don't need delete functionality, so this can be empty
+            },
+            ready: function (setIndexes) {
+                // Called when the repeater is initialized
+            }
+        });
+    });
+</script>
+
 
 <script>
     $(document).ready(function() {

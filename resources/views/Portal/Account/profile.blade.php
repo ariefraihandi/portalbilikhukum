@@ -197,7 +197,7 @@
               @endif
           </a>
         </li>                                                        
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a class="nav-link" href="app-ecommerce-customer-details-billing.html"
             ><i class="bx bx-detail me-1"></i>Address & Billing</a
           >
@@ -206,7 +206,7 @@
           <a class="nav-link" href="app-ecommerce-customer-details-notifications.html"
             ><i class="bx bx-bell me-1"></i>Notifications</a
           >
-        </li>
+        </li> --}}
       </ul>
       <!--/ Customer Pills -->
 
