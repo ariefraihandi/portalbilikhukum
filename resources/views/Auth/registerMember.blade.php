@@ -17,11 +17,7 @@
 <div class="authentication-wrapper authentication-cover">
     <div class="authentication-inner row m-0">
         <!-- Image on Top -->
-        
-            
-        
-        <!-- /Image on Top -->
-        
+
         <div class="col-12 d-flex align-items-center justify-content-center authentication-bg p-sm-5 p-3">
             <div class="w-px-700">
                 <div class="shadow-none">
@@ -317,44 +313,6 @@
                 }
             });
         });
-
-
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#' + previewId).html('<img src="' + e.target.result + '" class="img-fluid" style="max-height: 200px;" />');
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // Mengaktifkan event onchange pada input file
-        $('#multiStepsProfileImage').change(function () {
-            previewImage(this, 'imagePreview');
-        });
-
-
-      document.getElementById('multiStepsProfileImage').addEventListener('change', function() {
-        var file = this.files[0];
-        var imageType = /image.*/;
-
-        if (file.type.match(imageType)) {
-          if (file.size <= 2 * 1024 * 1024) { // Ukuran maksimum 2MB (2 * 1024 * 1024 bytes)
-            var reader = new FileReader();
-            reader.onload = function(e) {
-              document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; max-height: 200px;">';
-            };
-            reader.readAsDataURL(file);
-          } else {
-            alert('Ukuran gambar melebihi batas 2MB.');
-            this.value = '';
-          }
-        } else {
-          alert('Hanya file gambar yang diizinkan.');
-          this.value = '';
-        }
-      });
     </script>
     
     <script>

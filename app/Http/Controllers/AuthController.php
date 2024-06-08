@@ -14,10 +14,12 @@ use Exception;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Office;
+use App\Models\OfficeMember;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\District;
 use App\Models\Village;
+use App\Models\OfficeActivity;
 use App\Models\EmailVerificationToken;
 use App\Models\MailingList;
 use App\Mail\VerificationMail; 
@@ -227,86 +229,91 @@ class AuthController extends Controller
         }
     }
 
+    public function submitFormDaftar(Request $request)
+    {
+        DB::beginTransaction();
 
+        try {
+            $validatedData = $request->validate([
+                'officeName' => 'required|string|max:255',
+                'officeEmail' => 'required|email|max:255',
+                'officePhone' => 'required|string|max:15',
+                'flatpickr-date' => 'required|date',
+                'officeAddress' => 'required|string|max:255',
+                'postCode' => 'required|string|max:10',
+                'officeProvince' => 'required|string',
+                'officeRegency' => 'required|string',
+                'officeDistrict' => 'required|string',
+                'officeVillage' => 'required|string',
+                'website' => 'nullable|url|max:255',
+                'slogan' => 'required|string|max:255',
+                'setuju' => 'required|accepted',
+            ]);
 
+            $user = auth()->user();
 
-public function submitFormDaftar(Request $request)
-{
-    // Memulai transaksi database
-    DB::beginTransaction();
+            $office = Office::create([
+                'user_id' => auth()->id(),
+                'nama_kantor' => $request->officeName,
+                'email_kantor' => $request->officeEmail,
+                'hp_whatsapp' => $request->officePhone,
+                'tanggal_pendirian' => $request->input('flatpickr-date'),
+                'alamat' => $request->officeAddress,
+                'kode_pos' => $request->postCode,
+                'provinsi' => $request->officeProvince,
+                'kabupaten_kota' => $request->officeRegency,
+                'kecamatan' => $request->officeDistrict,
+                'desa' => $request->officeVillage,
+                'website' => $request->website,
+                'slogan' => $request->slogan,
+                'agreement' => $request->setuju,
+                'referedby' => auth()->user()->referedby,
+                'logo' => 'default.webp', 
+                'cover' => 'profile-banner.png', 
+                'type' => 1, 
+                'status' => 0,
+            ]);
 
-    try {
-        // Validasi data
-        $validatedData = $request->validate([
-            'officeName' => 'required|string|max:255',
-            'officeEmail' => 'required|email|max:255',
-            'officePhone' => 'required|string|max:15',
-            'flatpickr-date' => 'required|date',
-            'officeAddress' => 'required|string|max:255',
-            'postCode' => 'required|string|max:10',
-            'officeProvince' => 'required|string',
-            'officeRegency' => 'required|string',
-            'officeDistrict' => 'required|string',
-            'officeVillage' => 'required|string',
-            'website' => 'nullable|url|max:255',
-            'slogan' => 'required|string|max:255',
-            'setuju' => 'required|accepted',
-        ]);
+            $officeMember = OfficeMember::create([
+                'id_user' => auth()->id(), 
+                'id_office' => $office->id,
+                'level' => 'Direktur', 
+            ]);
 
-        // Membuat kantor baru
-        $office = Office::create([
-            'user_id' => auth()->id(), // Asumsi user sudah login
-            'nama_kantor' => $request->officeName,
-            'email_kantor' => $request->officeEmail,
-            'hp_whatsapp' => $request->officePhone,
-            'tanggal_pendirian' => $request->input('flatpickr-date'),
-            'alamat' => $request->officeAddress,
-            'kode_pos' => $request->postCode,
-            'provinsi' => $request->officeProvince,
-            'kabupaten_kota' => $request->officeRegency,
-            'kecamatan' => $request->officeDistrict,
-            'desa' => $request->officeVillage,
-            'website' => $request->website,
-            'slogan' => $request->slogan,
-            'agreement' => $request->setuju,
-            'referedby' => auth()->user()->referedby,
-            'logo' => 'default.webp', 
-            'cover' => 'profile-banner.png', 
-            'type' => 1, 
-            'status' => 0,
-        ]);
+            $activity = OfficeActivity::create([
+                'office_id' => $office->id,
+                'name' => 'Pendaftaran Kantor Pengacara ' . $request->officeName,
+                'description' => 'Kantor Pengacara ' . $request->officeName . ' berhasil didaftarkan.',
+                'badge' => 'primary',
+                'status' => 0,
+            ]);
 
-        // Membuat entri OfficeMember untuk pengguna yang sedang login sebagai Direktur
-        $officeMember = OfficeMember::create([
-            'id_user' => auth()->id(), // Mendapatkan id pengguna yang sedang login
-            'id_office' => $office->id, // Mendapatkan id kantor yang baru saja dibuat
-            'level' => 'Direktur', // Level sesuai dengan yang diinginkan
-        ]);
+            $user->role = 4;
+            $user->save();
 
-        // Commit transaksi database jika semua operasi berhasil
-        DB::commit();
+            DB::commit();
 
-        return redirect()->route('lawyer')->with([
-            'response' => [
-                'success' => true,
-                'title' => 'Berhasil',
-                'message' => 'Pendaftaran Kantor Berhasil, Segera Lengkapi Profil Kantor Anda',
-            ],
-        ]);
-    } catch (Exception $e) {
-        // Rollback transaksi database jika terjadi kesalahan
-        DB::rollback();
+            return redirect()->route('lawyer')->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Pendaftaran Kantor Berhasil, Segera Lengkapi Profil Kantor Anda',
+                ],
+            ]);
+        } catch (Exception $e) {
+            // Rollback transaksi database jika terjadi kesalahan
+            DB::rollback();
 
-        // Mengembalikan pesan kesalahan
-        return redirect()->back()->with([
-            'response' => [
-                'success' => false,
-                'title' => 'Gagal',
-                'message' => 'Pendaftaran Kantor Gagal. Mohon coba lagi nanti.',
-            ],
-        ])->withErrors($e->getMessage());
+            // Mengembalikan pesan kesalahan
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Pendaftaran Kantor Gagal. Mohon coba lagi nanti.',
+                ],
+            ])->withErrors($e->getMessage());
+        }
     }
-}
 
 //eror    
     public function showRegisterPengacara()

@@ -28,6 +28,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
     Route::get('/lawyer',                   [LawyerController::class, 'showLawyer'])->name('lawyer');
+    Route::get('/lawyer/detil',             [LawyerController::class, 'showLawyerDetil'])->name('lawyer.detil');
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
@@ -48,7 +49,10 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
 
-    Route::post('/account/update',           [AccountController::class, 'accountUpdate'])->name('account.update');    
+    Route::post('/office/update',           [LawyerController::class, 'officeUpdate'])->name('office.update');    
+    Route::post('/office/update/logo',      [LawyerController::class, 'officeUpdate'])->name('upload.logo');    
+    Route::post('/office/update/cover',     [LawyerController::class, 'officeUpdate'])->name('upload.cover');    
+    Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
     
     //Menu

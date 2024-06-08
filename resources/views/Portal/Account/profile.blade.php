@@ -324,7 +324,6 @@
                   <th>User</th>
                   <th>IP Address</th>
                   <th>User Agent</th>
-                  
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">

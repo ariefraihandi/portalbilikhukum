@@ -105,7 +105,7 @@
                                 <!-- Website -->
                                 <div class="col-sm-6">
                                     <label class="form-label" for="website">Website (opsional)</label>
-                                    <input type="text" required id="website" name="website" class="form-control" placeholder="https://kantorsaya.com/" />
+                                    <input type="text" id="website" name="website" class="form-control" placeholder="https://kantorsaya.com/" />
                                     <small class="error-message text-danger"></small>
                                 </div>
                                 <!-- Slogan Kantor -->
