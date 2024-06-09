@@ -10,6 +10,7 @@
     use App\Http\Controllers\RoleController;
     use App\Http\Controllers\MenuController;
     use App\Http\Controllers\AccountController;
+    use App\Http\Controllers\BisnisController;
     use App\Http\Controllers\ReferralController;
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\LawyerController;
@@ -20,9 +21,9 @@ Route::get('/', function () {
     return redirect('https://bilikhukum.com');
 });
 
-Route::get('/login',                    [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);
-Route::post('/login',                        [AuthController::class, 'login'])->name('submitLogin');
-Route::get('/logout',                        [AuthController::class, 'logout'])->name('logout');
+Route::get('/login',                        [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);
+Route::post('/login',                       [AuthController::class, 'login'])->name('submitLogin');
+Route::get('/logout',                       [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(function () {
     Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
@@ -37,11 +38,14 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/account/profile',          [AccountController::class, 'showAccount'])->name('account.profile');
     Route::get('/account/detil',            [AccountController::class, 'showAccountDetil'])->name('account.detil');
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
-
+    
+    Route::get('/bisnis/office/list',       [BisnisController::class, 'showOfficeList'])->name('bisnis.office.list');
+    
 });
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
+    Route::get('/bisnis/getAllOffice',       [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
     Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');
@@ -53,7 +57,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/office/documents',        [LawyerController::class, 'officeDocuments'])->name('office.documents');    
     Route::post('/office/update/logo',      [LawyerController::class, 'uploadOfficeLogo'])->name('upload.logo');    
     Route::post('/office/update/cover',     [LawyerController::class, 'uploadOfficeCover'])->name('upload.cover'); 
-    Route::post('/office/askverified',      [LawyerController::class, 'officeAskverified'])->name('office.askverified'); 
+    Route::get('/office/askverified',       [LawyerController::class, 'officeAskverified'])->name('office.askverified'); 
     Route::delete('/office/documents/{id}', [LawyerController::class, 'destroy'])->name('office.documents.delete');      
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');

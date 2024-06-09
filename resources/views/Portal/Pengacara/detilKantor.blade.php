@@ -85,14 +85,27 @@
                 </ul>
                 </div>
                 @if($office->status == 1)
+                    <a href="javascript:void(0)" class="btn btn-info text-nowrap">
+                        <i class="bx bx-time me-1"></i>Menunggu Persetujuan Verifikasi
+                    </a>
+                @elseif($office->status == 2)
                     <a href="javascript:void(0)" class="btn btn-success text-nowrap">
-                        <i class="bx bx-user-check me-1"></i>Verified
+                        <i class='bx bx-user-check me-1'></i>Verified
+                    </a>
+                @elseif($office->status == 3)
+                    <a href="javascript:void(0)" class="btn btn-secondary text-nowrap">
+                        <i class='bx bx-pause-circle me-1'></i>Suspended
+                    </a>
+                @elseif($office->status == 4)
+                    <a href="javascript:void(0)" class="btn btn-danger text-nowrap">
+                        <i class='bx bx-block me-1'></i>Blocked
                     </a>
                 @else
                     <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
                         <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
-                    </a>                
+                    </a>
                 @endif
+
 
             </div>
             </div>

@@ -43,38 +43,38 @@
                         <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Mediator</li>
                     @endif
                     @php
-                    $codeParts = explode('.', $office->desa);
-                
-                    // Pastikan bahwa kode wilayah memiliki setidaknya 4 bagian
-                    if (count($codeParts) >= 4) {
-                        // Ambil kode provinsi
-                        $provinceCode = $codeParts[0];
-                
-                        // Ambil nama provinsi dari database berdasarkan kode
-                        $provinceName = ucfirst(strtolower(App\Models\Province::where('code', $provinceCode)->value('name')));
-                
-                        // Ambil kode kabupaten/kota
-                        $regencyCode = $codeParts[0] . '.' . $codeParts[1];
-                
-                        // Ambil nama kabupaten/kota dari database berdasarkan kode
-                        $regencyName = ucfirst(strtolower(App\Models\Regency::where('code', $regencyCode)->value('name')));
-                
-                        // Ambil kode kecamatan
-                        $districtCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2];
-                
-                        // Ambil nama kecamatan dari database berdasarkan kode
-                        $districtName = ucfirst(strtolower(App\Models\District::where('code', $districtCode)->value('name')));
-                
-                        // Ambil kode desa/kelurahan
-                        $villageCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2] . '.' . $codeParts[3];
-                
-                        // Ambil nama desa/kelurahan dari database berdasarkan kode
-                        $villageName = ucfirst(strtolower(App\Models\Village::where('code', $villageCode)->value('name')));
-                    } else {
-                        // Jika jumlah bagian kode wilayah kurang dari 4, berikan nilai default
-                        $provinceName = $regencyName = $districtName = $villageName = null;
-                    }
-                @endphp
+                        $codeParts = explode('.', $office->desa);
+                    
+                        // Pastikan bahwa kode wilayah memiliki setidaknya 4 bagian
+                        if (count($codeParts) >= 4) {
+                            // Ambil kode provinsi
+                            $provinceCode = $codeParts[0];
+                    
+                            // Ambil nama provinsi dari database berdasarkan kode
+                            $provinceName = ucfirst(strtolower(App\Models\Province::where('code', $provinceCode)->value('name')));
+                    
+                            // Ambil kode kabupaten/kota
+                            $regencyCode = $codeParts[0] . '.' . $codeParts[1];
+                    
+                            // Ambil nama kabupaten/kota dari database berdasarkan kode
+                            $regencyName = ucfirst(strtolower(App\Models\Regency::where('code', $regencyCode)->value('name')));
+                    
+                            // Ambil kode kecamatan
+                            $districtCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2];
+                    
+                            // Ambil nama kecamatan dari database berdasarkan kode
+                            $districtName = ucfirst(strtolower(App\Models\District::where('code', $districtCode)->value('name')));
+                    
+                            // Ambil kode desa/kelurahan
+                            $villageCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2] . '.' . $codeParts[3];
+                    
+                            // Ambil nama desa/kelurahan dari database berdasarkan kode
+                            $villageName = ucfirst(strtolower(App\Models\Village::where('code', $villageCode)->value('name')));
+                        } else {
+                            // Jika jumlah bagian kode wilayah kurang dari 4, berikan nilai default
+                            $provinceName = $regencyName = $districtName = $villageName = null;
+                        }
+                    @endphp
                 
                     <li class="list-inline-item fw-medium"><i class="bx bx-map"></i> {{$provinceName}}, {{$regencyName}}</li>
                     <li class="list-inline-item fw-medium">
@@ -83,14 +83,27 @@
                 </ul>
                 </div>
                 @if($office->status == 1)
+                    <a href="javascript:void(0)" class="btn btn-info text-nowrap">
+                        <i class="bx bx-time me-1"></i>Menunggu Persetujuan Verifikasi
+                    </a>
+                @elseif($office->status == 2)
                     <a href="javascript:void(0)" class="btn btn-success text-nowrap">
-                        <i class="bx bx-user-check me-1"></i>Verified
+                        <i class='bx bx-user-check me-1'></i>Verified
+                    </a>
+                @elseif($office->status == 3)
+                    <a href="javascript:void(0)" class="btn btn-secondary text-nowrap">
+                        <i class='bx bx-pause-circle me-1'></i>Suspended
+                    </a>
+                @elseif($office->status == 4)
+                    <a href="javascript:void(0)" class="btn btn-danger text-nowrap">
+                        <i class='bx bx-block me-1'></i>Blocked
                     </a>
                 @else
-                <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
-                    <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
-                </a>                
+                    <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
+                        <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
+                    </a>
                 @endif
+
 
             </div>
             </div>

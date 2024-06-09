@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Models\OfficeMember;
 use App\Models\OfficeActivity;
 use App\Models\OfficeDocument;
 use App\Models\Office;
-use Carbon\Carbon;
+use App\Models\User;
+use App\Models\OfficeVerificationList;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
+use App\Notifications\OfficeVerificationRequestNotification;
 
 class LawyerController extends Controller
 {
@@ -93,7 +97,7 @@ class LawyerController extends Controller
             ]);    
         }
     }
-
+//Editing
     public function uploadOfficeLogo(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -321,6 +325,77 @@ class LawyerController extends Controller
         }
     }
 
+    public function officeAskverified(Request $request)
+{
+    try {
+        DB::beginTransaction();
+
+        // Mengambil ID pengguna yang saat ini login
+        $userId = Auth::id();
+
+        // Mencari baris OfficeMember yang memiliki ID pengguna yang sesuai dengan ID pengguna yang sedang login
+        $officeMember = OfficeMember::where('id_user', $userId)->firstOrFail();
+
+        // Mengambil ID kantor (office) yang terkait
+        $officeId = $officeMember->id_office;
+
+        // Membuat entri baru di tabel 'office_verification_lists'
+        DB::table('office_verification_lists')->insert([
+            'user_id' => $userId,
+            'office_id' => $officeId,
+            'status' => 1, // Misalkan, status awal adalah 1 (Ask Verified)
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Memperbarui status kantor (office) dari 0 menjadi 2
+        $office = Office::find($officeId);
+        if (!$office) {
+            throw new \Exception('Office not found.');
+        }
+        $office->status = 1;
+        $office->save();
+
+        OfficeActivity::create([
+            'office_id' => $officeId,
+            'name' => 'Verification Request',
+            'description' => 'has submitted',
+            'badge' => 'info',
+            'status' => '1',
+        ]);
+
+    // Mengambil data admin (user dengan id 1) dari database
+    $admin = User::find(1);
+
+    // Memeriksa apakah data admin ditemukan
+    if ($admin) {
+        // Mengirim notifikasi email ke admin
+        $admin->notify(new OfficeVerificationRequestNotification($office));
+    } else {
+        throw new \Exception('Admin not found.');
+    }
+
+        DB::commit();
+
+        return redirect()->back()->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Success',
+                'message' => 'Permohonan Verifikasi Berhasil Dikirim',
+            ],
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->with([
+            'response' => [
+                'success' => false,
+                'title' => 'Error',
+                'message' => 'Gagal Verifikasi. ' . $e->getMessage(),
+            ],
+        ]);
+    }
+}
+
     public function officeDocuments(Request $request)
     {
         $request->validate([
@@ -447,4 +522,5 @@ class LawyerController extends Controller
             ],
         ]);
     }
+//Editing
 }
