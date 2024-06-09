@@ -159,7 +159,6 @@ class BisnisController extends Controller
     }
     
     
-    
     public function getAllOffice(Request $request)
     {
         if ($request->ajax()) {

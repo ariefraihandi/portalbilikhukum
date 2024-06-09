@@ -15,11 +15,14 @@
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\LawyerController;
     use App\Http\Controllers\Pengacara\PengacaraController;
+    use App\Http\Controllers\Index\IndexController;
 //!Controllers
 
 Route::get('/', function () {
     return redirect('https://bilikhukum.com');
 });
+
+Route::get('/',                             [IndexController::class, 'index'])->name('index.index');
 
 Route::get('/login',                        [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);
 Route::post('/login',                       [AuthController::class, 'login'])->name('submitLogin');
@@ -104,7 +107,7 @@ Route::get('/join',                         [AuthController::class, 'showRegiste
 Route::post('/join',                        [AuthController::class, 'registerJoin'])->name('join.post');
 
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
-Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showIndex');
+Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showPengacara');
 
 
 
