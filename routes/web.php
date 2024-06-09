@@ -40,12 +40,14 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
     
     Route::get('/bisnis/office/list',       [BisnisController::class, 'showOfficeList'])->name('bisnis.office.list');
+    Route::get('/bisnis/office/verify',     [BisnisController::class, 'showOfficeVerify'])->name('bisnis.office.verify');
     
 });
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/bisnis/getAllOffice',       [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
+    Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
     Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');

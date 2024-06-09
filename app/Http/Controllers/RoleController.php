@@ -18,18 +18,21 @@ class RoleController extends Controller
     //View
         public function showRole(Request $request)
         {
-            $accessMenus        = $request->get('accessMenus');
-            $roles              = Role::where('id', '!=', 1)->with('users')->get();
-
+            $accessMenus = $request->get('accessMenus');
+            $roles = Role::where('id', '!=', 1)->with(['users' => function ($query) {
+                $query->orderBy('created_at', 'desc')->take(10);
+            }])->get();
+        
             $data = [
                 'title' => 'Role List',
                 'subtitle' => 'Bilik Hukum',
                 'roles' => $roles,
                 'sidebar' => $accessMenus,
             ];
-
+        
             return view('Portal.Role.roleIndex', $data);
         }
+    
         
         public function showRoleAccess(Request $request)
         {

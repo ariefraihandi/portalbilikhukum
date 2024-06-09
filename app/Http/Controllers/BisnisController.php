@@ -3,9 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Models\OfficeVerificationList;
 use App\Models\Office;
+use App\Models\OfficeActivity;
+use App\Models\OfficeDocument;
 use DataTables;
 use Carbon\Carbon;
+use App\Mail\OfficeVerified;
 
 class BisnisController extends Controller
 {
@@ -18,7 +26,140 @@ class BisnisController extends Controller
         ];
         return view('Portal.Bisnis.lawyerList', $data);        
     }
+    
+   
+    public function showOfficeVerify(Request $request)
+    {
+        // Mendapatkan user_id dan office_id dari URL
+        $user_id        = $request->query('user_id');
+        $office_id      = $request->query('office_id');
+        $token          = $request->query('token');
 
+        if (config('app.url') === 'http://localhost') {
+            // Application is running in a local environment
+            $url = "http://127.0.0.1:8000/";
+        } else {
+            // Application is running on the server
+            $url = "https://bilikhukum.com/";
+        }
+
+        $officeVerification = OfficeVerificationList::where('user_id', $user_id)
+                                                     ->where('office_id', $office_id)
+                                                     ->first();
+
+        // Mengecek apakah data ditemukan
+        if ($officeVerification) {
+            // Ambil data office
+            $office                 = $officeVerification->office;
+            $officeDocuments        = $office->documents;
+
+            // Siapkan data untuk view
+            $data = [
+                'title'             => 'Lawyer Verify',
+                'subtitle'          => 'Bilik Hukum',
+                'sidebar'           => $request->get('accessMenus'),
+                'office'            => $office,
+                'officeDocuments'   => $officeDocuments,
+                'token'             => $token,
+                'office_id'         => $office_id,
+                'user_id'           => $user_id,
+                'url'               => $url,
+            ];
+
+            return view('Portal.Bisnis.verifyOffice', $data);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Office verification not found',
+                ],
+            ]);
+            return redirect()->back()->with('error', 'Office verification not found');
+        }
+    }
+    
+    public function officeVerify(Request $request)
+    {
+        $user_id   = $request->query('user_id');
+        $office_id = $request->query('office_id');
+        $token     = $request->query('token');
+    
+        try {
+            // Check if the record exists
+            $verification = OfficeVerificationList::where('user_id', $user_id)
+                ->where('office_id', $office_id)
+                ->where('token', $token)
+                ->first();
+    
+            if ($verification) {
+                // Get office id and delete the verification record
+                $office_id = $verification->office_id;
+                $verification->delete();
+    
+                // Update the status of the office
+                $office = Office::find($office_id);
+                if ($office) {
+                    $office->status = 2;
+                    $office->save();
+    
+                    // Send email notification
+                    Mail::to($office->email_kantor)->send(new OfficeVerified($office));
+    
+                    // Create office activity
+                    OfficeActivity::create([
+                        'office_id' => $office_id,
+                        'name' => 'Verification Success',
+                        'description' => 'Verifikasi sudah disetujui',
+                        'badge' => 'success',
+                        'status' => '1',
+                    ]);
+                }
+    
+                // Get all documents related to the office
+                $documents = OfficeDocument::where('office_id', $office_id)->get();
+                foreach ($documents as $document) {
+                    // Unlink (delete) the document file from the file system
+                    $filePath = public_path('assets/img/office/document/' . $document->file);
+                    if (File::exists($filePath)) {
+                        File::delete($filePath);
+                    }
+                    // Delete the document record from the database
+                    $document->delete();
+                }
+    
+                // Redirect with success message
+                return redirect()->route('bisnis.office.list')->with([
+                    'response' => [
+                        'success' => true,
+                        'title'   => 'Success',
+                        'message' => 'Office verification successful.',
+                    ],
+                ]);
+            } else {
+                // Redirect with error message if verification record not found
+                return redirect()->route('bisnis.office.list')->with([
+                    'response' => [
+                        'success' => false,
+                        'title'   => 'Error',
+                        'message' => 'Verification record not found.',
+                    ],
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Redirect with error message in case of exception
+            return redirect()->route('bisnis.office.list')->with([
+                'response' => [
+                    'success' => false,
+                    'title'   => 'Error',
+                    'message' => 'Failed to verify office. ' . $e->getMessage(),
+                ],
+            ]);
+        }
+    }
+    
+    
+    
     public function getAllOffice(Request $request)
     {
         if ($request->ajax()) {

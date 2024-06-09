@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Exception;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -67,14 +68,22 @@ class AuthController extends Controller
                     'message' => $errorMessage,
                 ];
                 return redirect()->back()->with('response', $response);
-            }             
+            }
             
+            // Ambil URL tujuan dari sesi atau default ke halaman profil
+            $intendedUrl = Session::get('url.intended', route('account.profile'));
+            
+            // Bersihkan URL tujuan dari sesi
+            Session::forget('url.intended');
+    
             $response = [
                 'success' => true,
                 'title' => 'Berhasil',
                 'message' => 'Anda berhasil login.',
             ];
-            return redirect()->route('account.profile')->with('response', $response);
+            
+            // Redirect ke URL yang disimpan di sesi atau ke halaman profil
+            return redirect()->intended($intendedUrl)->with('response', $response);
         }
     
         // Autentikasi gagal, buat pesan kesalahan
@@ -118,7 +127,7 @@ class AuthController extends Controller
             $url = "http://127.0.0.1:8000/verify-email?uniqueid=";
         } else {
             // Application is running on the server
-            $url = "https://portal.bilikhukum.com/verify-email?uniqueid=";
+            $url = "https://bilikhukum.com/verify-email?uniqueid=";
         }
 
         $data = [

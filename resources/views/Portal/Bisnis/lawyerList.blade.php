@@ -185,6 +185,7 @@
     <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/cleavejs/cleave.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/cleavejs/cleave-phone.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" /> 
 @endpush
 
 @push('footer-Sec-script')

@@ -60,4 +60,9 @@ class Office extends Model
     {
         return $this->belongsTo(Province::class, 'provinsi', 'code');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(OfficeDocument::class);
+    }
 }
