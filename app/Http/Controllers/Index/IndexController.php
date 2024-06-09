@@ -27,6 +27,6 @@ class IndexController extends Controller
             'title' => 'Bilik Hukum - Solusi Hukum Terbaik',
         ];
 
-        return view('index.index', $data);
+        return view('Index.index', $data);
     }
 }
