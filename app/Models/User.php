@@ -65,4 +65,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function refferalCode()
+    {
+        return $this->hasOne(RefferalCode::class);
+    }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(RefferalCode::class, 'referedby', 'code');
+    }
 }

@@ -13,6 +13,6 @@
 	<script src="{{ asset('assets/index/assets-index') }}/js/tilt.jquery.min.js"></script>
 	<script src="{{ asset('assets/index/assets-index') }}/js/script.js"></script>
 	<script src="{{ asset('assets/index/assets-index') }}/js/gmap3.min.js"></script>
-	<script src="http://maps.google.com/maps/api/js?key=AIzaSyC61_QVqt9LAhwFdlQmsNwi5aUJy9B2SyA"></script>
+	<script src="http://maps.google.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}"></script>
     <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
     @stack('footer-script')

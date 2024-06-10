@@ -44,12 +44,11 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     
     Route::get('/bisnis/office/list',       [BisnisController::class, 'showOfficeList'])->name('bisnis.office.list');
     Route::get('/bisnis/office/verify',     [BisnisController::class, 'showOfficeVerify'])->name('bisnis.office.verify');
-    
 });
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
-    Route::get('/bisnis/getAllOffice',       [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
+    
     Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
@@ -92,6 +91,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/getdata/submenu',          [MenuController::class, 'getDatasubMenu'])->name('getDatasubMenu');
         Route::get('/getdata/childmenu',        [MenuController::class, 'getDataChildMenu'])->name('getDataChildMenu');
         Route::get('/getdata/user',             [UserController::class, 'getDataUser'])->name('getDataUser');
+        Route::get('/getdata/alloffice',        [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
+        Route::get('/getdata/refferal',         [AccountController::class, 'getDataRefferal'])->name('getDataRefferal');
     //Get Data
 });
 

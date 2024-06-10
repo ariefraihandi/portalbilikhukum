@@ -7,26 +7,18 @@
           <ul
             class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end"
           >
-            <li class="active"><a href="index.html">Home</a></li>
+            <li class="active"><a href="{{ route('index.index') }}">Home</a></li>
+            <li><a href="{{ route('index.index') }}#about">Tentang Kami</a></li>
             <li class="has-children">
-              <a href="properties.html">Properties</a>
+              <a href="#">Layanan</a>
               <ul class="dropdown">
-                <li><a href="#">Buy Property</a></li>
-                <li><a href="#">Sell Property</a></li>
-                <li class="has-children">
-                  <a href="#">Dropdown</a>
-                  <ul class="dropdown">
-                    <li><a href="#">Sub Menu One</a></li>
-                    <li><a href="#">Sub Menu Two</a></li>
-                    <li><a href="#">Sub Menu Three</a></li>
-                  </ul>
-                </li>
+                <li><a href="#">Cari Pengacara</a></li>
+                <li><a href="#">Cari Notaris</a></li>                
+                <li><a href="#">Cari Mediator</a></li>                
               </ul>
-            </li>
-            <li><a href="services.html">Services</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact Us</a></li>
-            <li><a href="{{ route('showRegister') }}" class="btn btn-primary">Bergabung Bersama Kami</a></li>
+            </li>            
+            <li><a href="contact.html">Hubungi Kami</a></li>
+            <li><a href="{{ route('join') }}/?token=3wnY0chj" class="btn btn-primary">Bergabung Bersama Kami</a></li>
           </ul>
 
           <a

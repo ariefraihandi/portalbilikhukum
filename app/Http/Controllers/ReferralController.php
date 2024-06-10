@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\RefferalCode;
 use App\Models\Role;
 use App\Models\User;
+use DataTables;
+use Carbon\Carbon;
 
 
 class ReferralController extends Controller
@@ -58,7 +60,6 @@ class ReferralController extends Controller
         return view('Portal.Account.refferal', $data);
     }
 
-
     public function refferalGenerate(Request $request)
     {
         try {
@@ -92,5 +93,7 @@ class ReferralController extends Controller
             ]);
         }
     }
+
+    
     
 }

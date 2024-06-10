@@ -190,21 +190,19 @@
 
     <!-- Referral List Table -->
     <div class="card">
-    <div class="card-datatable table-responsive">
-        <table class="datatables-referral table border-top">
-        <thead>
-            <tr>
-            <th></th>
-            <th></th>
-            <th>Users</th>
-            <th class="text-nowrap">Referred ID</th>
-            <th>Status</th>
-            <th>Value</th>
-            <th class="text-nowrap">Earnings</th>
-            </tr>
-        </thead>
-        </table>
-    </div>
+        <div class="card-datatable table-responsive">
+            <table  id="refferal-table" class="datatables-referral table border-top">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Member</th>
+                    <th>Since</th>
+                    <th>Status</th>
+                    <th>Revanue</th>             
+                </tr>
+            </thead>
+            </table>
+        </div>
     </div>
 </div>
 <!-- / Content -->
@@ -212,165 +210,164 @@
 <!-- Modal -->
     <div class="modal fade" id="referAndEarn" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-simple modal-refer-and-earn">
-        <div class="modal-content p-3 p-md-5">
-            <div class="modal-body">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="text-center mb-4">
-                <h3>Refer & Earn</h3>
-                <p class="text-center mb-5 w-75 m-auto">
-                Undang teman anda untuk menjadi member di Bilikhukum.com dan hasilkan pendapatan tambahan
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-12 col-lg-4 px-4">
-                <div class="d-flex justify-content-center mb-4">
-                    <div class="modal-refer-and-earn-step bg-label-primary">
-                    <i class="bx bx-detail"></i>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-4">
+                    <h3>Refer & Earn</h3>
+                    <p class="text-center mb-5 w-75 m-auto">
+                    Undang teman anda untuk menjadi member di Bilikhukum.com dan hasilkan pendapatan tambahan
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-4 px-4">
+                    <div class="d-flex justify-content-center mb-4">
+                        <div class="modal-refer-and-earn-step bg-label-primary">
+                        <i class="bx bx-detail"></i>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h5>Pelajari Aturan ⚖️</h5>
+                    </div>
+                    <div class="d-grid gap-2 col-lg-12 mx-auto">                    
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#twoFactorAuthOne">Baca Peraturan</button>
+                    </div>                
+                    </div>
+                    <div class="col-12 col-lg-4 px-4">
+                    <div class="d-flex justify-content-center mb-4">
+                        <div class="modal-refer-and-earn-step bg-label-primary">
+                        <i class="bx bxs-paper-plane"></i>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h5>Bagikan Tautan 🖖</h5>
+                        <p class="mb-lg-0">Manfaatkan media social anda, Bagikan tautan</p>
+                    </div>
+                    </div>
+                    <div class="col-12 col-lg-4 px-4">
+                    <div class="d-flex justify-content-center mb-4">
+                        <div class="modal-refer-and-earn-step bg-label-primary">
+                        <i class="bx bx-money-withdraw"></i>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h5>Hasilkan Uang 💰</h5>
+                        <p class="mb-0">Lakukan persiapan shoping untuk pasangan anda</p>
+                    </div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <h5>Pelajari Aturan ⚖️</h5>
-                </div>
-                <div class="d-grid gap-2 col-lg-12 mx-auto">                    
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#twoFactorAuthOne">Baca Peraturan</button>
-                </div>                
-                </div>
-                <div class="col-12 col-lg-4 px-4">
-                <div class="d-flex justify-content-center mb-4">
-                    <div class="modal-refer-and-earn-step bg-label-primary">
-                    <i class="bx bxs-paper-plane"></i>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <h5>Bagikan Tautan 🖖</h5>
-                    <p class="mb-lg-0">Manfaatkan media social anda, Bagikan tautan</p>
-                </div>
-                </div>
-                <div class="col-12 col-lg-4 px-4">
-                <div class="d-flex justify-content-center mb-4">
-                    <div class="modal-refer-and-earn-step bg-label-primary">
-                    <i class="bx bx-money-withdraw"></i>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <h5>Hasilkan Uang 💰</h5>
-                    <p class="mb-0">Lakukan persiapan shoping untuk pasangan anda</p>
-                </div>
+                <hr class="my-5" />          
+                    <form class="row g-3" method="POST" action="{{ route('refferal.generate') }}">
+                        @csrf
+                        <input type="hidden" name="agreed" id="agreed" value="1">
+                        <button type="submit" class="btn btn-primary">Setujui & Buat Tautan</button>
+                    </form>
                 </div>
             </div>
-            <hr class="my-5" />          
-                <form class="row g-3" method="POST" action="{{ route('refferal.generate') }}">
-                    @csrf
-                    <input type="hidden" name="agreed" id="agreed" value="1">
-                    <button type="submit" class="btn btn-primary">Setujui & Buat Tautan</button>
-                </form>
-            </div>
-        </div>
         </div>
     </div>
 
     <div class="modal fade" id="twoFactorAuthOne" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-simple">
-        <div class="modal-content p-3 p-md-5">
-            <div class="modal-body">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="text-center mb-2">
-                <h3 class="mb-0">Peraturan Penggunaan Refferal Code</h3>
-            </div>
-            <h5 class="mb-2 pt-1 text-break">A. Sumber Pendapatan</h5>
-            <ol>
-                    <li>Member mendapatkan pendapatan dari:</li>
-                    <ul>
-                        <li>Penghasilan yang diperoleh Bilikhukum.com dari bagi hasil antara:</li>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-2">
+                    <h3 class="mb-0">Peraturan Penggunaan Refferal Code</h3>
+                </div>
+                <h5 class="mb-2 pt-1 text-break">A. Sumber Pendapatan</h5>
+                <ol>
+                        <li>Member mendapatkan pendapatan dari:</li>
                         <ul>
-                            <li>Pengacara yang mendaftar dengan link Refferal member</li>
-                            <li>Notaris yang mendaftar dengan link Refferal member</li>
-                            <li>Pengacara yang mendaftar dengan link Refferal member</li>
+                            <li>Penghasilan yang diperoleh Bilikhukum.com dari bagi hasil antara:</li>
+                            <ul>
+                                <li>Pengacara yang mendaftar dengan link Refferal member</li>
+                                <li>Notaris yang mendaftar dengan link Refferal member</li>
+                                <li>Pengacara yang mendaftar dengan link Refferal member</li>
+                            </ul>
+                            <li>Pembyaran biaya langganan member baru (Jika member baru menjadi member premium)<br>Berlaku disetiap renewal pembayaran</li>
                         </ul>
-                        <li>Pembyaran biaya langganan member baru (Jika member baru menjadi member premium)<br>Berlaku disetiap renewal pembayaran</li>
-                    </ul>
-                    <li>Skema Pendapatan</li>
-                </ol>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                        <th>Jumlah</th>
-                        <th>Bilikhukum (%)</th>
-                        <th>Rekan (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td><= 10 juta</td>
-                        <td>70%</td>
-                        <td>30%</td>
-                        </tr>
-                        <tr>
-                        <td><= 50 juta</td>
-                        <td>75%</td>
-                        <td>25%</td>
-                        </tr>
-                        <tr>
-                        <td><= 100 juta</td>
-                        <td>80%</td>
-                        <td>20%</td>
-                        </tr>
-                        <tr>
-                        <td>>= 101 juta</td>
-                        <td>90%</td>
-                        <td>10%</td>
-                        </tr>
-                        <tr>
-                        <td>Member Premium</td>
-                        <td>-</td>
-                        <td>10%-30%</td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
-                <h5 class="mb-2 pt-1 text-break">B. Metode Pembayaran</h5>
-                <ol>
-                    <li>Member yang dapat melakukan request pembayaran adalah member yang terverifikasi</li>
-                    <li>Member dapat melakukan request pembayaran kapanpun.</li>
-                    <li>Request pembayaran akan diproses pada tanggal 15 ke atas di setiap bulannya.</li>
-                    <li>Proses Pembayaran akan dilakukan dalam periode tanggal 1 s.d 15 di setiap bulan.</li>
-                </ol> 
-                <h5 class="mb-2 pt-1 text-break">C. Pembatalan Pembayaran</h5>
-                <ol>
-                    <li>Pembatalan pembayaran dapat diminta oleh member SEBELUM Periode proses pembayaran</li>
-                    <li>Pembatalan pembayaran akan dilakukan oleh Bilikhukum jika dalam proses pengecekan transaksi terjadi kecurangan</li>                
-                </ol> 
-                <h5 class="mb-2 pt-1 text-break">D. Pemblokiran Akun</h5>
-                <ol>
-                    <li>Pemblokiran akun dilakukan oleh Bilikhukum jika member melakukan kecurangan dan merugikan pihak lain</li>
-                    <li>Akun yang sudah diblokir tidak dapat dipulihkan kembali.</li>                
-                </ol> 
-                <div class="divider">
-                    <div class="divider-text">
-                        <i class="bx bx-star"></i>
+                        <li>Skema Pendapatan</li>
+                    </ol>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                            <th>Jumlah</th>
+                            <th>Bilikhukum (%)</th>
+                            <th>Rekan (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td><= 10 juta</td>
+                            <td>70%</td>
+                            <td>30%</td>
+                            </tr>
+                            <tr>
+                            <td><= 50 juta</td>
+                            <td>75%</td>
+                            <td>25%</td>
+                            </tr>
+                            <tr>
+                            <td><= 100 juta</td>
+                            <td>80%</td>
+                            <td>20%</td>
+                            </tr>
+                            <tr>
+                            <td>>= 101 juta</td>
+                            <td>90%</td>
+                            <td>10%</td>
+                            </tr>
+                            <tr>
+                            <td>Member Premium</td>
+                            <td>-</td>
+                            <td>10%-30%</td>
+                            </tr>
+                        </tbody>
+                        </table>
                     </div>
+                    <h5 class="mb-2 pt-1 text-break">B. Metode Pembayaran</h5>
+                    <ol>
+                        <li>Member yang dapat melakukan request pembayaran adalah member yang terverifikasi</li>
+                        <li>Member dapat melakukan request pembayaran kapanpun.</li>
+                        <li>Request pembayaran akan diproses pada tanggal 15 ke atas di setiap bulannya.</li>
+                        <li>Proses Pembayaran akan dilakukan dalam periode tanggal 1 s.d 15 di setiap bulan.</li>
+                    </ol> 
+                    <h5 class="mb-2 pt-1 text-break">C. Pembatalan Pembayaran</h5>
+                    <ol>
+                        <li>Pembatalan pembayaran dapat diminta oleh member SEBELUM Periode proses pembayaran</li>
+                        <li>Pembatalan pembayaran akan dilakukan oleh Bilikhukum jika dalam proses pengecekan transaksi terjadi kecurangan</li>                
+                    </ol> 
+                    <h5 class="mb-2 pt-1 text-break">D. Pemblokiran Akun</h5>
+                    <ol>
+                        <li>Pemblokiran akun dilakukan oleh Bilikhukum jika member melakukan kecurangan dan merugikan pihak lain</li>
+                        <li>Akun yang sudah diblokir tidak dapat dipulihkan kembali.</li>                
+                    </ol> 
+                    <div class="divider">
+                        <div class="divider-text">
+                            <i class="bx bx-star"></i>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 col-lg-12 mx-auto">                    
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#referAndEarn"><i class="bx bx-right-arrow-alt bx-xs ms-2 scaleX-n1-rtl"></i></i><span class="align-middle">Setujui</span></button>
+                    </div>   
                 </div>
-                <div class="d-grid gap-2 col-lg-12 mx-auto">                    
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#referAndEarn"><i class="bx bx-right-arrow-alt bx-xs ms-2 scaleX-n1-rtl"></i></i><span class="align-middle">Setujui</span></button>
-                </div>   
             </div>
-        </div>
         </div>
     </div>
 <!-- Modal -->
   
 @endsection
 
-@push('footer-script') 
-            
+@push('footer-script')        
     <script src="{{ asset('assets') }}/vendor/libs/moment/moment.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
-    @endpush
+@endpush
 
-    @push('footer-Sec-script')
-    <script src="{{ asset('assets') }}/js/app-ecommerce-referral.js"></script>
+@push('footer-Sec-script')
+    {{-- <script src="{{ asset('assets') }}/js/app-ecommerce-referral.js"></script> --}}
     <script>
         function copyURLToClipboard() {
             var referralLink = document.getElementById("referralLink");
@@ -397,11 +394,24 @@
                 showSweetAlert(response);
             @endif
         });
-    </script>
-    <script>
         function shareToWhatsApp(url) {            
             window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
         }
     </script>
-
-    @endpush
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#refferal-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('getDataRefferal') !!}',
+                columns: [
+                    { data: 'no', name: 'no' },
+                    { data: 'member', name: 'member' },
+                    { data: 'since', name: 'since' },
+                    { data: 'status', name: 'status' },            
+                    { data: 'revenue', name: 'revenue' },                    
+                ]
+            });
+        });
+      </script>
+@endpush

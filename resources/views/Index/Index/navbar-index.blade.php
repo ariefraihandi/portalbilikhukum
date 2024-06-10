@@ -79,11 +79,9 @@
 					</p>
 					<div class="side_contact">
 						<div class="social_widget ul-li headline relative-position">
-							<h3> Follow Us On:</h3>
+							<h3> Sign In:</h3>
 							<ul>
-								<li class="h-fb"><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-								<li class="h-ig"><a href="#"><i class="fab fa-instagram"></i></a></li>																							
-								<li class="h-yo"><a href="#"><i class="fab fa-youtube"></i></a></li>
+								<li class="h-fb"><a href="{{route('login')}}"><i class="fa-solid fa-right-to-bracket"></i></a></li>								
 							</ul>
 						</div>
 					</div>
