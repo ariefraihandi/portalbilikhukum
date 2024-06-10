@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>{{$title}}</title>
-	<link rel="shortcut icon" href="{{ asset('assets/index/assets-index') }}/img/logo/ficon.png" type="image/x-icon">
+	<link rel="shortcut icon" href="{{ asset('assets/img/member') }}/default.webp" type="image/x-icon">
     <meta name="description" content="{{ $meta_description }}">
     <meta name="keywords" content="{{ $meta_keywords }}">
     <meta name="author" content="{{ $meta_author }}">
