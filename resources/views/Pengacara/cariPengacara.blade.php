@@ -20,10 +20,10 @@
               </form>
           </div>
       </div>
-    </div>  
+  </div> 
   </div>
 
-  <div class="section" id="pengacara-disekitar">
+  <div class="section" id="pengacara-rekomendasi">
     <div class="container">
       <div class="row mb-5 align-items-center">
         <div class="col-lg-6">
@@ -104,7 +104,7 @@
                   <div>
                     <span class="d-block mb-2 text-black-50">{{ $office->alamat}}, {{ $office->village->name}}</span
                     >
-                    <span class="city d-block mb-3">{{ $office->district->name}}, {{ $office->province->name}}</span>
+                    <span class="city d-block mb-3">{{ $office->regency->name}}, {{ $office->province->name}}</span>
 
                     {{-- <div class="specs d-flex mb-4">
                       <span class="d-block d-flex align-items-center me-3">
@@ -155,6 +155,14 @@
     </div>
   </div>
 
+  <div class="section section-properties" id="pengacara-disekitar">
+    <div class="container">
+        <div class="row" id="officeResults">
+            <!-- Results will be injected here -->
+        </div>
+    </div>
+  </div>
+
   <div class="section">
     <div class="row justify-content-center footer-cta" data-aos="fade-up">
       <div class="col-lg-7 mx-auto text-center">
@@ -186,27 +194,79 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedValue = document.getElementById('selectedValue');
     const searchForm = document.getElementById('searchForm');
 
-    // Initialize Bootstrap tooltip
     $(searchInput).tooltip({ trigger: 'manual' });
 
     searchInput.addEventListener('input', function() {
         if (searchInput.value.length === 0) {
-            selectedValue.value = ''; // Clear selectedValue if input is cleared
+            selectedValue.value = '';
         }
     });
 
     searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
         if (!selectedValue.value) {
-            event.preventDefault();
             $(searchInput).tooltip('show');
         } else {
             $(searchInput).tooltip('hide');
-            // Continue with the form submission or other logic
+            fetchResults();
         }
     });
-});
 
-$(document).ready(function() {
+    function fetchResults() {
+        console.log({
+            selectedValue: selectedValue.value
+        });
+
+        $.ajax({
+            url: '{{ route("search-offices") }}',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                selectedValue: selectedValue.value
+            },
+            success: function(data) {
+                console.log(data);
+                renderResults(data);
+                $('html, body').animate({
+                    scrollTop: $('#pengacara-disekitar').offset().top
+                }, 400);
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    function renderResults(data) {
+        const resultsContainer = document.getElementById('officeResults');
+        resultsContainer.innerHTML = '';
+        data.forEach(function(office) {
+            const officeHtml = `
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="property-item mb-30">
+                        <a href="property-single.html" class="img">
+                            <img src="{{ asset('assets/img/member') }}/${office.user.image}" alt="Image" class="img-fluid" />
+                        </a>
+                        <div class="property-content">
+                            <div class="price mb-2"><span>${office.nama_kantor}</span></div>
+                            <div class="rate">
+                                <span class="icon-star text-warning"></span>
+                                <span class="icon-star text-warning"></span>
+                                <span class="icon-star text-warning"></span>
+                            </div>
+                            <div>
+                                <span class="d-block mb-2 text-black-50">${office.alamat}, ${office.village.name}</span>
+                                <span class="city d-block mb-3">${office.regency.name}, ${office.province.name}</span>
+                                <a href="property-single.html" class="btn btn-primary py-2 px-3">Konsultasi Gratis</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
+        });
+    }
+
     $("#searchInput").autocomplete({
         source: function(request, response) {
             $.ajax({
@@ -217,35 +277,24 @@ $(document).ready(function() {
                     search: request.term
                 },
                 success: function(data) {
-                    response(data);
+                    response($.map(data, function(item) {
+                        return {
+                            label: item.label,
+                            value: item.value
+                        };
+                    }));
                 }
             });
         },
         minLength: 1,
         select: function(event, ui) {
-            // Set selected value only when an option is clicked
             $("#selectedValue").val(ui.item.value);
-            $(searchInput).tooltip('hide'); // Hide the tooltip when an option is selected
-        }
-    });
-
-    // Tangani peristiwa klik pada tombol cari
-    $(".form-search button[type='submit']").click(function(e) {
-        e.preventDefault(); // Menghentikan perilaku bawaan tombol submit
-
-        const selectedValue = $("#selectedValue").val();
-
-        if (!selectedValue) {
-            $("#searchInput").tooltip('show');
-        } else {
-            $("#searchInput").tooltip('hide');
-            // Mengarahkan pengguna ke bagian bawah halaman
-            $('html, body').animate({
-                scrollTop: $('#pengacara-disekitar').offset().top
-            }, 400); // Durasi animasi dalam milidetik
+            searchInput.value = ui.item.label;
+            $(searchInput).tooltip('hide');
+            return false;
         }
     });
 });
 
-  </script>
+</script>
 @endpush

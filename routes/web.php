@@ -108,6 +108,7 @@ Route::get('/join',                         [AuthController::class, 'showRegiste
 Route::post('/join',                        [AuthController::class, 'registerJoin'])->name('join.post');
 
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
+Route::get('/search-offices',               [PengacaraController::class, 'searchOffices'])->name('search-offices');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showPengacara');
 
 

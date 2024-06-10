@@ -30,32 +30,46 @@ class PengacaraController extends Controller
         return view('Pengacara.cariPengacara', compact('data'));
     }
 
-
     public function search(Request $request)
     {
-        // Pastikan permintaan adalah permintaan AJAX
         if ($request->ajax()) {
-            // Lakukan pencarian berdasarkan data yang diterima dari request
             $searchTerm = $request->input('search');
-        
-            // Lakukan pencarian di kedua tabel provinces dan regencies
+
             $provinces = Province::where('name', 'like', "%$searchTerm%")->get();
             $regencies = Regency::where('name', 'like', "%$searchTerm%")->get();
-        
-            // Gabungkan hasil pencarian dari kedua tabel menjadi satu array
+
             $results = [];
             foreach ($provinces as $province) {
-                $results[] = ['value' => $province->name, 'text' => $province->code];
+                $results[] = ['value' => $province->code, 'label' => $province->name];
             }
             foreach ($regencies as $regency) {
-                $results[] = ['value' => $regency->name, 'text' => $regency->code];
+                $results[] = ['value' => $regency->province_code . '-' . $regency->code, 'label' => $regency->name];
             }
-        
-            // Kembalikan hasil pencarian sebagai respons JSON
+
             return response()->json($results);
         } else {
-            // Jika bukan permintaan AJAX, kembalikan respons dengan kode status yang sesuai
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }
+
+    public function searchOffices(Request $request)
+    {
+        $query = Office::with(['user', 'village', 'regency', 'district', 'province']);
+    
+        if ($request->has('selectedValue')) {
+            $selectedValue = $request->get('selectedValue');
+            $values = explode('-', $selectedValue);
+            if (count($values) == 2) {
+                $query->where('kabupaten_kota', $values[1]);
+            } elseif (count($values) == 1) {
+                $query->where('provinsi', $values[0]);
+            }
+        }
+    
+        $offices = $query->inRandomOrder()->get();
+    
+        return response()->json($offices);
+    }
+    
+    
 }

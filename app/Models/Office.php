@@ -65,4 +65,16 @@ class Office extends Model
     {
         return $this->hasMany(OfficeDocument::class);
     }
+
+    public function klienChats()
+    {
+        return $this->hasMany(KlienChat::class, 'id_office');
+    }
+
+    public function legalCases()
+    {
+        return $this->belongsToMany(LegalCase::class, 'office_cases')
+                    ->withPivot('min_fee', 'max_fee')
+                    ->withTimestamps();
+    }
 }
