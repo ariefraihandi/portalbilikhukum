@@ -169,7 +169,7 @@
                             </div>
                             <div class="service_content headline pera-content">
                                 <h3><a href="{{ route('showPengacara') }}">Pengacara</a></h3>
-                                <p>Firma hukum layanan penuh di London yang telah diakui secara internasional dengan spesialisasi dalam bidang Komersial.</p>
+                                <p>Firma hukum di Indonesia menangani berbagai bidang, termasuk hukum komersial, pidana, perdata, keluarga, ketenagakerjaan, properti, dan hukum lingkungan.</p>
                                 <a class="btn btn-secondary" href="{{ route('showPengacara') }}">Pelajari Lebih Lanjut</a>
                             </div>
                         </div>

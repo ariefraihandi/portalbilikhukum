@@ -6,8 +6,9 @@
 
     <title>{{$title}} | {{$subTitle}}</title>
 
-    <meta name="description" content="" />
-
+    <meta name="description" content="{{ $meta_description ?? 'Temukan solusi hukum terbaik di bilikhukum.com. Kami menyediakan layanan pengacara, notaris, dan konsultasi hukum profesional. Dapatkan bantuan hukum yang Anda butuhkan dengan mudah dan cepat.' }}">
+    <meta name="keywords" content="{{ $meta_keywords ?? 'hukum, pengacara, notaris, konsultasi hukum, jasa hukum, bantuan hukum' }}">
+    <meta name="author" content="{{ $meta_author ?? 'Bilik Hukum' }}">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon/favicon.ico" />
 

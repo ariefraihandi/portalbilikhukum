@@ -130,7 +130,12 @@ class AuthController extends Controller
             $url = "https://bilikhukum.com/verify-email?uniqueid=";
         }
 
+        
+
         $data = [
+            'meta_description' => 'Daftarkan kantor hukum Anda dan bergabunglah bersama bilikhukum.com. Kami menyediakan platform untuk pengacara, notaris dan mediator profesional yang siap membantu berbagai masalah hukum, mulai dari perkara pidana, perdata, hingga bisnis. Konsultasi gratis tersedia.',
+            'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
+            'meta_author' => 'Bilik Hukum',
             'title' => 'Pendaftaran Member',
             'subTitle' => 'Bilik Hukum',
             'url' => $url,

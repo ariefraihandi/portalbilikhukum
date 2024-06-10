@@ -13,13 +13,15 @@ class PengacaraController extends Controller
     public function showIndex()
     {
         // $referedBy = 'ariefraihandi';
-        $title = 'Cari Pengacara';
+        $title = 'Jasa Pengacara Profesional';
         $subTitle = 'Bilik Hukum';
         $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
         // dd($offices);
     
         $data = [
-            // 'referedBy' => $referedBy,
+            'meta_description' => 'Jasa pengacara profesional di bilikhukum.com. Kami siap membantu Anda dengan berbagai masalah hukum, mulai dari perkara pidana, perdata, hingga bisnis. Konsultasi gratis tersedia.',
+            'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
+            'meta_author' => 'Bilik Hukum',
             'title' => $title,
             'subTitle' => $subTitle,            
             'offices' => $offices,            

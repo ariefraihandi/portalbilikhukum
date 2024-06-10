@@ -7,8 +7,9 @@
     <meta name="author" content="Untree.co" />
     <link rel="shortcut icon" href="{{ asset('assets/index/assets') }}/images/Fav-Icon.webp" />
 
-    <meta name="description" content="" />
-    <meta name="keywords" content="bootstrap, bootstrap5" />
+    <meta name="description" content="{{ $data['meta_description'] }}">
+    <meta name="keywords" content="{{ $data['meta_keywords'] }}">
+    <meta name="author" content="{{ $data['meta_author'] }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,6 +20,5 @@
     <link rel="stylesheet" href="{{ asset('assets/index/assets') }}/css/aos.css" />
     <link rel="stylesheet" href="{{ asset('assets/index/assets') }}/css/style.css" />
 
-    
-      <title>{{ $data['title'] }} - {{ $data['subTitle']}}</title>
+    <title>{{ $data['title'] }} - {{ $data['subTitle']}}</title>
   </head>
