@@ -140,7 +140,7 @@
                 <div id="service_slide" class="service_slider owl-carousel">
                     <div class="service_img_text wow fadeInUp" data-wow-delay="0ms" data-wow-duration="1500ms">
                         <div class="service_img relative-position">
-                            <img src="{{ asset('assets/index/assets-index') }}/img/service/sr2.jpg" alt="">
+                            <img src="{{ asset('assets/index/assets-index') }}/img/service/sr2.webp" alt="">
                         </div>
                         <div class="service_text relative-position">
                             <div class="service_icon float-left">                                
@@ -158,7 +158,7 @@
                     </div>
                     <div class="service_img_text wow fadeInUp" data-wow-delay="300ms" data-wow-duration="1500ms">
                         <div class="service_img relative-position">
-                            <img src="{{ asset('assets/index/assets-index') }}/img/service/sr3.jpg" alt="">
+                            <img src="{{ asset('assets/index/assets-index') }}/img/service/sr3.webp" alt="">
                         </div>
                         <div class="service_text relative-position">
                             <div class="service_icon float-left">
@@ -176,7 +176,7 @@
                     </div>
                     <div class="service_img_text wow fadeInUp" data-wow-delay="600ms" data-wow-duration="1500ms">
                         <div class="service_img relative-position">
-                            <img src="{{ asset('assets/index/assets-index') }}/img/service/sr1.jpg" alt="">
+                            <img src="{{ asset('assets/index/assets-index') }}/img/service/sr1.webp" alt="">
                         </div>
                         <div class="service_text relative-position">
                             <div class="service_icon float-left">
@@ -187,7 +187,7 @@
                             </div>
                             <div class="service_content headline pera-content">
                                 <h3><a href="!#">Mediator</a></h3>
-                                <p>Firma hukum layanan penuh di London yang telah diakui secara internasional dengan spesialisasi dalam bidang Komersial.</p>
+                                <p>Firma hukum layanan penuh di Indonesia yang telah diakui secara internasional dengan spesialisasi dalam bidang Komersial.</p>
                                 <a class="btn btn-secondary" href="injury_with_vehicles.html">Pelajari Lebih Lanjut</a>
                             </div>
                         </div>
