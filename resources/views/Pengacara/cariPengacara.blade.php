@@ -78,44 +78,64 @@
               <!-- .item -->
 
               @foreach($data['offices'] as $office)
-              <div class="property-item">
-                <a href="property-single.html" class="img">
-                  <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
-                </a>
-                <div class="property-content">
-                  <div class="price mb-2"><span>{{$office->nama_kantor}}</span></div>
-                  <div class="rate">
-                    <span class="icon-star text-warning"></span>
-                    <span class="icon-star text-warning"></span>
-                    <span class="icon-star text-warning"></span>
-                    {{-- <span class="icon-star text-warning"></span> --}}
-                    {{-- <span class="icon-star text-warning"></span> --}}
-                  </div>
-                  <div>
-                    <span class="d-block mb-2 text-black-50">{{ $office->alamat}}, {{ $office->village->name}}</span
-                    >
-                    <span class="city d-block mb-3">{{ $office->regency->name}}, {{ $office->province->name}}</span>
+                <div class="property-item">
+                    <a href="property-single.html" class="img">
+                        <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
+                    </a>
+                    <div class="property-content">
+                        <div class="price mb-2"><span>{{ $office->nama_kantor }}</span></div>
+                        <div class="rate">
+                            @for ($i = 0; $i < $office->label_count; $i++)
+                                <span class="icon-dollar text-warning"></span>
+                            @endfor
+                        </div>
+                        <div>
+                            <span class="d-block mb-2 text-black-50">{{ $office->alamat }}, {{ $office->village->name }}</span>
+                            <span class="city d-block mb-3">{{ $office->regency->name }}, {{ $office->province->name }}</span>
+                            <a href="#" class="btn btn-primary py-2 px-3 consult-btn" data-office-id="{{ $office->id }}" data-office-name="{{ $office->nama_kantor }}" data-office-address="{{ $office->alamat }}" data-office-village="{{ $office->village->name }}" data-office-regency="{{ $office->regency->name }}" data-office-province="{{ $office->province->name }}">Konsultasi Gratis</a>
+                        </div>
+                    </div>
+                </div>
+              @endforeach
+              {{-- @foreach($data['offices'] as $office)
+                <div class="property-item">
+                  <a href="property-single.html" class="img">
+                    <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
+                  </a>
+                  <div class="property-content">
+                    <div class="price mb-2"><span>{{$office->nama_kantor}}</span></div>
+                    <div class="rate">
+                      <span class="icon-star text-warning"></span>
+                      <span class="icon-star text-warning"></span>
+                      <span class="icon-star text-warning"></span>
+                      <span class="icon-star text-warning"></span>
+                      <span class="icon-star text-warning"></span>
+                    </div>
+                    <div>
+                      <span class="d-block mb-2 text-black-50">{{ $office->alamat}}, {{ $office->village->name}}</span
+                      >
+                      <span class="city d-block mb-3">{{ $office->regency->name}}, {{ $office->province->name}}</span>
 
-                    {{-- <div class="specs d-flex mb-4">
-                      <span class="d-block d-flex align-items-center me-3">
-                        <span class="icon-bed me-2"></span>
-                        <span class="caption">2 beds</span>
-                      </span>
-                      <span class="d-block d-flex align-items-center">
-                        <span class="icon-bath me-2"></span>
-                        <span class="caption">2 baths</span>
-                      </span>
-                    </div> --}}
+                      <div class="specs d-flex mb-4">
+                        <span class="d-block d-flex align-items-center me-3">
+                          <span class="icon-bed me-2"></span>
+                          <span class="caption">2 beds</span>
+                        </span>
+                        <span class="d-block d-flex align-items-center">
+                          <span class="icon-bath me-2"></span>
+                          <span class="caption">2 baths</span>
+                        </span>
+                      </div>
 
-                    <a
-                      href="property-single.html"
-                      class="btn btn-primary py-2 px-3"
-                      >Konsultasi Gratis</a
-                    >
+                      <a
+                        href="property-single.html"
+                        class="btn btn-primary py-2 px-3"
+                        >Konsultasi Gratis</a
+                      >
+                    </div>
                   </div>
                 </div>
-              </div>
-            @endforeach
+              @endforeach --}}
             </div>
 
             <div
@@ -165,6 +185,55 @@
     </div>
   </div>
 
+  <div class="section" id="contact-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-5 mb-lg-0" data-aos="fade-up" data-aos-delay="100">
+                <div class="contact-info">
+                      <div id="selected-office-info">                        
+                        <h3 id="office-name"></h3>
+                        
+                        
+                     
+                        
+                    </div>
+                    <div class="address mt-2">
+                        <i class="icon-room"></i>
+                        <h4 class="mb-2">Alamat:</h4>
+                        <p id="office-address"></p>
+                    </div>
+                    <div class="open-hours mt-4">
+                        <i class="icon-clock-o"></i>
+                        <h4 class="mb-2">Open Hours:</h4>
+                        <p>Senin-Jumat:<br />08:00 AM - 05.00 PM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+                <form action="#" id="contact-form">
+                    <input type="hidden" id="office-id" name="office-id" value="">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <input type="text" class="form-control" placeholder="Your Name" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <input type="email" class="form-control" placeholder="Your Email" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <input type="text" class="form-control" placeholder="Subject" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <textarea name="" id="" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <input type="submit" value="Send Message" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
 
   <div class="section">
     <div class="row justify-content-center footer-cta" data-aos="fade-up">
@@ -260,39 +329,79 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderResults(data) {
-        const resultsContainer = document.getElementById('officeResults');
-        resultsContainer.innerHTML = '';
-        if (data.length > 0) {
-            document.getElementById('pengacara-disekitar').style.display = 'block';
-            data.forEach(function(office) {
-                const officeHtml = `
-                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                        <div class="property-item mb-30">
-                            <a href="property-single.html" class="img">
-                                <img src="{{ asset('assets/img/member') }}/${office.user.image}" alt="Image" class="img-fluid" />
-                            </a>
-                            <div class="property-content">
-                                <div class="price mb-2"><span>${office.nama_kantor}</span></div>
-                                <div class="rate">
-                                    <span class="icon-star text-warning"></span>
-                                    <span class="icon-star text-warning"></span>
-                                    <span class="icon-star text-warning"></span>
-                                </div>
-                                <div>
-                                    <span class="d-block mb-2 text-black-50">${office.alamat}, ${office.village.name}</span>
-                                    <span class="city d-block mb-3">${office.regency.name}, ${office.province.name}</span>
-                                    <a href="property-single.html" class="btn btn-primary py-2 px-3">Konsultasi Gratis</a>
-                                </div>
+    const resultsContainer = document.getElementById('officeResults');
+    resultsContainer.innerHTML = '';
+    if (data.length > 0) {
+        document.getElementById('pengacara-disekitar').style.display = 'block';
+        data.forEach(function(office) {
+            let dollarSigns = '';
+            for (let i = 0; i < office.label_count; i++) {
+                dollarSigns += `<span class="icon-dollar text-warning"></span>`;
+            }
+
+            const officeHtml = `
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="property-item mb-30">
+                        <a href="property-single.html" class="img">
+                            <img src="/assets/img/member/${office.user.image}" alt="Image" class="img-fluid" />
+                        </a>
+                        <div class="property-content">
+                            <div class="price mb-2"><span>${office.nama_kantor}</span></div>
+                            <div class="rate">
+                                ${dollarSigns}
+                            </div>
+                            <div>
+                                <span class="d-block mb-2 text-black-50">${office.alamat}, ${office.village.name}</span>
+                                <span class="city d-block mb-3">${office.regency.name}, ${office.province.name}</span>
+                                <a href="#" class="btn btn-primary py-2 px-3 consult-btn" data-office-id="${office.id}" data-office-name="${office.nama_kantor}" data-office-address="${office.alamat}" data-office-village="${office.village.name}" data-office-regency="${office.regency.name}" data-office-province="${office.province.name}">Konsultasi Gratis</a>
                             </div>
                         </div>
                     </div>
-                `;
-                resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
-            });
-        } else {
-            document.getElementById('pengacara-disekitar').style.display = 'none';
-        }
+                </div>
+            `;
+            resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
+        });
+
+        // Reattach event listeners for the new "Konsultasi Gratis" buttons
+        attachConsultButtonListeners();
+    } else {
+        document.getElementById('pengacara-disekitar').style.display = 'none';
     }
+}
+
+function attachConsultButtonListeners() {
+    var consultButtons = document.querySelectorAll('.consult-btn');
+    var contactSection = document.getElementById('contact-section');
+    var officeIdInput = document.getElementById('office-id');
+
+    var officeName = document.getElementById('office-name');
+    var officeAddress = document.getElementById('office-address');
+    var officeVillage = document.getElementById('office-village');
+    var officeRegency = document.getElementById('office-regency');
+    var officeProvince = document.getElementById('office-province');
+
+    consultButtons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            var officeId = button.getAttribute('data-office-id');
+            officeIdInput.value = officeId;
+
+            // Set the office details
+            officeName.innerText = "Hubungi: " + button.getAttribute('data-office-name');
+            officeAddress.innerText = button.getAttribute('data-office-address') + ", " + button.getAttribute('data-office-village') + ", " + button.getAttribute('data-office-regency') + ", " + button.getAttribute('data-office-province');
+
+            contactSection.style.display = 'block';
+
+            // Smooth scroll to the contact section
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    attachConsultButtonListeners();
+});
+
 
     $("#searchInput").autocomplete({
         source: function(request, response) {
@@ -329,5 +438,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  document.addEventListener('DOMContentLoaded', function () {
+        var consultButtons = document.querySelectorAll('.consult-btn');
+        var contactSection = document.getElementById('contact-section');
+        var officeIdInput = document.getElementById('office-id');
+
+        var officeName = document.getElementById('office-name');
+        var officeAddress = document.getElementById('office-address');
+        var officeVillage = document.getElementById('office-village');
+        var officeRegency = document.getElementById('office-regency');
+        var officeProvince = document.getElementById('office-province');
+
+        consultButtons.forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                var officeId = button.getAttribute('data-office-id');
+                officeIdInput.value = officeId;
+
+                // Set the office details
+                officeName.innerText = "Hubungi: " + button.getAttribute('data-office-name');
+                officeAddress.innerText = button.getAttribute('data-office-address')+", "+ button.getAttribute('data-office-village')+", "+ button.getAttribute('data-office-regency')+", "+ button.getAttribute('data-office-province');
+
+                contactSection.style.display = 'block';
+
+                // Smooth scroll to the contact section
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    });
 </script>
 @endpush

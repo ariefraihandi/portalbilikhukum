@@ -18,15 +18,22 @@
         <span class="text-muted fw-light">Account /</span> {{$title}}
     </h4>
     
-    @if($office->isEmpty())
-    <button type="button" class="btn btn-label-warning" data-bs-toggle="modal" data-bs-target="#officeRegister">
-      Daftarkan Kantor Hukum Anda
-    </button>
+    @if ($office->isEmpty())
+      <button type="button" class="btn btn-label-warning" data-bs-toggle="modal" data-bs-target="#officeRegister">
+          Daftarkan Kantor Hukum Anda
+      </button>
     @else
-        <button type="button" class="btn btn-label-success">
-            Kelola Kantor Hukum Anda
-        </button>
+      @php
+        $officeType = $office->first()->type;
+      @endphp
+
+      @if ($officeType == 1)
+        <a href="/lawyer" class="btn btn-label-success">Kelola Kantor Hukum Anda</a>
+      @elseif ($officeType == 2)
+        <a href="/notaris" class="btn btn-label-success">Kelola Kantor Hukum Anda</a>
+      @endif
     @endif
+
   </div> 
   <div class="row">
     <!-- Customer-detail Sidebar -->
@@ -619,30 +626,30 @@
       });
     </script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-      // Event listener untuk tombol Mendaftar
-      document.querySelector('.btn-mendaftar').addEventListener('click', function(event) {
-          event.preventDefault(); // Mencegah navigasi default
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Event listener untuk tombol Mendaftar
+          document.querySelector('.btn-mendaftar').addEventListener('click', function(event) {
+              event.preventDefault(); // Mencegah navigasi default
 
-          var erorDetil = {{ $erorDetil }}; // Asumsikan erorDetil tersedia dari backend
+              var erorDetil = {{ $erorDetil }}; // Asumsikan erorDetil tersedia dari backend
 
-          if (erorDetil > 4) {
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Profile Belum Lengkap',
-                  text: 'Lengkapi profile anda dan ubah avatar anda sebelum mendaftar',
-              }).then((result) => {
-                  if (result.isConfirmed) {
-                      window.location.href = '{{ route("account.detil") }}';
-                  }
-              });
-          } else {
-              window.location.href = '{{ route("showRegisterPengacara") }}';
-          }
+              if (erorDetil > 4) {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Profile Belum Lengkap',
+                      text: 'Lengkapi profile anda dan ubah avatar anda sebelum mendaftar',
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          window.location.href = '{{ route("account.detil") }}';
+                      }
+                  });
+              } else {
+                  window.location.href = '{{ route("showRegisterPengacara") }}';
+              }
+          });
       });
-  });
-</script>
+    </script>
 
     <script>
       function showSweetAlert(response) {

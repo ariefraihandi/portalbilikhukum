@@ -633,7 +633,7 @@ class MenuController extends Controller
                 ->addColumn('action', function ($menu) {
                     $id = $menu->id;
                     $menu_name = $menu->menu_name;
-                    $editModalTrigger = '<a href="#" class="text-body edit-menu-btn" data-toggle="modal" data-target="#editMenuModal_' . $id . '">' .
+                    $editModalTrigger = '<a href="#" class="text-body edit-menu-btn" data-toggle="modal" data-target="#editPerkara_' . $id . '">' .
                                         '<i class="bx bxs-message-square-edit mx-1"></i>' .
                                         '</a>';
                     $deleteConfirmation = '<a href="#" class="text-body" onclick="showDeleteConfirmation(\'' . '/delete/menu?id=' . $id . '\', \'' . 'Hapus Menu: ' . $menu_name . ' ?\')">' .

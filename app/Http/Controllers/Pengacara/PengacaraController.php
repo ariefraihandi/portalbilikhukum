@@ -7,17 +7,26 @@ use Illuminate\Http\Request;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\Office;
+use App\Models\OfficeCase;
 
 class PengacaraController extends Controller
 {
     public function showIndex()
     {
-        // $referedBy = 'ariefraihandi';
         $title = 'Jasa Pengacara Profesional';
         $subTitle = 'Bilik Hukum';
         $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
-        // dd($offices);
-    
+
+        // Add average fee and label count to each office
+        foreach ($offices as $office) {
+            $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+            $office->average_fee = $averageFee;
+            $office->label_count = $this->determineLabel($averageFee);
+        }
+
         $data = [
             'meta_description' => 'Jasa pengacara profesional di bilikhukum.com. Kami siap membantu Anda dengan berbagai masalah hukum, mulai dari perkara pidana, perdata, hingga bisnis. Konsultasi gratis tersedia.',
             'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
@@ -99,5 +108,19 @@ class PengacaraController extends Controller
         return response()->json($offices);
     }
     
-    
+    private function determineLabel($averageFee)
+    {
+        if ($averageFee <= 15000000) {
+            return 1; // $
+        } elseif ($averageFee <= 30000000) {
+            return 2; // $$
+        } elseif ($averageFee <= 60000000) {
+            return 3; // $$$
+        } elseif ($averageFee <= 120000000) {
+            return 4; // $$$$
+        } else {
+            return 5; // $$$$$
+        }
+    }
+
 }

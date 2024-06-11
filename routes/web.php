@@ -33,6 +33,8 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
     Route::get('/lawyer',                   [LawyerController::class, 'showLawyer'])->name('lawyer');
     Route::get('/lawyer/detil',             [LawyerController::class, 'showLawyerDetil'])->name('lawyer.detil');
+    Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
+
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
@@ -63,8 +65,14 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/office/documents',        [LawyerController::class, 'officeDocuments'])->name('office.documents');    
     Route::post('/office/update/logo',      [LawyerController::class, 'uploadOfficeLogo'])->name('upload.logo');    
     Route::post('/office/update/cover',     [LawyerController::class, 'uploadOfficeCover'])->name('upload.cover'); 
+    Route::post('/office/update/perkara',   [LawyerController::class, 'officeUpperkara'])->name('office.upperkara'); 
     Route::get('/office/askverified',       [LawyerController::class, 'officeAskverified'])->name('office.askverified'); 
     Route::delete('/office/documents/{id}', [LawyerController::class, 'destroy'])->name('office.documents.delete');      
+    Route::get('/getcase',                  [LawyerController::class, 'getCase'])->name('getcase');
+    Route::put('/update/office-case/{id}',  [LawyerController::class, 'updateOfficeCase'])->name('updateOfficeCase');
+    Route::get('/delete/officecase',        [LawyerController::class, 'deleteOfficeCase'])->name('deleteOfficeCase');
+
+
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
     
@@ -89,12 +97,14 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     //Menu
 
      //Get Data
-        Route::get('/getdata/menu',             [MenuController::class, 'getDataMenu'])->name('getDataMenu');
-        Route::get('/getdata/submenu',          [MenuController::class, 'getDatasubMenu'])->name('getDatasubMenu');
-        Route::get('/getdata/childmenu',        [MenuController::class, 'getDataChildMenu'])->name('getDataChildMenu');
-        Route::get('/getdata/user',             [UserController::class, 'getDataUser'])->name('getDataUser');
-        Route::get('/getdata/alloffice',        [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
-        Route::get('/getdata/refferal',         [AccountController::class, 'getDataRefferal'])->name('getDataRefferal');
+        Route::get('/getdata/menu',                 [MenuController::class, 'getDataMenu'])->name('getDataMenu');
+        Route::get('/getdata/submenu',              [MenuController::class, 'getDatasubMenu'])->name('getDatasubMenu');
+        Route::get('/getdata/childmenu',            [MenuController::class, 'getDataChildMenu'])->name('getDataChildMenu');
+        Route::get('/getdata/user',                 [UserController::class, 'getDataUser'])->name('getDataUser');
+        Route::get('/getdata/alloffice',            [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
+        Route::get('/getdata/refferal',             [AccountController::class, 'getDataRefferal'])->name('getDataRefferal');
+        Route::get('/getdata/perkara/{office_id}',  [LawyerController::class, 'getPerkaraData'])->name('getPerkaraData');
+
     //Get Data
 });
 

@@ -83,4 +83,8 @@ class Office extends Model
         return $this->hasOne(OfficeVerificationList::class);
     }
 
+    public function officeCases()
+    {
+        return $this->hasMany(OfficeCase::class);
+    }
 }

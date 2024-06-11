@@ -237,10 +237,10 @@
                             </div>
                             </div>
                             @endforeach
-                            <input type="text" name="office_id" id="office_id" value="{{$office->id}}">
-                            <input type="text" name="user_id" id="user_id" value="{{$office->user_id}}">
-                            <input type="text" name="token" id="token" value="{{$token}}">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                            <input type="hidden" name="office_id" id="office_id" value="{{$office->id}}">
+                            <input type="hidden" name="user_id" id="user_id" value="{{$office->user_id}}">
+                            <input type="hidden" name="token" id="token" value="{{$token}}">
+                    <button type="submit" class="btn btn-success">Verifikasi</button>
                 </form>
             </div>
         </div>

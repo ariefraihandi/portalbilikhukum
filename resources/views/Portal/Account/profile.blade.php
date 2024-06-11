@@ -18,14 +18,20 @@
         <span class="text-muted fw-light">Account /</span> {{$title}}
     </h4>
     
-    @if($office->isEmpty())
-    <button type="button" class="btn btn-label-warning" data-bs-toggle="modal" data-bs-target="#officeRegister">
-      Daftarkan Kantor Hukum Anda
-    </button>
+    @if ($office->isEmpty())
+      <button type="button" class="btn btn-label-warning" data-bs-toggle="modal" data-bs-target="#officeRegister">
+          Daftarkan Kantor Hukum Anda
+      </button>
     @else
-        <button type="button" class="btn btn-label-success">
-            Kelola Kantor Hukum Anda
-        </button>
+      @php
+        $officeType = $office->first()->type;
+      @endphp
+
+      @if ($officeType == 1)
+        <a href="/lawyer" class="btn btn-label-success">Kelola Kantor Hukum Anda</a>
+      @elseif ($officeType == 2)
+        <a href="/notaris" class="btn btn-label-success">Kelola Kantor Hukum Anda</a>
+      @endif
     @endif
   </div> 
 

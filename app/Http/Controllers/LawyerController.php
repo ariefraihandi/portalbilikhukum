@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\OfficeMember;
 use App\Models\OfficeActivity;
 use App\Models\OfficeDocument;
+use App\Models\LegalCase;
+use App\Models\OfficeCase;
 use App\Models\Office;
 use App\Models\User;
 use App\Models\OfficeVerificationList;
@@ -19,6 +21,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
 use App\Notifications\OfficeVerificationRequestNotification;
+use DataTables;
 
 class LawyerController extends Controller
 {
@@ -32,13 +35,20 @@ class LawyerController extends Controller
         if ($officeMember) {
             $officeId = $officeMember->id_office;
             
-            $office             = Office::find($officeId);
-            $joinedDate         = Carbon::parse($office->created_at)->translatedFormat('F Y');
-            $officeActivities   = OfficeActivity::where('office_id', $office->id)
-                                ->orderBy('created_at', 'desc')
-                                ->limit(10)
-                                ->get();
-            $officeDocuments    = OfficeDocument::where('office_id', $officeId)->get();
+            $office                     = Office::find($officeId);
+            $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');
+            $officeActivities           = OfficeActivity::where('office_id', $office->id)
+                                        ->orderBy('created_at', 'desc')
+                                        ->limit(10)
+                                        ->get();
+            $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+
+            $labelCount = $this->determineLabel($averageFee);
 
             $data = [
                 'title'             => 'Pengacara',
@@ -48,6 +58,7 @@ class LawyerController extends Controller
                 'joinedDate'        => $joinedDate,
                 'officeActivities'  => $officeActivities,
                 'officeDocuments'   => $officeDocuments,
+                'labelCount'        => $labelCount,
             ];
 
             return view('Portal.Pengacara.index', $data);
@@ -70,11 +81,17 @@ class LawyerController extends Controller
         $officeMember   = OfficeMember::where('id_user', $userId)->first();
 
         if ($officeMember) {
-            $officeId           = $officeMember->id_office;
-            $office             = Office::where('type', 1)->find($officeId);            
-            $joinedDate         = Carbon::parse($office->created_at)->translatedFormat('F Y');
-            $OfficeActivity     = OfficeActivity::where('office_id', $officeId)->get();
-            $officeDocuments    = OfficeDocument::where('office_id', $officeId)->get();
+            $officeId                   = $officeMember->id_office;
+            $office                     = Office::where('type', 1)->find($officeId);            
+            $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');            
+            $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+
+            $labelCount = $this->determineLabel($averageFee);
 
             $data = [
                 'title'             => 'Pengacara',
@@ -82,8 +99,8 @@ class LawyerController extends Controller
                 'sidebar'           => $request->get('accessMenus'),
                 'office'            => $office,
                 'joinedDate'        => $joinedDate,
-                'officeActivities'  => $OfficeActivity,
                 'officeDocuments'   => $officeDocuments,
+                'labelCount'        => $labelCount,
             ];
 
             return view('Portal.Pengacara.detilKantor', $data);
@@ -97,6 +114,65 @@ class LawyerController extends Controller
             ]);    
         }
     }
+    
+    public function showLawyerPerkara(Request $request)
+    {
+        Carbon::setLocale('id');
+
+        $userId = Auth::id();
+        $officeMember = OfficeMember::where('id_user', $userId)->first();
+
+        if ($officeMember) {
+            $officeId = $officeMember->id_office;
+            $office = Office::where('type', 1)->find($officeId);
+
+            // Check office status
+            if ($office->status <= 1) {
+                return redirect()->route('lawyer.detil')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Gagal',
+                        'message' => 'Kantor anda belum Terverifikasi',
+                    ],
+                ]);
+            }
+
+            $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');
+            $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
+            $legalCategories            = LegalCase::all();
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+
+            $labelCount = $this->determineLabel($averageFee);
+
+            $data = [
+                'title'             => 'Pengacara',
+                'subtitle'          => 'Bilik Hukum',
+                'sidebar'           => $request->get('accessMenus'),
+                'office'            => $office,
+                'joinedDate'        => $joinedDate,
+                'officeDocuments'   => $officeDocuments,
+                'legalCategories'   => $legalCategories,
+                'officeCases'       => $officeCases, // Pass office cases to the view
+                'labelCount'        => $labelCount // Pass the label count to the view
+            ];
+
+            return view('Portal.Pengacara.perkaraBiaya', $data);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda belum terdaftar sebagai anggota kantor.',
+                ],
+            ]);
+        }
+    }
+    
+    
 //Editing
     public function uploadOfficeLogo(Request $request)
     {
@@ -486,6 +562,42 @@ class LawyerController extends Controller
         ]);
     }
 
+    public function officeUpperkara(Request $request)
+    {
+     
+        DB::beginTransaction();
+
+        try {
+            // Create a new OfficeCase record
+            OfficeCase::create([
+                'legal_case_id' => $request->input('kategori'),
+                'office_id' => $request->input('office_id'),
+                'min_fee' => str_replace('.', '', $request->input('min_biaya')),
+                'max_fee' => str_replace('.', '', $request->input('max_biaya')),
+            ]);
+
+            // Commit the transaction
+            DB::commit();
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Data berhasil ditambahkan.',
+                ],
+            ]);            
+        } catch (\Exception $e) {
+            // Rollback the transaction if something goes wrong
+            DB::rollback();
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Terjadi Kesalahan Sistem',
+                ],
+            ]);
+        }
+    }
+
     public function destroy($id)
     {
         $document = OfficeDocument::find($id);
@@ -526,5 +638,125 @@ class LawyerController extends Controller
             ],
         ]);
     }
+
+    public function updateOfficeCase(Request $request, $id)
+    {
+        // Clean the input values
+        $min_fee_cleaned = preg_replace('/[^0-9]/', '', $request->min_fee);
+        $max_fee_cleaned = preg_replace('/[^0-9]/', '', $request->max_fee);
+
+        // Validate the cleaned input values
+        $request->merge(['min_fee' => $min_fee_cleaned, 'max_fee' => $max_fee_cleaned]);
+        $request->validate([
+            'min_fee' => 'required|numeric',
+            'max_fee' => 'required|numeric',
+        ]);
+
+        // Update the OfficeCase with cleaned values
+        $officeCase = OfficeCase::find($id);
+        $officeCase->min_fee = $request->min_fee;
+        $officeCase->max_fee = $request->max_fee;
+        $officeCase->save();
+
+        return response()->json([
+            'response' => [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Biaya Perkara telah diperbarui',
+            ]
+        ]);
+    }
+
+    public function deleteOfficeCase(Request $request)
+    {
+        $id = $request->input('id');
+        $officeCase = OfficeCase::find($id);
+    
+        if ($officeCase) {
+            $officeCase->delete();
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Perkara & Biaya Berhasil Dihapus',
+                ],
+            ]);
+        }
+    
+        return redirect()->back()->with('response', [
+            'success' => false,
+            'title' => 'Error',
+            'message' => 'Office case could not be found.'
+        ]);
+    }
+    
+
 //Editing
+//Get Data
+    public function getCase()
+    {
+        $categories = LegalCase::select('id', 'name', 'kategori')->distinct()->get();
+        return response()->json($categories);
+    }
+
+    public function getPerkaraData(Request $request, $office_id)
+    {
+        if ($request->ajax()) {
+            $data = OfficeCase::with('legalCase', 'office')
+                ->where('office_id', $office_id)
+                ->select('office_cases.*');
+
+            return DataTables::of($data)
+                ->addColumn('no', function () {
+                    static $counter = 0;
+                    $counter++;
+                    return $counter;
+                })
+                ->addColumn('perkara', function($row){
+                    return $row->legalCase->name;
+                })
+                ->addColumn('min_biaya', function($row){
+                    return number_format($row->min_fee, 0, ',', '.');
+                })
+                ->addColumn('max_biaya', function($row){
+                    return number_format($row->max_fee, 0, ',', '.');
+                })
+                ->addColumn('rata_rata', function($row){
+                    return number_format(($row->min_fee + $row->max_fee) / 2, 0, ',', '.');
+                })
+                ->addColumn('action', function($row){
+                    $editIcon = '<a href="#" class="text-body edit" data-id="' . $row->id . '" data-perkara="' . $row->legalCase->name . '" data-minfee="' . $row->min_fee . '" data-maxfee="' . $row->max_fee . '">' .
+                                '<i class="bx bxs-message-square-edit mx-1"></i>' .
+                                '</a>';
+                    $deleteIcon = '<a href="#" class="text-body" onclick="showDeleteConfirmation(\'' . route('deleteOfficeCase', ['id' => $row->id]) . '\', \'Hapus Perkara: ' . $row->legalCase->name . ' ?\')">' .
+                                '<i class="bx bx-trash"></i>' .
+                                '</a>';
+                
+                    return '<div class="d-flex align-items-center">' .
+                            $editIcon .
+                            $deleteIcon .
+                            '</div>';
+                }) 
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    }
+
+    private function determineLabel($averageFee)
+    {
+        if ($averageFee <= 15000000) {
+            return 1; // $
+        } elseif ($averageFee <= 30000000) {
+            return 2; // $$
+        } elseif ($averageFee <= 60000000) {
+            return 3; // $$$
+        } elseif ($averageFee <= 120000000) {
+            return 4; // $$$$
+        } else {
+            return 5; // $$$$$
+        }
+    }
+
+//!Get Data
+
 }

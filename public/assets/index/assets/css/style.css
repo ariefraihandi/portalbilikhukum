@@ -79,6 +79,9 @@
     #pengacara-disekitar {
         display: none;
     }
+    #contact-section {
+        display: none;
+    }
     
 body {
   margin: 0;
@@ -494,7 +497,6 @@ progress {
   width: 330px;
   height: 330px; 
 }
-  
 
 .img-thumbnail {
   padding: 0.25rem;
