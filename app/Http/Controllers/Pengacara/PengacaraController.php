@@ -92,7 +92,7 @@ class PengacaraController extends Controller
     public function searchOffices(Request $request)
     {
         $query = Office::with(['user', 'village', 'regency', 'district', 'province']);
-    
+        
         if ($request->has('selectedValue')) {
             $selectedValue = $request->get('selectedValue');
             $values = explode('-', $selectedValue);
@@ -102,11 +102,21 @@ class PengacaraController extends Controller
                 $query->where('provinsi', $values[0]);
             }
         }
+        
+        $offices = $query->get();
     
-        $offices = $query->inRandomOrder()->get();
-    
+        foreach ($offices as $office) {
+            $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+            $office->average_fee = $averageFee;
+            $office->label_count = $this->determineLabel($averageFee);
+        }
+        
         return response()->json($offices);
     }
+    
     
     private function determineLabel($averageFee)
     {
