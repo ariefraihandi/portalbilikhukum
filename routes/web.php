@@ -101,6 +101,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/getdata/submenu',              [MenuController::class, 'getDatasubMenu'])->name('getDatasubMenu');
         Route::get('/getdata/childmenu',            [MenuController::class, 'getDataChildMenu'])->name('getDataChildMenu');
         Route::get('/getdata/user',                 [UserController::class, 'getDataUser'])->name('getDataUser');
+        Route::get('/getdata/allMember',            [BisnisController::class, 'getAllMember'])->name('getAllMember');
         Route::get('/getdata/alloffice',            [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
         Route::get('/getdata/refferal',             [AccountController::class, 'getDataRefferal'])->name('getDataRefferal');
         Route::get('/getdata/perkara/{office_id}',  [LawyerController::class, 'getPerkaraData'])->name('getPerkaraData');

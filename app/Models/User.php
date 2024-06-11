@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable; // Import trait Notifiable
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes; // Tambahkan Notifiable dan SoftDeletes
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -61,18 +59,56 @@ class User extends Authenticatable
         'verified' => 'boolean',
     ];
 
-    public function role()
+    /**
+     * Relasi untuk mengambil kode referral yang dimiliki pengguna
+     */
+    public function referralCode()
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasOne(RefferalCode::class, 'user_id', 'id');
     }
 
-    public function refferalCode()
+    /**
+     * Relasi untuk pengguna yang menggunakan kode referral
+     */
+    public function referrals()
     {
-        return $this->hasOne(RefferalCode::class);
+        return $this->hasMany(User::class, 'referedby', 'id');
     }
 
-    public function referredBy()
+    /**
+     * Relasi untuk pengguna yang merujuk pengguna ini berdasarkan kode referral
+     */
+    public function referredByUser()
     {
-        return $this->belongsTo(RefferalCode::class, 'referedby', 'code');
+        return $this->belongsTo(User::class, 'referedby', 'id');
+    }
+
+    /**
+     * Metode untuk kapitalisasi kata
+     */
+    public function capitalizeWords($string)
+    {
+        return ucwords(strtolower($string));
+    }
+
+    /**
+     * Metode untuk menguraikan kode alamat menjadi bagian-bagian
+     */
+    public function getAddressParts()
+    {
+        $code = $this->address;
+        $parts = explode('.', $code);
+
+        $provinceCode = isset($parts[0]) ? $parts[0] : null;
+        $regencyCode = isset($parts[1]) ? "{$parts[0]}.{$parts[1]}" : null;
+        $districtCode = isset($parts[2]) ? "{$parts[0]}.{$parts[1]}.{$parts[2]}" : null;
+        $villageCode = isset($parts[3]) ? "{$parts[0]}.{$parts[1]}.{$parts[2]}.{$parts[3]}" : null;
+
+        return [
+            'province' => $provinceCode ? Province::where('code', $provinceCode)->first() : null,
+            'regency' => $regencyCode ? Regency::where('code', $regencyCode)->first() : null,
+            'district' => $districtCode ? District::where('code', $districtCode)->first() : null,
+            'village' => $villageCode ? Village::where('code', $villageCode)->first() : null,
+        ];
     }
 }
