@@ -77,4 +77,10 @@ class Office extends Model
                     ->withPivot('min_fee', 'max_fee')
                     ->withTimestamps();
     }
+
+    public function officeVerificationList()
+    {
+        return $this->hasOne(OfficeVerificationList::class);
+    }
+
 }

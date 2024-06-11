@@ -30,17 +30,7 @@
           <h2 class="font-weight-bold text-primary heading">
             Daftar Pengacara
           </h2>
-        </div>
-        <div class="col-lg-6 text-lg-end">
-          <p>
-            <a
-              href="#"
-              target="_blank"
-              class="btn btn-primary text-white py-3 px-4"
-              >View all properties</a
-            >
-          </p>
-        </div>
+        </div>        
       </div>
       <div class="row">
         <div class="col-12">
@@ -157,11 +147,24 @@
 
   <div class="section section-properties" id="pengacara-disekitar">
     <div class="container">
+        <div class="row mb-5 align-items-center">
+            <div class="col-lg-6">
+                <h2 class="font-weight-bold text-primary heading">
+                    Daftar Pengacara Di <span id="namaDaerah">[Nama Daerah]</span>
+                </h2>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+                <p>
+                    <a href="#" id="filterButton" class="btn btn-primary text-white py-3 px-4">Opsi Filter</a>
+                </p>
+            </div>
+        </div>
         <div class="row" id="officeResults">
             <!-- Results will be injected here -->
         </div>
     </div>
   </div>
+
 
   <div class="section">
     <div class="row justify-content-center footer-cta" data-aos="fade-up">
@@ -193,6 +196,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const selectedValue = document.getElementById('selectedValue');
     const searchForm = document.getElementById('searchForm');
+    const namaDaerah = document.getElementById('namaDaerah');
+    const filterButton = document.getElementById('filterButton');
 
     $(searchInput).tooltip({ trigger: 'manual' });
 
@@ -213,9 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function fetchResults() {
-        console.log({
-            selectedValue: selectedValue.value
-        });
+        console.log({ selectedValue: selectedValue.value });
 
         $.ajax({
             url: '{{ route("search-offices") }}',
@@ -226,6 +229,25 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(data) {
                 console.log(data);
+
+                const kode = selectedValue.value;
+
+                fetch(`/location/${kode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.name) {
+                            console.log('Nama Daerah:', data.name);
+                            namaDaerah.textContent = data.name; // Set the selected city/province name
+                        } else {
+                            console.error(data.error);
+                            namaDaerah.textContent = 'Nama daerah tidak ditemukan'; // Fallback if name is not found
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        namaDaerah.textContent = 'Terjadi kesalahan'; // Fallback if there's an error
+                    });
+
                 renderResults(data);
                 $('html, body').animate({
                     scrollTop: $('#pengacara-disekitar').offset().top
@@ -240,31 +262,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderResults(data) {
         const resultsContainer = document.getElementById('officeResults');
         resultsContainer.innerHTML = '';
-        data.forEach(function(office) {
-            const officeHtml = `
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                    <div class="property-item mb-30">
-                        <a href="property-single.html" class="img">
-                            <img src="{{ asset('assets/img/member') }}/${office.user.image}" alt="Image" class="img-fluid" />
-                        </a>
-                        <div class="property-content">
-                            <div class="price mb-2"><span>${office.nama_kantor}</span></div>
-                            <div class="rate">
-                                <span class="icon-star text-warning"></span>
-                                <span class="icon-star text-warning"></span>
-                                <span class="icon-star text-warning"></span>
-                            </div>
-                            <div>
-                                <span class="d-block mb-2 text-black-50">${office.alamat}, ${office.village.name}</span>
-                                <span class="city d-block mb-3">${office.regency.name}, ${office.province.name}</span>
-                                <a href="property-single.html" class="btn btn-primary py-2 px-3">Konsultasi Gratis</a>
+        if (data.length > 0) {
+            document.getElementById('pengacara-disekitar').style.display = 'block';
+            data.forEach(function(office) {
+                const officeHtml = `
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                        <div class="property-item mb-30">
+                            <a href="property-single.html" class="img">
+                                <img src="{{ asset('assets/img/member') }}/${office.user.image}" alt="Image" class="img-fluid" />
+                            </a>
+                            <div class="property-content">
+                                <div class="price mb-2"><span>${office.nama_kantor}</span></div>
+                                <div class="rate">
+                                    <span class="icon-star text-warning"></span>
+                                    <span class="icon-star text-warning"></span>
+                                    <span class="icon-star text-warning"></span>
+                                </div>
+                                <div>
+                                    <span class="d-block mb-2 text-black-50">${office.alamat}, ${office.village.name}</span>
+                                    <span class="city d-block mb-3">${office.regency.name}, ${office.province.name}</span>
+                                    <a href="property-single.html" class="btn btn-primary py-2 px-3">Konsultasi Gratis</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
-            resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
-        });
+                `;
+                resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
+            });
+        } else {
+            document.getElementById('pengacara-disekitar').style.display = 'none';
+        }
     }
 
     $("#searchInput").autocomplete({
@@ -294,7 +321,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
     });
-});
+
+    // Add functionality for the filter button
+    filterButton.addEventListener('click', function() {
+        // Add your filter logic here
+        alert('Filter options coming soon!');
+    });
+  });
 
 </script>
 @endpush

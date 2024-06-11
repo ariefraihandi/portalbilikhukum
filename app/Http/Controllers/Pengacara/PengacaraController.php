@@ -30,6 +30,34 @@ class PengacaraController extends Controller
         return view('Pengacara.cariPengacara', compact('data'));
     }
 
+    public function getNameByCode($code)
+    {
+        if (strpos($code, '.') !== false) {
+            // Kode kabupaten
+            $regency = Regency::where('code', $code)->first();
+            if ($regency) {
+                $formattedName = $this->formatName($regency->name);
+                return response()->json(['name' => $formattedName]);
+            }
+            return response()->json(['error' => 'Regency not found'], 404);
+        } else {
+            // Kode provinsi
+            $province = Province::where('code', $code)->first();
+            if ($province) {
+                $formattedName = $this->formatName($province->name);
+                return response()->json(['name' => $formattedName]);
+            }
+            return response()->json(['error' => 'Province not found'], 404);
+        }
+    }
+
+    private function formatName($name)
+    {
+        $lowercasedName = strtolower($name); // Mengubah semua huruf menjadi kecil
+        $formattedName = ucwords($lowercasedName); // Mengubah huruf pertama setiap kata menjadi besar
+        return $formattedName;
+    }
+
     public function search(Request $request)
     {
         if ($request->ajax()) {

@@ -3,7 +3,7 @@
 @push('head-script')     
      <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
      <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/typeahead-js/typeahead.css" />
-     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/css/pages/page-faq.css" />
+     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/css/pages/page-faq.css" />    
     <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" /> 
 @endpush
 
@@ -178,7 +178,7 @@
     <div class="row mt-5 align-items-center">
         <div class="col-lg-12 mx-auto text-center">         
             <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#notVerified">Not Verified</button>
-            <a href="{{$url}}bisnis/verify?token={{$token}}&user_id={{$user_id}}&office_id={{$office_id}}" class="btn btn-primary">Verifikasi</a>
+            <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#verifiedModal">Verified</button>            
         </div>        
     </div>
 </div>
@@ -213,10 +213,75 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="verifiedModal" tabindex="-1" aria-labelledby="verifiedModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verifiedModalLabel">Ganti Link Document Sebelum Verifikasi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="documentForm" method="POST" action="{{ route('bisnis.updateDoc') }}">
+                    @csrf
+                    @foreach($officeDocuments as $document)
+                        <div class="mb-3 row">
+                            <input type="hidden" name="documents[{{ $document->id }}][id]" value="{{ $document->id }}">
+                            <div class="col-md-6">
+                                <label for="documentName{{ $document->id }}" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="documentName{{ $document->id }}" name="documents[{{ $document->id }}][name]" value="{{ $document->name }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="documentUrl{{ $document->id }}" class="form-label">Url</label>
+                                <input type="text" class="form-control" id="documentUrl{{ $document->id }}" name="documents[{{ $document->id }}][url]" value="{{ old('documents.'.$document->id.'.url', $document->url) }}">
+                            </div>
+                            </div>
+                            @endforeach
+                            <input type="text" name="office_id" id="office_id" value="{{$office->id}}">
+                            <input type="text" name="user_id" id="user_id" value="{{$office->user_id}}">
+                            <input type="text" name="token" id="token" value="{{$token}}">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
-@push('footer-script')  
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" /> 
+@push('footer-script')      
+    <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
 @endpush
 @push('footer-Sec-script')
+<script>
+    function showDeleteConfirmation(url, message) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
+    function showSweetAlert(response) {
+        Swal.fire({
+            icon: response.success ? 'success' : 'error',
+            title: response.title,
+            text: response.message,
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('response'))
+            var response = @json(session('response'));
+            showSweetAlert(response);
+        @endif
+    });
+  </script>
 @endpush

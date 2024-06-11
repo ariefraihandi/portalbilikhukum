@@ -27,7 +27,16 @@ class BisnisController extends Controller
         return view('Portal.Bisnis.lawyerList', $data);        
     }
     
-   
+    public function showUserList(Request $request)
+    {
+        $data = [
+            'title'             => 'Lawyer List',
+            'subtitle'          => 'Bilik Hukum',
+            'sidebar'           => $request->get('accessMenus'),            
+        ];
+        return view('Portal.Bisnis.lawyerList', $data);        
+    }
+    
     public function showOfficeVerify(Request $request)
     {
         // Mendapatkan user_id dan office_id dari URL
@@ -157,7 +166,96 @@ class BisnisController extends Controller
             ]);
         }
     }
+
+    public function officeUpdateDoc(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'documents.*.id' => 'required|exists:office_documents,id',
+            'documents.*.url' => 'nullable|url',
+        ]);
     
+        // Dapatkan data dokumen dari input
+        $documentsData = $request->input('documents', []);
+        $office_id = $request->input('office_id');
+        $user_id = $request->input('user_id');
+        $token = $request->input('token');
+    
+        DB::beginTransaction();
+    
+        try {
+            foreach ($documentsData as $data) {
+                $document = OfficeDocument::find($data['id']);
+                if ($document) {
+                    // Hapus file lama dari sistem file jika ada
+                    $filePath = public_path('assets/img/office/document/' . $document->file);
+                    if (File::exists($filePath)) {
+                        File::delete($filePath);
+                    }
+    
+                    // Simpan URL baru
+                    if (!empty($data['url'])) {
+                        $document->url = $data['url'];                     
+                    } else {
+                        // Handle case where URL is not provided
+                        $document->url = null;
+                    }
+                    $document->save();
+                }
+            }
+    
+            $verification = OfficeVerificationList::where('office_id', $office_id)
+                ->where('office_id', $office_id)          
+                ->first();
+    
+            if ($verification) {
+                $verification->status = 2;
+                $verification->save();
+            }
+    
+            $office = Office::find($office_id);
+            if ($office) {
+                $office->status = 2;
+                $office->save();
+    
+                // Kirim email notifikasi
+                Mail::to($office->email_kantor)->send(new OfficeVerified($office));
+    
+                // Buat aktivitas office
+                OfficeActivity::create([
+                    'office_id' => $office_id,
+                    'name' => 'Verification Success',
+                    'description' => 'Verifikasi sudah disetujui',
+                    'badge' => 'success',
+                    'status' => '1',
+                ]);
+            }
+    
+            DB::commit();
+    
+            return redirect()->route('bisnis.office.list')->with([
+                'response' => [
+                    'success' => true,
+                    'title'   => 'Success',
+                    'message' => 'Office verification successful.',
+                ],
+            ]);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+    
+            // Redirect dengan pesan error jika terjadi exception
+            return redirect()->route('bisnis.office.list')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Failed to verify office. ' . $e->getMessage(),
+                ],
+            ]);
+        }
+    }
+    
+
     
     public function getAllOffice(Request $request)
     {
@@ -273,6 +371,14 @@ class BisnisController extends Controller
                         case 1:
                             $statusText = 'Ask Verified';
                             $badgeClass = 'bg-label-info';
+                            // Creating the URL directly in HTML using an anchor tag
+                            if ($office->officeVerificationList) {
+                                $url = '/bisnis/office/verify?token=' . $office->officeVerificationList->token . '&user_id=' . $office->user_id . '&office_id=' . $office->id;
+                                $statusText = '<a href="' . $url . '" class="' . $badgeClass . '" style="color: inherit; text-decoration: none;">' . $statusText . '</a>';
+                            } else {
+                                // If no verification list exists, just display the text without a link
+                                $statusText = '<span class="' . $badgeClass . '" style="color: inherit;">' . $statusText . '</span>';
+                            }
                             break;
                         case 2:
                             $statusText = 'Verified';
@@ -291,10 +397,9 @@ class BisnisController extends Controller
                             $badgeClass = 'bg-label-dark';
                     }
                 
+                    // Return the badge HTML
                     return '<div class="text-center"><span class="badge ' . $badgeClass . '">' . $statusText . '</span></div>';
                 })
-                
-                
                 ->addColumn('action', function ($office) {
                     $officeNumber = $office->office_number;
                     $uuid = $office->customer_uuid;

@@ -619,6 +619,31 @@
       });
     </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Event listener untuk tombol Mendaftar
+      document.querySelector('.btn-mendaftar').addEventListener('click', function(event) {
+          event.preventDefault(); // Mencegah navigasi default
+
+          var erorDetil = {{ $erorDetil }}; // Asumsikan erorDetil tersedia dari backend
+
+          if (erorDetil > 4) {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Profile Belum Lengkap',
+                  text: 'Lengkapi profile anda dan ubah avatar anda sebelum mendaftar',
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      window.location.href = '{{ route("account.detil") }}';
+                  }
+              });
+          } else {
+              window.location.href = '{{ route("showRegisterPengacara") }}';
+          }
+      });
+  });
+</script>
+
     <script>
       function showSweetAlert(response) {
           Swal.fire({

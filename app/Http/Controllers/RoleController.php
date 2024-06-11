@@ -33,7 +33,6 @@ class RoleController extends Controller
             return view('Portal.Role.roleIndex', $data);
         }
     
-        
         public function showRoleAccess(Request $request)
         {
             $accessMenus        = $request->get('accessMenus');          

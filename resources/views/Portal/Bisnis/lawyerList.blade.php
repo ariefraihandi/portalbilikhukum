@@ -185,7 +185,7 @@
     <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/cleavejs/cleave.js"></script>
     <script src="{{ asset('assets') }}/vendor/libs/cleavejs/cleave-phone.js"></script>
-    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" /> 
+    <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
 @endpush
 
 @push('footer-Sec-script')
@@ -289,5 +289,38 @@
               table.ajax.reload();
           });
         });
-      </script>
+    </script>
+
+<script>
+    function showDeleteConfirmation(url, message) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
+    function showSweetAlert(response) {
+        Swal.fire({
+            icon: response.success ? 'success' : 'error',
+            title: response.title,
+            text: response.message,
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('response'))
+            var response = @json(session('response'));
+            showSweetAlert(response);
+        @endif
+    });
+</script>
 @endpush

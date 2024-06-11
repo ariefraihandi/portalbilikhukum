@@ -44,12 +44,14 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     
     Route::get('/bisnis/office/list',       [BisnisController::class, 'showOfficeList'])->name('bisnis.office.list');
     Route::get('/bisnis/office/verify',     [BisnisController::class, 'showOfficeVerify'])->name('bisnis.office.verify');
+    Route::get('/bisnis/user/list',         [BisnisController::class, 'showUserList'])->name('bisnis.user.list');
 });
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
+    Route::post('/bisnis/updateDoc',        [BisnisController::class, 'officeUpdateDoc'])->name('bisnis.updateDoc');
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
     Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');
@@ -108,6 +110,7 @@ Route::get('/join',                         [AuthController::class, 'showRegiste
 Route::post('/join',                        [AuthController::class, 'registerJoin'])->name('join.post');
 
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
+Route::get('/location/{code}',              [PengacaraController::class, 'getNameByCode'])->name('getNameByCode');
 Route::get('/search-offices',               [PengacaraController::class, 'searchOffices'])->name('search-offices');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showPengacara');
 

@@ -60,6 +60,9 @@ class UserController extends Controller
                     case 3:
                         $icon = '<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="bx bx-user bx-xs"></i></span>'; // Member
                         break;
+                    case 4:
+                        $icon = '<span class="badge badge-center rounded-pill bg-label-primary w-px-30 h-px-30 me-2"><i class="bx bx-buildings"></i></span>'; // Member
+                        break;
                     
                     default:
                         $icon = ''; // Jika tidak ada ikon yang sesuai
