@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateKlienChatTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('klien_chat', function (Blueprint $table) {
@@ -31,13 +26,8 @@ class CreateKlienChatTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('klien_chat');
     }
-};
+}
