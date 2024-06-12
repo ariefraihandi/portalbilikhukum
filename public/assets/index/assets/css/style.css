@@ -83,6 +83,7 @@
       display: none; /* Sembunyikan secara default */
   }
   
+  
   #contact-section.visible {
       display: block; /* Tampilkan ketika kelas .visible ditambahkan */
   }
@@ -9910,6 +9911,8 @@ textarea {
 .property-item .img {
   position: relative;
   z-index: 1; }
+
+  
 
 .property-item .property-content {
   background: #fff;

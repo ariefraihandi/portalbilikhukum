@@ -13,6 +13,7 @@
     use App\Http\Controllers\BisnisController;
     use App\Http\Controllers\ReferralController;
     use App\Http\Controllers\UserController;
+    use App\Http\Controllers\KlienChatController;
     use App\Http\Controllers\LawyerController;
     use App\Http\Controllers\Pengacara\PengacaraController;
     use App\Http\Controllers\Index\IndexController;
@@ -75,6 +76,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::put('/update/office-case/{id}',  [LawyerController::class, 'updateOfficeCase'])->name('updateOfficeCase');
     Route::get('/delete/officecase',        [LawyerController::class, 'deleteOfficeCase'])->name('deleteOfficeCase');
 
+    Route::post('/klienchat/store',         [KlienChatController::class, 'klienChat'])->name('klienchat.store');
 
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
