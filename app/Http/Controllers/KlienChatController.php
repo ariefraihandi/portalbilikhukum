@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\KlienChat;
 use App\Models\Office;
-use App\Notifications\KlienChatNotification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\KlienChatNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,13 +23,13 @@ class KlienChatController extends Controller
             'keperluan' => 'required|string',
             'office_id' => 'required|exists:offices,id', // Pastikan ID kantor ada
         ]);
-
+    
         // Format nomor WhatsApp
         $validatedData['whatsapp'] = $this->formatWhatsAppNumber($validatedData['whatsapp']);
-
+    
         // Mulai transaksi
         DB::beginTransaction();
-
+    
         try {
             // Simpan data ke tabel klien_chat
             $klienChat = KlienChat::create([
@@ -42,18 +43,17 @@ class KlienChatController extends Controller
                 'last_contacted_at' => now(),
                 'is_followed_up' => false,
             ]);
-
+    
             // Ambil email_kantor dari office dan kirim notifikasi
             $office = Office::find($validatedData['office_id']);
-            if ($office && $office->email_kantor) {
-                // Gunakan notifikasi langsung ke email_kantor
-                Notification::route('mail', $office->email_kantor)
-                    ->notify(new KlienChatNotification($klienChat));
+    
+            if ($office) {
+                Mail::to($office->email_kantor)->send(new KlienChatNotification($klienChat));
             }
-
+    
             // Commit transaksi
             DB::commit();
-
+    
             return redirect()->back()->with([
                 'response' => [
                     'success' => true,
@@ -61,14 +61,14 @@ class KlienChatController extends Controller
                     'message' => 'Pesan berhasil dikirim! Lawyer akan merespons dalam 10-15 menit saat jam kerja.',
                 ],
             ]);
-
+    
         } catch (\Exception $e) {
             // Rollback transaksi jika terjadi kesalahan
             DB::rollBack();
-
+    
             // Log error
             Log::error('Kesalahan saat menyimpan klien chat: ' . $e->getMessage());
-
+    
             return redirect()->back()->with([
                 'response' => [
                     'success' => false,
@@ -78,6 +78,7 @@ class KlienChatController extends Controller
             ]);
         }
     }
+    
 
     /**
      * Format nomor WhatsApp.
