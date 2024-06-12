@@ -53,7 +53,9 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
 Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
-    Route::post('/bisnis/updateDoc',        [BisnisController::class, 'officeUpdateDoc'])->name('bisnis.updateDoc');
+    Route::post('/bisnis/updateDoc',        [BisnisController::class, 'officeUpdateDoc'])->name('bisnis.updateDoc');    
+    Route::get('/delete-office/{id}',       [BisnisController::class, 'destroy'])->name('delete-office');
+
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
     Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');

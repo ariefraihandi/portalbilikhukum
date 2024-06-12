@@ -256,248 +256,273 @@ class BisnisController extends Controller
             ]);
         }
     }
+
+    public function destroy($id)
+    {
+        // Find the office by id and delete it
+        $office = Office::find($id);
+
+        if ($office) {
+            $office->delete();
+            return redirect()->route('bisnis.office.list')->with([
+                'response' => [
+                    'success' => true,
+                    'title'   => 'Success',
+                    'message' => 'Kantor Berhasil Dihapus.',
+                ],
+            ]);
+        } else {
+            return redirect()->route('bisnis.office.list')->with([
+                'response' => [
+                    'success' => false,
+                    'title'   => 'Gagal',
+                    'message' => 'Kantor Gagal Dihapus.',
+                ],
+            ]);
+        }
+    }
     
     public function getAllMember(Request $request)
-{
-    if ($request->ajax()) {
-        $type = $request->input('Type');
-        $status = $request->input('Status');
-        $start_date = $request->input('start_date');
-        $end_date = $request->input('end_date');
+    {
+        if ($request->ajax()) {
+            $type = $request->input('Type');
+            $status = $request->input('Status');
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
 
-        // Query untuk mengambil data user
-        $query = User::orderByDesc('created_at');
+            // Query untuk mengambil data user
+            $query = User::orderByDesc('created_at');
 
-        if ($type) {
-            $query->where('role', $type);
-        }
+            if ($type) {
+                $query->where('role', $type);
+            }
 
-        if ($status) {
-            $query->where('verified', $status);
-        }
+            if ($status) {
+                $query->where('verified', $status);
+            }
 
-        if ($start_date && $end_date) {
-            $query->whereBetween('created_at', [$start_date, $end_date]);
-        }
+            if ($start_date && $end_date) {
+                $query->whereBetween('created_at', [$start_date, $end_date]);
+            }
 
-        $users = $query->get();
-        $counter = 0;
+            $users = $query->get();
+            $counter = 0;
 
-        return DataTables::of($users)
-            ->addColumn('no', function ($user) use (&$counter) {
-                $counter++;
-                return $counter;
-            })
-            ->addColumn('member', function ($user) {
-                $userImage = $user->image ? asset('assets/img/member/' . $user->image) : asset('assets/img/default-image.jpg');
-                $userName = $user->name ?? 'Unknown User';
-                $userEmail = $user->email ?? 'Unknown Email';
-                $userWhatsApp = ($user->whatsapp && !in_array($user->whatsapp, ['default_value', '08xxxxxxxxxx'])) ? e($user->whatsapp) : '';
-                $userSince = Carbon::parse($user->created_at)->format('d F Y');
-            
-                // Format output
-                $output = '
-                    <div class="d-flex align-items-center">
-                        <img src="' . $userImage . '" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
-                        <div>
-                            <span class="fw-bold">' . e($userName) . '</span>
-                            <small class="text-muted d-block">' . e($userEmail) . '</small>';
-                if ($userWhatsApp) {
-                    $output .= '<small class="text-muted d-block">' . $userWhatsApp . '</small>';
-                }
-                $output .= '<small class="text-muted d-block">Since: ' . $userSince . '</small>
-                        </div>
-                    </div>';
-            
-                return $output;
-            })            
-            ->addColumn('type', function ($user) {
-                $role = $user->role;
-                $icon = '';
-                $labelClass = '';
-                $roleName = '';
-            
-                // Menentukan ikon, warna label, dan nama peran berdasarkan role
-                switch ($role) {
-                    case 1:
-                        $icon = '<i class="bx bxs-castle"></i>';
-                        $labelClass = 'bg-label-primary';
-                        $roleName = 'Administrator';
-                        break;
-                    case 2:
-                        $icon = '<i class="bx bxs-cog"></i>';
-                        $labelClass = 'bg-label-secondary';
-                        $roleName = 'Admin';
-                        break;
-                    case 3:
-                        $icon = '<i class="bx bxs-user"></i>';
-                        $labelClass = 'bg-label-info';
-                        $roleName = 'Member';
-                        break;
-                    case 4:
-                        $icon = '<i class="bx bxs-briefcase"></i>';
-                        $labelClass = 'bg-label-success';
-                        $roleName = 'Pengacara';
-                        break;
-                    case 5:
-                        $icon = '<i class="bx bxs-file-doc"></i>';
-                        $labelClass = 'bg-label-warning';
-                        $roleName = 'Notaris';
-                        break;
-                    case 6:
-                        $icon = '<i class="bx bxs-hand"></i>';
-                        $labelClass = 'bg-label-danger';
-                        $roleName = 'Mediator';
-                        break;
-                    default:
-                        $icon = '<i class="bx bxs-question-mark"></i>';
-                        $labelClass = 'bg-label-dark';
-                        $roleName = 'Unknown';
-                        break;
-                }
-            
-                // Ambil bagian alamat
-                $addressParts = $user->getAddressParts();
-                $villageName = $addressParts['village'] ? $user->capitalizeWords($addressParts['village']->name) : null;
-                $districtName = $addressParts['district'] ? $user->capitalizeWords($addressParts['district']->name) : null;
-                $regencyName = $addressParts['regency'] ? $user->capitalizeWords($addressParts['regency']->name) : null;
-                $provinceName = $addressParts['province'] ? $user->capitalizeWords($addressParts['province']->name) : null;
-            
-                // Gabungkan alamat jika ada, atau tampilkan "Not Set"
-                $address = 'Not Set';
-                if ($villageName || $districtName || $regencyName || $provinceName) {
-                    $addressArray = array_filter([$villageName, $districtName, $regencyName, $provinceName]);
-                    $address = implode(', ', $addressArray);
-                }
-            
-                // Format output untuk menampilkan peran dan alamat
-                return '
-                    <div>
-                        <span class="badge badge-center rounded-pill ' . $labelClass . ' w-px-30 h-px-30 me-2">
-                            ' . $icon . '
-                        </span>
-                        <span class="align-middle">' . $roleName . '</span>
-                        <div class="text-muted small">' . $address . '</div>
-                    </div>';
-            })            
-            ->addColumn('refered_by', function ($user) {
-                // Cari data refferal code berdasarkan kode referal
-                $refferalCode = RefferalCode::where('code', $user->referedby)->first();
+            return DataTables::of($users)
+                ->addColumn('no', function ($user) use (&$counter) {
+                    $counter++;
+                    return $counter;
+                })
+                ->addColumn('member', function ($user) {
+                    $userImage = $user->image ? asset('assets/img/member/' . $user->image) : asset('assets/img/default-image.jpg');
+                    $userName = $user->name ?? 'Unknown User';
+                    $userEmail = $user->email ?? 'Unknown Email';
+                    $userWhatsApp = ($user->whatsapp && !in_array($user->whatsapp, ['default_value', '08xxxxxxxxxx'])) ? e($user->whatsapp) : '';
+                    $userSince = Carbon::parse($user->created_at)->format('d F Y');
                 
-                // Jika ada refferal code, ambil user_id
-                if ($refferalCode) {
-                    $user_id = $refferalCode->user_id;
-                    // Cari pengguna berdasarkan user_id yang diambil dari refferal code
-                    $referrer = User::find($user_id);
-            
-                    if ($referrer) {
-                        $referrerName = e($referrer->name);
-                        $referrerRole = $referrer->role;
-                        $icon = '';
-                        $labelClass = '';
-                        $roleName = '';
-            
-                        // Tentukan ikon, warna label, dan nama peran berdasarkan role
-                        switch ($referrerRole) {
-                            case 1:
-                                $icon = '<i class="bx bxs-castle"></i>';
-                                $labelClass = 'bg-label-primary';
-                                $roleName = 'Administrator';
-                                break;
-                            case 2:
-                                $icon = '<i class="bx bxs-cog"></i>';
-                                $labelClass = 'bg-label-secondary';
-                                $roleName = 'Admin';
-                                break;
-                            case 3:
-                                $icon = '<i class="bx bxs-user"></i>';
-                                $labelClass = 'bg-label-info';
-                                $roleName = 'Member';
-                                break;
-                            case 4:
-                                $icon = '<i class="bx bxs-briefcase"></i>';
-                                $labelClass = 'bg-label-success';
-                                $roleName = 'Pengacara';
-                                break;
-                            case 5:
-                                $icon = '<i class="bx bxs-file-doc"></i>';
-                                $labelClass = 'bg-label-warning';
-                                $roleName = 'Notaris';
-                                break;
-                            case 6:
-                                $icon = '<i class="bx bxs-hand"></i>';
-                                $labelClass = 'bg-label-danger';
-                                $roleName = 'Mediator';
-                                break;
-                            default:
-                                $icon = '<i class="bx bxs-question-mark"></i>';
-                                $labelClass = 'bg-label-dark';
-                                $roleName = 'Unknown';
-                                break;
-                        }
-            
-                        return '
+                    // Format output
+                    $output = '
+                        <div class="d-flex align-items-center">
+                            <img src="' . $userImage . '" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
                             <div>
-                                <span>' . $referrerName . '</span>
-                                <div>
-                                    <span class="badge badge-center rounded-pill ' . $labelClass . ' w-px-20 h-px-20 me-2">
-                                        ' . $icon . '
-                                    </span>
-                                    <span class="align-middle">' . $roleName . '</span>
-                                </div>
-                            </div>';
+                                <span class="fw-bold">' . e($userName) . '</span>
+                                <small class="text-muted d-block">' . e($userEmail) . '</small>';
+                    if ($userWhatsApp) {
+                        $output .= '<small class="text-muted d-block">' . $userWhatsApp . '</small>';
                     }
-                }
-                return 'N/A';
-            })             
-            ->addColumn('referring', function ($user) {
-                // Cari data RefferalCode berdasarkan user_id
-                $refferalCode = RefferalCode::where('user_id', $user->id)->first();
-            
-                if ($refferalCode) {
-                    // Hitung jumlah pengguna yang menggunakan kode referral ini
-                    $referralCount = User::where('referedby', $refferalCode->code)->count();
-                    return $referralCount . ' Users';
-                } else {
-                    return 'No referrals';
-                }
-            })
-            
-            ->addColumn('profit', function ($user) {
-                // Contoh pengolahan data profit jika ada
-                return number_format($user->profit, 2, ',', '.');
-            })         
-            ->addColumn('action', function ($user) {
-                // Format nomor WhatsApp
-                $whatsappNumber = $user->whatsapp;
-                if (strpos($whatsappNumber, '62') === 0) {
-                    // Jika dimulai dengan 62, biarkan
-                } elseif (strpos($whatsappNumber, '08') === 0) {
-                    // Jika dimulai dengan 08, ubah 0 ke 62
-                    $whatsappNumber = '62' . substr($whatsappNumber, 1);
-                } elseif (strpos($whatsappNumber, '8') === 0) {
-                    // Jika dimulai dengan 8, tambahkan 62
-                    $whatsappNumber = '62' . $whatsappNumber;
-                }
-            
-                return '
-                    <div class="d-flex align-items-center">
-                        <a href="/user/edit/' . $user->id . '" class="text-primary me-2" title="Edit">
-                            <i class="bx bx-edit"></i>
-                        </a>
-                        <a href="/user/delete/' . $user->id . '" class="text-danger me-2" title="Delete" onclick="return confirm(\'Are you sure?\')">
-                            <i class="bx bx-trash"></i>
-                        </a>
-                        <a href="https://wa.me/' . $whatsappNumber . '" class="text-success" title="WhatsApp" target="_blank">
-                            <i class="bx bxl-whatsapp"></i>
-                        </a>
-                    </div>';
-            })
-            
-            ->rawColumns(['member', 'type', 'refered_by', 'status', 'action'])
-            ->make(true);
+                    $output .= '<small class="text-muted d-block">Since: ' . $userSince . '</small>
+                            </div>
+                        </div>';
+                
+                    return $output;
+                })            
+                ->addColumn('type', function ($user) {
+                    $role = $user->role;
+                    $icon = '';
+                    $labelClass = '';
+                    $roleName = '';
+                
+                    // Menentukan ikon, warna label, dan nama peran berdasarkan role
+                    switch ($role) {
+                        case 1:
+                            $icon = '<i class="bx bxs-castle"></i>';
+                            $labelClass = 'bg-label-primary';
+                            $roleName = 'Administrator';
+                            break;
+                        case 2:
+                            $icon = '<i class="bx bxs-cog"></i>';
+                            $labelClass = 'bg-label-secondary';
+                            $roleName = 'Admin';
+                            break;
+                        case 3:
+                            $icon = '<i class="bx bxs-user"></i>';
+                            $labelClass = 'bg-label-info';
+                            $roleName = 'Member';
+                            break;
+                        case 4:
+                            $icon = '<i class="bx bxs-briefcase"></i>';
+                            $labelClass = 'bg-label-success';
+                            $roleName = 'Pengacara';
+                            break;
+                        case 5:
+                            $icon = '<i class="bx bxs-file-doc"></i>';
+                            $labelClass = 'bg-label-warning';
+                            $roleName = 'Notaris';
+                            break;
+                        case 6:
+                            $icon = '<i class="bx bxs-hand"></i>';
+                            $labelClass = 'bg-label-danger';
+                            $roleName = 'Mediator';
+                            break;
+                        default:
+                            $icon = '<i class="bx bxs-question-mark"></i>';
+                            $labelClass = 'bg-label-dark';
+                            $roleName = 'Unknown';
+                            break;
+                    }
+                
+                    // Ambil bagian alamat
+                    $addressParts = $user->getAddressParts();
+                    $villageName = $addressParts['village'] ? $user->capitalizeWords($addressParts['village']->name) : null;
+                    $districtName = $addressParts['district'] ? $user->capitalizeWords($addressParts['district']->name) : null;
+                    $regencyName = $addressParts['regency'] ? $user->capitalizeWords($addressParts['regency']->name) : null;
+                    $provinceName = $addressParts['province'] ? $user->capitalizeWords($addressParts['province']->name) : null;
+                
+                    // Gabungkan alamat jika ada, atau tampilkan "Not Set"
+                    $address = 'Not Set';
+                    if ($villageName || $districtName || $regencyName || $provinceName) {
+                        $addressArray = array_filter([$villageName, $districtName, $regencyName, $provinceName]);
+                        $address = implode(', ', $addressArray);
+                    }
+                
+                    // Format output untuk menampilkan peran dan alamat
+                    return '
+                        <div>
+                            <span class="badge badge-center rounded-pill ' . $labelClass . ' w-px-30 h-px-30 me-2">
+                                ' . $icon . '
+                            </span>
+                            <span class="align-middle">' . $roleName . '</span>
+                            <div class="text-muted small">' . $address . '</div>
+                        </div>';
+                })            
+                ->addColumn('refered_by', function ($user) {
+                    // Cari data refferal code berdasarkan kode referal
+                    $refferalCode = RefferalCode::where('code', $user->referedby)->first();
+                    
+                    // Jika ada refferal code, ambil user_id
+                    if ($refferalCode) {
+                        $user_id = $refferalCode->user_id;
+                        // Cari pengguna berdasarkan user_id yang diambil dari refferal code
+                        $referrer = User::find($user_id);
+                
+                        if ($referrer) {
+                            $referrerName = e($referrer->name);
+                            $referrerRole = $referrer->role;
+                            $icon = '';
+                            $labelClass = '';
+                            $roleName = '';
+                
+                            // Tentukan ikon, warna label, dan nama peran berdasarkan role
+                            switch ($referrerRole) {
+                                case 1:
+                                    $icon = '<i class="bx bxs-castle"></i>';
+                                    $labelClass = 'bg-label-primary';
+                                    $roleName = 'Administrator';
+                                    break;
+                                case 2:
+                                    $icon = '<i class="bx bxs-cog"></i>';
+                                    $labelClass = 'bg-label-secondary';
+                                    $roleName = 'Admin';
+                                    break;
+                                case 3:
+                                    $icon = '<i class="bx bxs-user"></i>';
+                                    $labelClass = 'bg-label-info';
+                                    $roleName = 'Member';
+                                    break;
+                                case 4:
+                                    $icon = '<i class="bx bxs-briefcase"></i>';
+                                    $labelClass = 'bg-label-success';
+                                    $roleName = 'Pengacara';
+                                    break;
+                                case 5:
+                                    $icon = '<i class="bx bxs-file-doc"></i>';
+                                    $labelClass = 'bg-label-warning';
+                                    $roleName = 'Notaris';
+                                    break;
+                                case 6:
+                                    $icon = '<i class="bx bxs-hand"></i>';
+                                    $labelClass = 'bg-label-danger';
+                                    $roleName = 'Mediator';
+                                    break;
+                                default:
+                                    $icon = '<i class="bx bxs-question-mark"></i>';
+                                    $labelClass = 'bg-label-dark';
+                                    $roleName = 'Unknown';
+                                    break;
+                            }
+                
+                            return '
+                                <div>
+                                    <span>' . $referrerName . '</span>
+                                    <div>
+                                        <span class="badge badge-center rounded-pill ' . $labelClass . ' w-px-20 h-px-20 me-2">
+                                            ' . $icon . '
+                                        </span>
+                                        <span class="align-middle">' . $roleName . '</span>
+                                    </div>
+                                </div>';
+                        }
+                    }
+                    return 'N/A';
+                })             
+                ->addColumn('referring', function ($user) {
+                    // Cari data RefferalCode berdasarkan user_id
+                    $refferalCode = RefferalCode::where('user_id', $user->id)->first();
+                
+                    if ($refferalCode) {
+                        // Hitung jumlah pengguna yang menggunakan kode referral ini
+                        $referralCount = User::where('referedby', $refferalCode->code)->count();
+                        return $referralCount . ' Users';
+                    } else {
+                        return 'No referrals';
+                    }
+                })
+                
+                ->addColumn('profit', function ($user) {
+                    // Contoh pengolahan data profit jika ada
+                    return number_format($user->profit, 2, ',', '.');
+                })         
+                ->addColumn('action', function ($user) {
+                    // Format nomor WhatsApp
+                    $whatsappNumber = $user->whatsapp;
+                    if (strpos($whatsappNumber, '62') === 0) {
+                        // Jika dimulai dengan 62, biarkan
+                    } elseif (strpos($whatsappNumber, '08') === 0) {
+                        // Jika dimulai dengan 08, ubah 0 ke 62
+                        $whatsappNumber = '62' . substr($whatsappNumber, 1);
+                    } elseif (strpos($whatsappNumber, '8') === 0) {
+                        // Jika dimulai dengan 8, tambahkan 62
+                        $whatsappNumber = '62' . $whatsappNumber;
+                    }
+                
+                    return '
+                        <div class="d-flex align-items-center">
+                            <a href="/user/edit/' . $user->id . '" class="text-primary me-2" title="Edit">
+                                <i class="bx bx-edit"></i>
+                            </a>
+                            <a href="/user/delete/' . $user->id . '" class="text-danger me-2" title="Delete" onclick="return confirm(\'Are you sure?\')">
+                                <i class="bx bx-trash"></i>
+                            </a>
+                            <a href="https://wa.me/' . $whatsappNumber . '" class="text-success" title="WhatsApp" target="_blank">
+                                <i class="bx bxl-whatsapp"></i>
+                            </a>
+                        </div>';
+                })
+                
+                ->rawColumns(['member', 'type', 'refered_by', 'status', 'action'])
+                ->make(true);
+        }
     }
-}
 
 
     public function getAllOffice(Request $request)
@@ -644,21 +669,21 @@ class BisnisController extends Controller
                     return '<div class="text-center"><span class="badge ' . $badgeClass . '">' . $statusText . '</span></div>';
                 })
                 ->addColumn('action', function ($office) {
-                    $officeNumber = $office->office_number;
-                    $uuid = $office->customer_uuid;
+                    $officeId = $office->id;
                 
                     return '<div class="d-flex align-items-center">' .
-                                '<a href="/office/add?officeNumber=' . $officeNumber . '&customerUuid=' . $uuid . '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit"><i class="bx bxs-message-square-edit mx-1"></i></a>' .
-                                '<a href="/delete-office?officeNumber=' . $officeNumber . '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="return confirmDelete(\'/delete-office?officeNumber=' . $officeNumber . '\')"><i class="bx bx-trash mx-1"></i></a>' .
-                                '<div class="dropdown">' .
-                                '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' .
-                                '<div class="dropdown-menu dropdown-menu-end">' .
-                                '<a href="/print/' . $officeNumber .'" class="dropdown-item" target="_blank">Download</a>' .
-                                '<a href="/send-office?officeNumber=' . $officeNumber . '&customerUuid=' . $uuid . '" class="dropdown-item">Kirim office</a>' .                                
-                                '</div>' .
-                                '</div>' .
-                            '</div>';
+                        '<a href="/office/add?id=' . $officeId . '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit"><i class="bx bxs-message-square-edit mx-1"></i></a>' .
+                        '<a href="javascript:void(0);" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="showDeleteConfirmation(\'/delete-office/' . $officeId . '\', \'Do you want to delete this office?\')"><i class="bx bx-trash mx-1"></i></a>' .
+                        '<div class="dropdown">' .
+                            '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' .
+                            '<div class="dropdown-menu dropdown-menu-end">' .
+                                '<a href="/print/' . $officeId . '" class="dropdown-item" target="_blank">Download</a>' .
+                                '<a href="/send-office?id=' . $officeId . '" class="dropdown-item">Kirim office</a>' .                                
+                            '</div>' .
+                        '</div>' .
+                    '</div>';
                 })
+                
                 ->rawColumns(['nama_kantor', 'alamat', 'status', 'action'])
                 ->make(true); 
         }
