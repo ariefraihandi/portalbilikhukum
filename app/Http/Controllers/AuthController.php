@@ -569,6 +569,7 @@ class AuthController extends Controller
                 abort(403, 'Unauthorized access');
             }
         }
+        
         public function getProvincesOffice(Request $request)
         {
             if ($request->ajax()) {
