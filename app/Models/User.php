@@ -112,4 +112,13 @@ class User extends Authenticatable
             'village' => $villageCode ? Village::where('code', $villageCode)->first() : null,
         ];
     }
+
+    public function getReferralCountAttribute()
+    {
+        $referralCode = $this->referralCode;
+        if ($referralCode) {
+            return User::where('referedby', $referralCode->code)->count();
+        }
+        return 0;
+    }
 }

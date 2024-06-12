@@ -85,10 +85,12 @@
                   <i class="bx bxs-user-plus bx-sm"></i>
                 </div>
               </div>
-              <div>
-                <h5 class="mb-0">184</h5>
-                <span>Refferal</span>
-              </div>
+              @if ($referralCount > 0)
+                <div>
+                    <h5 class="mb-0">{{ $referralCount }}</h5>
+                    <span>Referral</span>
+                </div>
+              @endif
             </div>
             <div class="d-flex align-items-center gap-2">
               <div class="avatar">

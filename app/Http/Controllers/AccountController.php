@@ -51,7 +51,8 @@ class AccountController extends Controller
                 'hasReferralCode'   => $referralCode,
                 'erorDetil'         => $erorDetil,
                 'sessions'          => $sessions,
-                'office'            => $office
+                'office'            => $office,
+                'referralCount'     => $user->referral_count
                 
             ];
 
@@ -89,7 +90,8 @@ class AccountController extends Controller
                 'userDetils'        => $user,
                 'hasReferralCode'   => $referralCode,
                 'erorDetil'         => $erorDetil,
-                'office'            => $office
+                'office'            => $office,
+                'referralCount'     => $user->referral_count
                 
             ];
 
@@ -197,81 +199,81 @@ class AccountController extends Controller
     //Editing
 
 //Get Data
-public function getDataRefferal(Request $request)
-{
-    $id = $request->session()->get('user_id');
+    public function getDataRefferal(Request $request)
+    {
+        $id = $request->session()->get('user_id');
 
-    // Mengambil user berdasarkan ID
-    $user = User::find($id);
+        // Mengambil user berdasarkan ID
+        $user = User::find($id);
 
-    // Mengambil referral code yang terhubung dengan user
-    if ($user) {
-        $refferalCode = $user->refferalCode;
+        // Mengambil referral code yang terhubung dengan user
+        if ($user) {
+            $refferalCode = $user->referralCode;
 
-        if ($refferalCode) {
-            // Mengambil semua user yang memiliki referedby yang sama dengan kode referral user
-            $usersWithSameRefferalCode = User::where('referedby', $refferalCode->code);
+            if ($refferalCode) {
+                $usersWithSameRefferalCode = User::where('referedby', $refferalCode->code);
 
-            return DataTables::of($usersWithSameRefferalCode)
-                ->addColumn('no', function ($user) {
-                    static $no = 0;
-                    return ++$no;
-                })
-                ->addColumn('member', function ($user) {
-                    $roleText = '';
-                    switch ($user->role) {
-                        case 1:
-                            $roleText = '<span class="text-muted">(Administrator)</span>';
-                            break;
-                        case 2:
-                            $roleText = '<span class="text-muted">(Admin)</span>';
-                            break;
-                        case 3:
-                            $roleText = '<span class="text-muted">(Member)</span>';
-                            break;
-                        case 4:
-                            $roleText = '<span class="text-muted">(Pengacara)</span>';
-                            break;
-                        case 5:
-                            $roleText = '<span class="text-muted">(Notaris)</span>';
-                            break;
-                        case 6:
-                            $roleText = '<span class="text-muted">(Mediator)</span>';
-                            break;
-                        default:
-                            $roleText = '';
-                            break;
-                    }
-                    return $user->name . ' <br> ' . $roleText;
-                })
-                ->addColumn('since', function ($user) {
-                    return $user->created_at->format('Y-m-d');
-                })
-                ->addColumn('status', function ($childmenuSub) {
-                    if ($childmenuSub->verified == 1) {
-                        return '<div class="text-center"><span class="badge bg-label-success">Active</span></div>';
-                    } else {
-                        return '<div class="text-center"><span class="badge bg-label-danger">Inactive</span></div>';
-                    }
-                })              
-                ->addColumn('revenue', function ($user) {
-                    return 'Rp. 0,-';
-                })
-                ->rawColumns(['status', 'member', 'revenue'])
-                ->make(true);
+                return DataTables::of($usersWithSameRefferalCode)
+                    ->addColumn('no', function ($user) {
+                        static $no = 0;
+                        return ++$no;
+                    })
+                    ->addColumn('member', function ($user) {
+                        $roleText = '';
+                        switch ($user->role) {
+                            case 1:
+                                $roleText = '<span class="text-muted">(Administrator)</span>';
+                                break;
+                            case 2:
+                                $roleText = '<span class="text-muted">(Admin)</span>';
+                                break;
+                            case 3:
+                                $roleText = '<span class="text-muted">(Member)</span>';
+                                break;
+                            case 4:
+                                $roleText = '<span class="text-muted">(Pengacara)</span>';
+                                break;
+                            case 5:
+                                $roleText = '<span class="text-muted">(Notaris)</span>';
+                                break;
+                            case 6:
+                                $roleText = '<span class="text-muted">(Mediator)</span>';
+                                break;
+                            default:
+                                $roleText = '';
+                                break;
+                        }
+                        return $user->name . ' <br> ' . $roleText;
+                    })
+                    ->addColumn('since', function ($user) {
+                        return $user->created_at->format('Y-m-d');
+                    })
+                    ->addColumn('status', function ($user) {
+                        if ($user->verified == 1) {
+                            return '<div class="text-center"><span class="badge bg-label-success">Active</span></div>';
+                        } else {
+                            return '<div class="text-center"><span class="badge bg-label-danger">Inactive</span></div>';
+                        }
+                    })
+                    ->addColumn('revenue', function ($user) {
+                        return 'Rp. 0,-';
+                    })
+                    ->rawColumns(['status', 'member', 'revenue'])
+                    ->make(true);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Referral code not found'
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Referral code not found'
+                'message' => 'User not found'
             ]);
         }
-    } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'User not found'
-        ]);
     }
-}
+
 
 //Get Data
 }
