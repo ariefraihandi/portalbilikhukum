@@ -83,81 +83,48 @@
                         <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
                     </a>
                     <div class="property-content">
-                        <div class="price mb-2"><span>{{ $office->nama_kantor }}</span></div>
+                      <div class="price mb-2">
+                        <span>{{ $office->nama_kantor }}</span>
+                        @if($office->status == 2)
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle text-info no-underline" viewBox="0 0 16 16" style="vertical-align: super;">
+                                <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0zm3.49 4.97a.68.68 0 0 1 .18.25.548.548 0 0 1-.39.86h-.05a.525.525 0 0 1-.35-.15l-3.95 4a.54.54 0 0 1-.75 0l-2-2a.54.54 0 0 1 0-.76.54.54 0 0 1 .76 0l1.74 1.76L11.15 5a.548.548 0 0 1 .34-.1z"/>
+                            </svg>
+                        @endif
+                      </div>
                         <div class="rate">
                             @for ($i = 0; $i < $office->label_count; $i++)
                                 <span class="icon-dollar text-warning"></span>
                             @endfor
                         </div>
                         <div>
-                            <span class="d-block mb-2 text-black-50">{{ $office->alamat }}, {{ $office->village->name }}</span>
-                            <span class="city d-block mb-3">{{ $office->regency->name }}, {{ $office->province->name }}</span>
-                            <a href="#" class="btn btn-primary py-2 px-3 consult-btn" data-office-id="{{ $office->id }}" data-office-name="{{ $office->nama_kantor }}" data-office-address="{{ $office->alamat }}" data-office-village="{{ $office->village->name }}" data-office-regency="{{ $office->regency->name }}" data-office-province="{{ $office->province->name }}">Konsultasi Gratis</a>
+                            <span class="d-block mt-2 text-black-50">{{ $office->alamat }}, {{ $office->village->name }}</span>
+                            <span class="city d-block mb-1">{{ $office->regency->name }}, {{ $office->province->name }}</span>
+                            <div>
+                                @if(isset($office->random_legal_case))
+                                    <span class="caption">{{ $office->random_legal_case->name }}</span>
+                                @endif
+                                @if($office->other_cases_count > 0)
+                                    <sup>+{{ $office->other_cases_count }} perkara lain</sup>
+                                @endif
+                            </div>
+                            <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" 
+                              data-office-id="{{ $office->id }}" 
+                              data-office-name="{{ $office->nama_kantor }}" 
+                              data-office-address="{{ $office->alamat }}" 
+                              data-office-village="{{ $office->village->name }}" 
+                              data-office-regency="{{ $office->regency->name }}" 
+                              data-office-province="{{ $office->province->name }}">
+                              Hubungi
+                            </a>
                         </div>
                     </div>
                 </div>
               @endforeach
-              {{-- @foreach($data['offices'] as $office)
-                <div class="property-item">
-                  <a href="property-single.html" class="img">
-                    <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
-                  </a>
-                  <div class="property-content">
-                    <div class="price mb-2"><span>{{$office->nama_kantor}}</span></div>
-                    <div class="rate">
-                      <span class="icon-star text-warning"></span>
-                      <span class="icon-star text-warning"></span>
-                      <span class="icon-star text-warning"></span>
-                      <span class="icon-star text-warning"></span>
-                      <span class="icon-star text-warning"></span>
-                    </div>
-                    <div>
-                      <span class="d-block mb-2 text-black-50">{{ $office->alamat}}, {{ $office->village->name}}</span
-                      >
-                      <span class="city d-block mb-3">{{ $office->regency->name}}, {{ $office->province->name}}</span>
-
-                      <div class="specs d-flex mb-4">
-                        <span class="d-block d-flex align-items-center me-3">
-                          <span class="icon-bed me-2"></span>
-                          <span class="caption">2 beds</span>
-                        </span>
-                        <span class="d-block d-flex align-items-center">
-                          <span class="icon-bath me-2"></span>
-                          <span class="caption">2 baths</span>
-                        </span>
-                      </div>
-
-                      <a
-                        href="property-single.html"
-                        class="btn btn-primary py-2 px-3"
-                        >Konsultasi Gratis</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              @endforeach --}}
             </div>
 
-            <div
-              id="property-nav"
-              class="controls"
-              tabindex="0"
-              aria-label="Carousel Navigation"
-            >
-              <span
-                class="prev"
-                data-controls="prev"
-                aria-controls="property"
-                tabindex="-1"
-                >Prev</span
-              >
-              <span
-                class="next"
-                data-controls="next"
-                aria-controls="property"
-                tabindex="-1"
-                >Next</span
-              >
+            <div id="property-nav"class="controls"tabindex="0"aria-label="Carousel Navigation">
+              <span class="prev"data-controls="prev"aria-controls="property"tabindex="-1">Prev</span>
+              <span class="next"data-controls="next"aria-controls="property"tabindex="-1">Next</span>
             </div>
           </div>
         </div>
@@ -185,17 +152,14 @@
     </div>
   </div>
 
-  <div class="section" id="contact-section">
+  
+  <div id="contact-section" class="section">
     <div class="container">
         <div class="row">
             <div class="col-lg-4 mb-5 mb-lg-0" data-aos="fade-up" data-aos-delay="100">
                 <div class="contact-info">
-                      <div id="selected-office-info">                        
+                    <div id="selected-office-info">                        
                         <h3 id="office-name"></h3>
-                        
-                        
-                     
-                        
                     </div>
                     <div class="address mt-2">
                         <i class="icon-room"></i>
@@ -234,6 +198,7 @@
         </div>
     </div>
   </div>
+
 
   <div class="section">
     <div class="row justify-content-center footer-cta" data-aos="fade-up">
@@ -342,77 +307,100 @@
 
 <!-- Render Results Function -->
 <script>
-  function renderResults(data) {
-      const resultsContainer = document.getElementById('officeResults');
-      resultsContainer.innerHTML = '';
-      if (data.length > 0) {
-          document.getElementById('pengacara-disekitar').style.display = 'block';
-          data.forEach(function(office) {
-              let dollarSigns = '';
-              if (office.label_count) {
-                  for (let i = 0; i < office.label_count; i++) {
-                      dollarSigns += `<span class="icon-dollar text-warning"></span>`;
-                  }
-              }
+ function renderResults(data) {
+    const resultsContainer = document.getElementById('officeResults');
+    resultsContainer.innerHTML = '';
+    if (data.length > 0) {
+        document.getElementById('pengacara-disekitar').style.display = 'block';
+        data.forEach(function(office) {
+            let dollarSigns = '';
+            if (office.label_count) {
+                for (let i = 0; i < office.label_count; i++) {
+                    dollarSigns += `<span class="icon-dollar text-warning"></span>`;
+                }
+            }
 
-              const officeHtml = `
-                  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                      <div class="property-item mb-30">
-                          <a href="property-single.html" class="img">
-                              <img src="${office.user.image ? '/assets/img/member/' + office.user.image : '/assets/img/default-image.jpg'}" alt="Image" class="img-fluid" />
-                          </a>
-                          <div class="property-content">
-                              <div class="price mb-2"><span>${office.nama_kantor}</span></div>
-                              <div class="rate">
-                                  ${dollarSigns}
-                              </div>
-                              <div>
-                                  <span class="d-block mb-2 text-black-50">${office.alamat}, ${office.village ? office.village.name : ''}</span>
-                                  <span class="city d-block mb-3">${office.regency ? office.regency.name : ''}, ${office.province ? office.province.name : ''}</span>
-                                  <a href="#" class="btn btn-primary py-2 px-3 consult-btn" data-office-id="${office.id}" data-office-name="${office.nama_kantor}" data-office-address="${office.alamat}" data-office-village="${office.village ? office.village.name : ''}" data-office-regency="${office.regency ? office.regency.name : ''}" data-office-province="${office.province ? office.province.name : ''}">Konsultasi Gratis</a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              `;
-              resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
-          });
+            let verifiedIcon = '';
+            if (office.status == 2) {
+                verifiedIcon = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle text-info no-underline" viewBox="0 0 16 16" style="vertical-align: super;">
+                        <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0zm3.49 4.97a.68.68 0 0 1 .18.25.548.548 0 0 1-.39.86h-.05a.525.525 0 0 1-.35-.15l-3.95 4a.54.54 0 0 1-.75 0l-2-2a.54.54 0 0 1 0-.76.54.54 0 0 1 .76 0l1.74 1.76L11.15 5a.548.548 0 0 1 .34-.1z"/>
+                    </svg>
+                `;
+            }
 
-          // Reattach event listeners for the new "Konsultasi Gratis" buttons
-          attachConsultButtonListeners();
-      } else {
-          document.getElementById('pengacara-disekitar').style.display = 'none';
-      }
-  }
+            const officeHtml = `
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="property-item mb-30">
+                        <a href="property-single.html" class="img">
+                            <img src="${office.user.image ? '/assets/img/member/' + office.user.image : '/assets/img/default-image.jpg'}" alt="Image" class="img-fluid" />
+                        </a>
+                        <div class="property-content">
+                            <div class="price mb-2">
+                                <span>${office.nama_kantor}</span>
+                                ${verifiedIcon}
+                            </div>
+                            <div class="rate">
+                                ${dollarSigns}
+                            </div>
+                            <div>
+                                <span class="d-block mt-2 text-black-50">${office.alamat}, ${office.village ? office.village.name : ''}</span>
+                                <span class="city d-block mb-1">${office.regency ? office.regency.name : ''}, ${office.province ? office.province.name : ''}</span>
+                                <div>
+                                    ${office.random_legal_case ? `<span class="caption">${office.random_legal_case.name}</span>` : ''}
+                                    ${office.other_cases_count > 0 ? `<sup>+${office.other_cases_count} perkara lain</sup>` : ''}
+                                </div>
+                                <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" data-office-id="${office.id}" data-office-name="${office.nama_kantor}" data-office-address="${office.alamat}" data-office-village="${office.village ? office.village.name : ''}" data-office-regency="${office.regency ? office.regency.name : ''}" data-office-province="${office.province ? office.province.name : ''}">Hubungi</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            resultsContainer.insertAdjacentHTML('beforeend', officeHtml);
+        });
+
+        // Reattach event listeners for the new "Konsultasi Gratis" buttons
+        attachConsultButtonListeners();
+    } else {
+        document.getElementById('pengacara-disekitar').style.display = 'none';
+    }
+}
+
 </script>
 
 <!-- Attach Consult Button Listeners Function -->
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      attachConsultButtonListeners();
+  });
+
   function attachConsultButtonListeners() {
-      const consultButtons = document.querySelectorAll('.consult-btn');
-      const contactSection = document.getElementById('contact-section');
-      const officeIdInput = document.getElementById('office-id');
+    const consultButtons = document.querySelectorAll('.consult-btn');
+    const contactSection = document.getElementById('contact-section');
+    const officeIdInput = document.getElementById('office-id');
+    const officeName = document.getElementById('office-name');
+    const officeAddress = document.getElementById('office-address');
 
-      const officeName = document.getElementById('office-name');
-      const officeAddress = document.getElementById('office-address');
+    consultButtons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const officeId = button.getAttribute('data-office-id');
+            officeIdInput.value = officeId;
 
-      consultButtons.forEach(function (button) {
-          button.addEventListener('click', function (event) {
-              event.preventDefault();
-              const officeId = button.getAttribute('data-office-id');
-              officeIdInput.value = officeId;
+            // Set the office details
+            officeName.innerText = "Hubungi: " + button.getAttribute('data-office-name');
+            officeAddress.innerText = button.getAttribute('data-office-address') + ", " + button.getAttribute('data-office-village') + ", " + button.getAttribute('data-office-regency') + ", " + button.getAttribute('data-office-province');
 
-              // Set the office details
-              officeName.innerText = "Hubungi: " + button.getAttribute('data-office-name');
-              officeAddress.innerText = button.getAttribute('data-office-address') + ", " + button.getAttribute('data-office-village') + ", " + button.getAttribute('data-office-regency') + ", " + button.getAttribute('data-office-province');
+            // Display the contact section
+            contactSection.classList.add('visible');
 
-              contactSection.style.display = 'block';
+            // Smooth scroll to the contact section
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+}
 
-              // Smooth scroll to the contact section
-              contactSection.scrollIntoView({ behavior: 'smooth' });
-          });
-      });
-  }
+
 </script>
 
 <!-- Autocomplete Initialization -->

@@ -20,8 +20,7 @@ class OfficeVerified extends Mailable
 
     public function build()
     {
-        $url = config('app.url') === 'http://localhost' ? 'http://127.0.0.1:8000/lawyer/perkara' : 'https://bilikhukum.com/lawyer/perkara';
-        $lawyerUrl = $url . 'lawyer';
+        $lawyerUrl = config('app.url') === 'http://localhost' ? 'http://127.0.0.1:8000/lawyer/perkara' : 'https://bilikhukum.com/lawyer/perkara';     
 
         return $this->view('Mail.office_verified')
                     ->with([

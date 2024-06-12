@@ -80,8 +80,12 @@
         display: none;
     }
     #contact-section {
-        display: none;
-    }
+      display: none; /* Sembunyikan secara default */
+  }
+  
+  #contact-section.visible {
+      display: block; /* Tampilkan ketika kelas .visible ditambahkan */
+  }
     
 body {
   margin: 0;
@@ -496,7 +500,7 @@ progress {
     .img-fluid {
       max-width: 100%;
       height: auto; }
-      
+
 .img-thumbnail {
   padding: 0.25rem;
   background-color: #fff;

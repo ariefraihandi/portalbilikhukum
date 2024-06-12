@@ -742,13 +742,13 @@ class LawyerController extends Controller
 
     private function determineLabel($averageFee)
     {
-        if ($averageFee <= 15000000) {
+        if ($averageFee <= 20000000) {
             return 1; // $
-        } elseif ($averageFee <= 30000000) {
+        } elseif ($averageFee <= 40000000) {
             return 2; // $$
-        } elseif ($averageFee <= 60000000) {
+        } elseif ($averageFee <= 70000000) {
             return 3; // $$$
-        } elseif ($averageFee <= 120000000) {
+        } elseif ($averageFee <= 150000000) {
             return 4; // $$$$
         } else {
             return 5; // $$$$$

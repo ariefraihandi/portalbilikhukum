@@ -17,7 +17,6 @@ class PengacaraController extends Controller
         $subTitle = 'Bilik Hukum';
         $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
 
-        // Add average fee and label count to each office
         foreach ($offices as $office) {
             $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
             $averageFee = $officeCases->avg(function ($officeCase) {
@@ -25,6 +24,15 @@ class PengacaraController extends Controller
             });
             $office->average_fee = $averageFee;
             $office->label_count = $this->determineLabel($averageFee);
+
+            // Get unique legal cases
+            $legalCases = $officeCases->map(function ($officeCase) {
+                return $officeCase->legalCase;
+            })->unique('id');
+
+            // Choose a random legal case
+            $office->random_legal_case = $legalCases->random();
+            $office->other_cases_count = $legalCases->count() - 1;
         }
 
         $data = [
@@ -32,8 +40,8 @@ class PengacaraController extends Controller
             'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
             'meta_author' => 'Bilik Hukum',
             'title' => $title,
-            'subTitle' => $subTitle,            
-            'offices' => $offices,            
+            'subTitle' => $subTitle,
+            'offices' => $offices,
         ];
 
         return view('Pengacara.cariPengacara', compact('data'));
@@ -108,7 +116,7 @@ class PengacaraController extends Controller
         }
         
         $offices = $query->get();
-    
+
         foreach ($offices as $office) {
             $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
             $averageFee = $officeCases->avg(function ($officeCase) {
@@ -116,21 +124,29 @@ class PengacaraController extends Controller
             });
             $office->average_fee = $averageFee;
             $office->label_count = $this->determineLabel($averageFee);
+
+            $legalCases = $officeCases->map(function ($officeCase) {
+                return $officeCase->legalCase;
+            })->unique('id');
+
+            $office->random_legal_case = $legalCases->random();
+            $office->other_cases_count = $legalCases->count() - 1;
         }
         
         return response()->json($offices);
     }
+
     
     
     private function determineLabel($averageFee)
     {
-        if ($averageFee <= 15000000) {
+        if ($averageFee <= 20000000) {
             return 1; // $
-        } elseif ($averageFee <= 30000000) {
+        } elseif ($averageFee <= 40000000) {
             return 2; // $$
-        } elseif ($averageFee <= 60000000) {
+        } elseif ($averageFee <= 70000000) {
             return 3; // $$$
-        } elseif ($averageFee <= 120000000) {
+        } elseif ($averageFee <= 150000000) {
             return 4; // $$$$
         } else {
             return 5; // $$$$$
