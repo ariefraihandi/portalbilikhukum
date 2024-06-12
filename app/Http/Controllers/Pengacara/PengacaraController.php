@@ -16,7 +16,7 @@ class PengacaraController extends Controller
         $title = 'Jasa Pengacara Profesional';
         $subTitle = 'Bilik Hukum';
         $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
-
+    
         foreach ($offices as $office) {
             $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
             $averageFee = $officeCases->avg(function ($officeCase) {
@@ -24,17 +24,26 @@ class PengacaraController extends Controller
             });
             $office->average_fee = $averageFee;
             $office->label_count = $this->determineLabel($averageFee);
-
+    
             // Get unique legal cases
             $legalCases = $officeCases->map(function ($officeCase) {
                 return $officeCase->legalCase;
             })->unique('id');
-
+    
             // Choose a random legal case
-            $office->random_legal_case = $legalCases->random();
-            $office->other_cases_count = $legalCases->count() - 1;
+            if ($legalCases->isNotEmpty()) {
+                $office->random_legal_case = $legalCases->random();
+                $office->other_cases_count = $legalCases->count() - 1;
+            } else {
+                $office->random_legal_case = null;
+                $office->other_cases_count = 0;
+            }
         }
-
+    
+        // Convert collection to array and shuffle
+        $offices = $offices->toArray();
+        shuffle($offices);
+    
         $data = [
             'meta_description' => 'Jasa pengacara profesional di bilikhukum.com. Kami siap membantu Anda dengan berbagai masalah hukum, mulai dari perkara pidana, perdata, hingga bisnis. Konsultasi gratis tersedia.',
             'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
@@ -43,9 +52,10 @@ class PengacaraController extends Controller
             'subTitle' => $subTitle,
             'offices' => $offices,
         ];
-
+    
         return view('Pengacara.cariPengacara', compact('data'));
     }
+    
 
     public function getNameByCode($code)
     {

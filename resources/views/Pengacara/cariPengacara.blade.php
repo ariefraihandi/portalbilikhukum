@@ -78,48 +78,48 @@
               <!-- .item -->
 
               @foreach($data['offices'] as $office)
-                <div class="property-item">
-                    <a href="property-single.html" class="img">
-                        <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
-                    </a>
-                    <div class="property-content">
+              <div class="property-item">
+                  <a href="property-single.html" class="img">
+                      <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
+                  </a>
+                  <div class="property-content">
                       <div class="price mb-2">
-                        <span>{{ $office->nama_kantor }}</span>
-                        @if($office->status == 2)
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle text-info no-underline" viewBox="0 0 16 16" style="vertical-align: super;">
-                                <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0zm3.49 4.97a.68.68 0 0 1 .18.25.548.548 0 0 1-.39.86h-.05a.525.525 0 0 1-.35-.15l-3.95 4a.54.54 0 0 1-.75 0l-2-2a.54.54 0 0 1 0-.76.54.54 0 0 1 .76 0l1.74 1.76L11.15 5a.548.548 0 0 1 .34-.1z"/>
-                            </svg>
-                        @endif
+                          <span>{{ $office->nama_kantor }}</span>
+                          @if($office->status == 2)
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle text-info no-underline" viewBox="0 0 16 16" style="vertical-align: super;">
+                                  <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0zm3.49 4.97a.68.68 0 0 1 .18.25.548.548 0 0 1-.39.86h-.05a.525.525 0 0 1-.35-.15l-3.95 4a.54.54 0 0 1-.75 0l-2-2a.54.54 0 0 1 0-.76.54.54 0 0 1 .76 0l1.74 1.76L11.15 5a.548.548 0 0 1 .34-.1z"/>
+                              </svg>
+                          @endif
                       </div>
-                        <div class="rate">
-                            @for ($i = 0; $i < $office->label_count; $i++)
-                                <span class="icon-dollar text-warning"></span>
-                            @endfor
-                        </div>
-                        <div>
-                            <span class="d-block mt-2 text-black-50">{{ $office->alamat }}, {{ $office->village->name }}</span>
-                            <span class="city d-block mb-1">{{ $office->regency->name }}, {{ $office->province->name }}</span>
-                            <div>
-                                @if(isset($office->random_legal_case))
-                                    <span class="caption">{{ $office->random_legal_case->name }}</span>
-                                @endif
-                                @if($office->other_cases_count > 0)
-                                    <sup>+{{ $office->other_cases_count }} perkara lain</sup>
-                                @endif
-                            </div>
-                            <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" 
-                              data-office-id="{{ $office->id }}" 
-                              data-office-name="{{ $office->nama_kantor }}" 
-                              data-office-address="{{ $office->alamat }}" 
-                              data-office-village="{{ $office->village->name }}" 
-                              data-office-regency="{{ $office->regency->name }}" 
-                              data-office-province="{{ $office->province->name }}">
-                              Hubungi
-                            </a>
-                        </div>
-                    </div>
-                </div>
-              @endforeach
+                      <div class="rate">
+                          @for ($i = 0; $i < $office->label_count; $i++)
+                              <span class="icon-dollar text-warning"></span>
+                          @endfor
+                      </div>
+                      <div>
+                          <span class="d-block mt-2 text-black-50">{{ $office->alamat }}, {{ $office->village->name }}</span>
+                          <span class="city d-block mb-1">{{ $office->regency->name }}, {{ $office->province->name }}</span>
+                          <div>
+                              @if(isset($office->random_legal_case))
+                                  <span class="caption">{{ $office->random_legal_case->name }}</span>
+                              @endif
+                              @if($office->other_cases_count > 0)
+                                  <sup>+{{ $office->other_cases_count }} perkara lain</sup>
+                              @endif
+                          </div>
+                          <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" 
+                            data-office-id="{{ $office->id }}" 
+                            data-office-name="{{ $office->nama_kantor }}" 
+                            data-office-address="{{ $office->alamat }}" 
+                            data-office-village="{{ $office->village->name }}" 
+                            data-office-regency="{{ $office->regency->name }}" 
+                            data-office-province="{{ $office->province->name }}">
+                            Hubungi
+                          </a>
+                      </div>
+                  </div>
+              </div>
+          @endforeach
             </div>
 
             <div id="property-nav"class="controls"tabindex="0"aria-label="Carousel Navigation">
@@ -309,9 +309,10 @@
 <script>
  function renderResults(data) {
     const resultsContainer = document.getElementById('officeResults');
-    resultsContainer.innerHTML = '';
+    resultsContainer.innerHTML = ''; // Clear existing results
+
     if (data.length > 0) {
-        document.getElementById('pengacara-disekitar').style.display = 'block';
+        document.getElementById('pengacara-disekitar').style.display = 'block'; // Show results container
         data.forEach(function(office) {
             let dollarSigns = '';
             if (office.label_count) {
@@ -320,20 +321,23 @@
                 }
             }
 
+            // Check if the office status is 2 for the verified icon
             let verifiedIcon = '';
             if (office.status == 2) {
                 verifiedIcon = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle text-info no-underline" viewBox="0 0 16 16" style="vertical-align: super;">
                         <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0zm3.49 4.97a.68.68 0 0 1 .18.25.548.548 0 0 1-.39.86h-.05a.525.525 0 0 1-.35-.15l-3.95 4a.54.54 0 0 1-.75 0l-2-2a.54.54 0 0 1 0-.76.54.54 0 0 1 .76 0l1.74 1.76L11.15 5a.548.548 0 0 1 .34-.1z"/>
-                    </svg>
-                `;
+                    </svg>`;
             }
+
+            // Set user image or default
+            const userImage = office.user.image ? `/assets/img/member/${office.user.image}` : '/assets/img/default-image.jpg';
 
             const officeHtml = `
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                     <div class="property-item mb-30">
                         <a href="property-single.html" class="img">
-                            <img src="${office.user.image ? '/assets/img/member/' + office.user.image : '/assets/img/default-image.jpg'}" alt="Image" class="img-fluid" />
+                            <img src="${userImage}" alt="Image" class="img-fluid" />
                         </a>
                         <div class="property-content">
                             <div class="price mb-2">
@@ -350,7 +354,15 @@
                                     ${office.random_legal_case ? `<span class="caption">${office.random_legal_case.name}</span>` : ''}
                                     ${office.other_cases_count > 0 ? `<sup>+${office.other_cases_count} perkara lain</sup>` : ''}
                                 </div>
-                                <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" data-office-id="${office.id}" data-office-name="${office.nama_kantor}" data-office-address="${office.alamat}" data-office-village="${office.village ? office.village.name : ''}" data-office-regency="${office.regency ? office.regency.name : ''}" data-office-province="${office.province ? office.province.name : ''}">Hubungi</a>
+                                <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" 
+                                  data-office-id="${office.id}" 
+                                  data-office-name="${office.nama_kantor}" 
+                                  data-office-address="${office.alamat}" 
+                                  data-office-village="${office.village ? office.village.name : ''}" 
+                                  data-office-regency="${office.regency ? office.regency.name : ''}" 
+                                  data-office-province="${office.province ? office.province.name : ''}">
+                                  Hubungi
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -362,7 +374,7 @@
         // Reattach event listeners for the new "Konsultasi Gratis" buttons
         attachConsultButtonListeners();
     } else {
-        document.getElementById('pengacara-disekitar').style.display = 'none';
+        document.getElementById('pengacara-disekitar').style.display = 'none'; // Hide results container if no data
     }
 }
 
