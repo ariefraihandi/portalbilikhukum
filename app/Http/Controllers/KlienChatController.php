@@ -8,6 +8,7 @@ use App\Notifications\KlienChatNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class KlienChatController extends Controller
 {
@@ -42,10 +43,12 @@ class KlienChatController extends Controller
                 'is_followed_up' => false,
             ]);
 
-            // Kirim notifikasi email ke user terkait office
+            // Ambil email_kantor dari office dan kirim notifikasi
             $office = Office::find($validatedData['office_id']);
-            if ($office && $office->user) {
-                $office->user->notify(new KlienChatNotification($klienChat));
+            if ($office && $office->email_kantor) {
+                // Gunakan notifikasi langsung ke email_kantor
+                Notification::route('mail', $office->email_kantor)
+                    ->notify(new KlienChatNotification($klienChat));
             }
 
             // Commit transaksi

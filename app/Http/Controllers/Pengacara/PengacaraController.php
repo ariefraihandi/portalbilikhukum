@@ -12,48 +12,48 @@ use App\Models\OfficeCase;
 class PengacaraController extends Controller
 {
     public function showIndex()
-{
-    $title = 'Jasa Pengacara Profesional';
-    $subTitle = 'Bilik Hukum';
-    $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
+    {
+        $title = 'Jasa Pengacara Profesional';
+        $subTitle = 'Bilik Hukum';
+        $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
 
-    foreach ($offices as $office) {
-        $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
-        $averageFee = $officeCases->avg(function ($officeCase) {
-            return ($officeCase->min_fee + $officeCase->max_fee) / 2;
-        });
-        $office->average_fee = $averageFee;
-        $office->label_count = $this->determineLabel($averageFee);
+        foreach ($offices as $office) {
+            $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+            $office->average_fee = $averageFee;
+            $office->label_count = $this->determineLabel($averageFee);
 
-        // Get unique legal cases
-        $legalCases = $officeCases->map(function ($officeCase) {
-            return $officeCase->legalCase;
-        })->unique('id');
+            // Get unique legal cases
+            $legalCases = $officeCases->map(function ($officeCase) {
+                return $officeCase->legalCase;
+            })->unique('id');
 
-        // Choose a random legal case
-        if ($legalCases->isNotEmpty()) {
-            $office->random_legal_case = $legalCases->random();
-            $office->other_cases_count = $legalCases->count() - 1;
-        } else {
-            $office->random_legal_case = null;
-            $office->other_cases_count = 0;
+            // Choose a random legal case
+            if ($legalCases->isNotEmpty()) {
+                $office->random_legal_case = $legalCases->random();
+                $office->other_cases_count = $legalCases->count() - 1;
+            } else {
+                $office->random_legal_case = null;
+                $office->other_cases_count = 0;
+            }
         }
+
+        // Shuffle the collection
+        $offices = $offices->shuffle();
+
+        $data = [
+            'meta_description' => 'Jasa pengacara profesional di bilikhukum.com. Kami siap membantu Anda dengan berbagai masalah hukum, mulai dari perkara pidana, perdata, hingga bisnis. Konsultasi gratis tersedia.',
+            'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
+            'meta_author' => 'Bilik Hukum',
+            'title' => $title,
+            'subTitle' => $subTitle,
+            'offices' => $offices,
+        ];
+
+        return view('Pengacara.cariPengacara', compact('data'));
     }
-
-    // Shuffle the collection
-    $offices = $offices->shuffle();
-
-    $data = [
-        'meta_description' => 'Jasa pengacara profesional di bilikhukum.com. Kami siap membantu Anda dengan berbagai masalah hukum, mulai dari perkara pidana, perdata, hingga bisnis. Konsultasi gratis tersedia.',
-        'meta_keywords' => 'pengacara, jasa pengacara, konsultasi pengacara, bantuan hukum, pengacara pidana, pengacara perdata, pengacara bisnis',
-        'meta_author' => 'Bilik Hukum',
-        'title' => $title,
-        'subTitle' => $subTitle,
-        'offices' => $offices,
-    ];
-
-    return view('Pengacara.cariPengacara', compact('data'));
-}
 
 
     public function getNameByCode($code)
@@ -138,15 +138,19 @@ class PengacaraController extends Controller
                 return $officeCase->legalCase;
             })->unique('id');
 
-            $office->random_legal_case = $legalCases->random();
-            $office->other_cases_count = $legalCases->count() - 1;
+
+            if ($legalCases->isNotEmpty()) {
+                $office->random_legal_case = $legalCases->random();
+                $office->other_cases_count = $legalCases->count() - 1;
+            } else {
+                $office->random_legal_case = null;
+                $office->other_cases_count = 0;
+            }
         }
         
         return response()->json($offices);
     }
-
-    
-    
+ 
     private function determineLabel($averageFee)
     {
         if ($averageFee <= 20000000) {
