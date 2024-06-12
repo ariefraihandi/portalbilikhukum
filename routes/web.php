@@ -29,15 +29,13 @@ Route::post('/login',                       [AuthController::class, 'login'])->n
 Route::get('/logout',                       [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(function () {
-    Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');    
+    Route::get('/dashboard',                [DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('/lawyer',                   [LawyerController::class, 'showLawyer'])->name('lawyer');
     Route::get('/lawyer/detil',             [LawyerController::class, 'showLawyerDetil'])->name('lawyer.detil');
     Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
 
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
-    Route::get('/role/access',              [RoleController::class, 'showRoleAccess'])->name('role.access');
-    
     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
     Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
     
@@ -55,15 +53,11 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
     Route::post('/bisnis/updateDoc',        [BisnisController::class, 'officeUpdateDoc'])->name('bisnis.updateDoc');    
-    Route::get('/delete-office/{id}',       [BisnisController::class, 'destroy'])->name('delete-office');    
-    Route::get('/account/delete',           [BisnisController::class, 'destroyAccount'])->name('account.delete');
+    Route::get('/delete-office/{id}',       [BisnisController::class, 'destroy'])->name('delete-office');
 
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
-    Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');    
-    Route::get('/role/delete',              [RoleController::class, 'rolesDestroy'])->name('roles.destroy');
-
-
+    Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',      [RoleController::class, 'changeAccess'])->name('change.access');
 
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
