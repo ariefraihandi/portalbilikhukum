@@ -9,6 +9,8 @@ class KlienChat extends Model
 {
     use HasFactory;
 
+    protected $table = 'klien_chat'; // Pastikan nama tabel benar
+
     protected $fillable = [
         'name',
         'whatsapp',
@@ -36,5 +38,11 @@ class KlienChat extends Model
     public function responses()
     {
         return $this->hasMany(Response::class, 'klien_chat_id');
+    }
+
+    // Relasi ke model MailingListKlien
+    public function mailingListKliens()
+    {
+        return $this->hasMany(MailingListKlien::class, 'klien_id');
     }
 }

@@ -19,6 +19,6 @@
     <link rel="stylesheet" href="{{ asset('assets/index/assets') }}/css/tiny-slider.css" />
     <link rel="stylesheet" href="{{ asset('assets/index/assets') }}/css/aos.css" />
     <link rel="stylesheet" href="{{ asset('assets/index/assets') }}/css/style.css" />
-
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" /> 
     <title>{{ $data['title'] }} - {{ $data['subTitle']}}</title>
   </head>

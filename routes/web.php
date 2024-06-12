@@ -34,7 +34,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/lawyer',                   [LawyerController::class, 'showLawyer'])->name('lawyer');
     Route::get('/lawyer/detil',             [LawyerController::class, 'showLawyerDetil'])->name('lawyer.detil');
     Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
-
+    
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');

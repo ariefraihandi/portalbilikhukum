@@ -195,28 +195,29 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">              
               <form action="{{ route('klienchat.store') }}" method="POST" id="contact-form">
-                @csrf 
+                @csrf
                 <input type="hidden" id="office-id" name="office_id" value="">
                 <div class="row">
                     <div class="col-6 mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Your Name" required />
+                        <input type="text" class="form-control" name="name" placeholder="Your Name" required />
                     </div>
                     <div class="col-6 mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Your Email" required />
+                        <input type="email" class="form-control" name="email" placeholder="Your Email" required />
                     </div>
                     <div class="col-12 mb-3">
-                        <input type="text" name="subject" class="form-control" placeholder="Subject" required />
+                        <input type="text" class="form-control" name="whatsapp" placeholder="Your WhatsApp" required />
                     </div>
                     <div class="col-12 mb-3">
-                        <textarea name="keperluan" id="" cols="30" rows="7" class="form-control" placeholder="Message" required></textarea>
+                        <textarea name="keperluan" cols="30" rows="7" class="form-control" placeholder="Message" required></textarea>
                     </div>
                     <div class="col-12">
                         <input type="submit" value="Send Message" class="btn btn-primary" />
                     </div>
                 </div>
-              </form>
+            </form>
+            
             </div>
         </div>
     </div>
@@ -488,5 +489,21 @@
           }
       });
   });
+</script>
+<script>
+function showSweetAlert(response) {
+  Swal.fire({
+      icon: response.success ? 'success' : 'error',
+      title: response.title,
+      text: response.message,
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  @if(session('response'))
+      var response = @json(session('response'));
+      showSweetAlert(response);
+  @endif
+});
 </script>
 @endpush

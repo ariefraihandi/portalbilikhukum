@@ -216,7 +216,7 @@ class AuthController extends Controller
                     'title' => 'Berhasil',
                     'message' => 'Akun anda berhasil terdaftar. Check Mailbox untuk verifikasi dan Login.',
                 ];
-                return redirect()->route('login')->with('response', $response);
+                return redirect()->route('lawyer')->with('response', $response);
             } else {
                 // Redirect kembali ke halaman sebelumnya jika persyaratan tidak disetujui
                 return redirect()->back()->with([
