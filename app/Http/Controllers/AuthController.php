@@ -248,7 +248,7 @@ class AuthController extends Controller
         try {
             $validatedData = $request->validate([
                 'officeName' => 'required|string|max:255',
-                'officeEmail' => 'required|email|max:255',
+                'officeEmail' => 'required|email|max:255|unique:offices,email_kantor',
                 'officePhone' => 'required|string|max:15',
                 'flatpickr-date' => 'required|date',
                 'officeAddress' => 'required|string|max:255',
@@ -569,7 +569,7 @@ class AuthController extends Controller
                 abort(403, 'Unauthorized access');
             }
         }
-        
+
         public function getProvincesOffice(Request $request)
         {
             if ($request->ajax()) {
