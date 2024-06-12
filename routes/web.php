@@ -36,6 +36,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
 
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
+    Route::get('/role',                     [RoleController::class, 'showRole'])->name('role.access');
     Route::get('/menu/submenu',             [MenuController::class, 'showsubMenu'])->name('menu.submenu');
     Route::get('/menu/childmenu',           [MenuController::class, 'showchildMenu'])->name('menu.childmenu');
     
