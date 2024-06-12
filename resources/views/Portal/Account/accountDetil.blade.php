@@ -79,19 +79,19 @@
             </div>
           </div>
           <div class="d-flex justify-content-around flex-wrap mt-4 py-3">
+            @if ($referralCount > 0)
             <div class="d-flex align-items-center gap-2">
               <div class="avatar">
                 <div class="avatar-initial rounded bg-label-primary">                              
                   <i class="bx bxs-user-plus bx-sm"></i>
                 </div>
               </div>
-              @if ($referralCount > 0)
                 <div>
                     <h5 class="mb-0">{{ $referralCount }}</h5>
                     <span>Referral</span>
                 </div>
+                </div>
               @endif
-            </div>
             <div class="d-flex align-items-center gap-2">
               <div class="avatar">
                 <div class="avatar-initial rounded bg-label-primary">

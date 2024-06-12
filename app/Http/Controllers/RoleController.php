@@ -15,25 +15,8 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    //View
+    //View    
         public function showRole(Request $request)
-        {
-            $accessMenus = $request->get('accessMenus');
-            $roles = Role::where('id', '!=', 1)->with(['users' => function ($query) {
-                $query->orderBy('created_at', 'desc')->take(10);
-            }])->get();
-        
-            $data = [
-                'title' => 'Role List',
-                'subtitle' => 'Bilik Hukum',
-                'roles' => $roles,
-                'sidebar' => $accessMenus,
-            ];
-        
-            return view('Portal.Role.roleIndex', $data);
-        }
-    
-        public function showRoleAccess(Request $request)
         {
             $accessMenus        = $request->get('accessMenus');          
             $roles              = Role::where('id', '!=', 1)->with('users')->get();
@@ -77,6 +60,25 @@ class RoleController extends Controller
         ]);
         // Redirect ke halaman atau tindakan yang sesuai setelah penyimpanan berhasil        
     }
+
+    public function rolesDestroy(Request $request)
+    {
+        $role = Role::find($request->id);
+    
+        if ($role) {
+            $role->delete();
+            return redirect()->route('roles.index')->with('success', 'Role deleted successfully');
+        }
+        return redirect()->route('role')->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Success',
+                'message' => 'Role Deleted successfully',
+            ],
+        ]);    
+    }
+    
+    
 
     public function changeAccess(Request $request)
     {

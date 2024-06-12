@@ -281,6 +281,30 @@ class BisnisController extends Controller
             ]);
         }
     }
+
+    public function destroyAccount(Request $request)
+    {
+        $id = $request->query('id');
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => true,
+                    'title'   => 'Success',
+                    'message' => 'Account and all related data deleted successfully.',
+                ],
+            ]);          
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title'   => 'Failed',
+                    'message' => 'User not found.',
+                ],
+            ]);              
+        }
+    }
     
     public function getAllMember(Request $request)
     {
@@ -510,7 +534,7 @@ class BisnisController extends Controller
                             <a href="/user/edit/' . $user->id . '" class="text-primary me-2" title="Edit">
                                 <i class="bx bx-edit"></i>
                             </a>
-                            <a href="/user/delete/' . $user->id . '" class="text-danger me-2" title="Delete" onclick="return confirm(\'Are you sure?\')">
+                            <a href="javascript:void(0);" class="text-danger me-2" title="Delete" onclick="showDeleteConfirmation(\'/account/delete/?id=' . $user->id . '\', \'This action cannot be undone.\')">
                                 <i class="bx bx-trash"></i>
                             </a>
                             <a href="https://wa.me/' . $whatsappNumber . '" class="text-success" title="WhatsApp" target="_blank">
@@ -518,7 +542,6 @@ class BisnisController extends Controller
                             </a>
                         </div>';
                 })
-                
                 ->rawColumns(['member', 'type', 'refered_by', 'status', 'action'])
                 ->make(true);
         }
