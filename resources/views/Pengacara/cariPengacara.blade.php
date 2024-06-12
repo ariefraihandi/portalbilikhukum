@@ -312,7 +312,7 @@
 
               const kode = selectedValue.value;
 
-              fetch(`/location/${kode}`)
+              fetch(`/location/${kode}`)              
                   .then(response => response.json())
                   .then(data => {
                       if (data.name) {

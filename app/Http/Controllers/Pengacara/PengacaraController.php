@@ -41,9 +41,13 @@ class PengacaraController extends Controller
 
     public function getNameByCode($code)
     {
-        if (strpos($code, '.') !== false) {
+        if (strpos($code, '-') !== false) {
+            // Pisahkan kode berdasarkan tanda -
+            $parts = explode('-', $code);
+            $regencyCode = $parts[1]; // Ambil bagian setelah tanda -
+            
             // Kode kabupaten
-            $regency = Regency::where('code', $code)->first();
+            $regency = Regency::where('code', $regencyCode)->first();
             if ($regency) {
                 $formattedName = $this->formatName($regency->name);
                 return response()->json(['name' => $formattedName]);
