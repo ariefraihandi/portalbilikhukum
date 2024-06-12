@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\OfficeMember;
 use App\Models\OfficeActivity;
+
 use App\Models\OfficeDocument;
 use App\Models\LegalCase;
 use App\Models\OfficeCase;
@@ -405,14 +406,11 @@ class LawyerController extends Controller
     {
         try {
             DB::beginTransaction();
-    
-            // Mengambil ID pengguna yang saat ini login
+           
             $userId = Auth::id();
-    
-            // Mencari baris OfficeMember yang memiliki ID pengguna yang sesuai dengan ID pengguna yang sedang login
+               
             $officeMember = OfficeMember::where('id_user', $userId)->firstOrFail();
-    
-            // Mengambil ID kantor (office) yang terkait
+             
             $officeId = $officeMember->id_office;
     
             // Menghasilkan token acak
