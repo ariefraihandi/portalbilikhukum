@@ -59,6 +59,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',      [RoleController::class, 'changeAccess'])->name('change.access');
+    Route::post('/roles/Destrtoy',      [RoleController::class, 'rolesDestroy'])->name('roles.destroy');
+    
 
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
 
