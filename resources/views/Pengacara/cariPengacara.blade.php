@@ -183,6 +183,7 @@
                     <div id="selected-office-info">                        
                         <h3 id="office-name"></h3>
                     </div>
+                    <hr style="border: none; border-top: 3px solid #000;">
                     <div class="address mt-2">
                         <i class="icon-room"></i>
                         <h4 class="mb-2">Alamat:</h4>
@@ -355,7 +356,7 @@
             }
 
             // Set user image or default
-            const userImage = office.user && office.user.image ? `/assets/img/member/${office.user.image}` : '/assets/img/default-image.jpg';
+            const userImage = office.user && office.user.image ? `/assets/img/office/logo/${office.user.image}` : '/assets/img/default-image.jpg';
 
             const officeHtml = `
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
