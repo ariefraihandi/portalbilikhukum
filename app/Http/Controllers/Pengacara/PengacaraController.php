@@ -153,13 +153,13 @@ class PengacaraController extends Controller
  
     private function determineLabel($averageFee)
     {
-        if ($averageFee <= 20000000) {
+        if ($averageFee <= 50000000) {
             return 1; // $
-        } elseif ($averageFee <= 40000000) {
+        } elseif ($averageFee <= 80000000) {
             return 2; // $$
-        } elseif ($averageFee <= 70000000) {
+        } elseif ($averageFee <= 100000000) {
             return 3; // $$$
-        } elseif ($averageFee <= 150000000) {
+        } elseif ($averageFee <= 200000000) {
             return 4; // $$$$
         } else {
             return 5; // $$$$$

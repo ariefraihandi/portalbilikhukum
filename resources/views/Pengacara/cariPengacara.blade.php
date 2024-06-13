@@ -80,7 +80,7 @@
               @foreach($data['offices'] as $office)
                 <div class="property-item">
                     <a href="property-single.html" class="img">
-                        <img src="{{ asset('assets/img/member') }}/{{ $office->user->image }}" alt="Image" class="img-fluid" />
+                        <img src="{{ asset('assets/img/office/logo') }}/{{ $office->logo }}" alt="Image" class="img-fluid" />
                     </a>
                     <div class="property-content">
                       <div class="mb-2">
