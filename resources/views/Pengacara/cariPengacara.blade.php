@@ -356,7 +356,7 @@
             }
 
             // Set user image or default
-            const userImage = office.user && office.user.image ? `/assets/img/office/logo/${office.user.image}` : '/assets/img/default-image.jpg';
+            const userImage = office.logo ? `/assets/img/office/logo/${office.logo}` : '/assets/img/default-image.jpg';
 
             const officeHtml = `
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\OfficeMember;
 use App\Models\OfficeActivity;
-
+use App\Models\KlienChat;
 use App\Models\OfficeDocument;
 use App\Models\LegalCase;
 use App\Models\OfficeCase;
@@ -43,7 +43,8 @@ class LawyerController extends Controller
                                         ->limit(10)
                                         ->get();
             $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
-            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get();
+            $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
 
             $averageFee = $officeCases->avg(function ($officeCase) {
                 return ($officeCase->min_fee + $officeCase->max_fee) / 2;
@@ -60,6 +61,7 @@ class LawyerController extends Controller
                 'officeActivities'  => $officeActivities,
                 'officeDocuments'   => $officeDocuments,
                 'labelCount'        => $labelCount,
+                'klienChatStatus0Count' => $klienChatStatus0Count,
             ];
 
             return view('Portal.Pengacara.index', $data);
@@ -87,6 +89,7 @@ class LawyerController extends Controller
             $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');            
             $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
             $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+            $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
 
             $averageFee = $officeCases->avg(function ($officeCase) {
                 return ($officeCase->min_fee + $officeCase->max_fee) / 2;
@@ -102,6 +105,7 @@ class LawyerController extends Controller
                 'joinedDate'        => $joinedDate,
                 'officeDocuments'   => $officeDocuments,
                 'labelCount'        => $labelCount,
+                'klienChatStatus0Count' => $klienChatStatus0Count,
             ];
 
             return view('Portal.Pengacara.detilKantor', $data);
@@ -141,7 +145,8 @@ class LawyerController extends Controller
             $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');
             $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
             $legalCategories            = LegalCase::all();
-            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get();
+            $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
 
             $averageFee = $officeCases->avg(function ($officeCase) {
                 return ($officeCase->min_fee + $officeCase->max_fee) / 2;
@@ -158,7 +163,8 @@ class LawyerController extends Controller
                 'officeDocuments'   => $officeDocuments,
                 'legalCategories'   => $legalCategories,
                 'officeCases'       => $officeCases, // Pass office cases to the view
-                'labelCount'        => $labelCount // Pass the label count to the view
+                'labelCount'        => $labelCount,
+                'klienChatStatus0Count' => $klienChatStatus0Count,
             ];
 
             return view('Portal.Pengacara.perkaraBiaya', $data);
@@ -172,6 +178,59 @@ class LawyerController extends Controller
             ]);
         }
     }
+
+    public function showKlienLawyer(Request $request)
+    {
+        Carbon::setLocale('id');
+    
+        $userId = Auth::id();
+        $officeMember = OfficeMember::where('id_user', $userId)->first();
+    
+        if ($officeMember) {
+            $officeId = $officeMember->id_office;
+            
+            $office                     = Office::find($officeId);
+            $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');
+            $officeActivities           = OfficeActivity::where('office_id', $office->id)->orderBy('created_at', 'desc')->limit(10)->get();
+            $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
+            $klienChats                 = KlienChat::where('id_office', $officeId)->latest()->take(3)->get();
+            $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
+            $klienChatsForStatus        = KlienChat::where('id_office', $officeId)->get();
+
+    
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+    
+            $labelCount = $this->determineLabel($averageFee);
+    
+            $data = [
+                'title' => 'Pengacara',
+                'subtitle' => 'Bilik Hukum',
+                'sidebar' => $request->get('accessMenus'),
+                'office' => $office,
+                'joinedDate' => $joinedDate,
+                'officeActivities' => $officeActivities,
+                'officeDocuments' => $officeDocuments,                
+                'labelCount' => $labelCount,
+                'klienChats' => $klienChats,
+                'klienChatStatus0Count' => $klienChatStatus0Count,
+                'klienChatsForStatus' => $klienChatsForStatus,
+            ];
+    
+            return view('Portal.Pengacara.klien', $data);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda belum terdaftar sebagai anggota kantor.',
+                ],
+            ]);      
+        }
+    }
+    
     
     
 //Editing

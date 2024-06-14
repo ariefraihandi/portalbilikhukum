@@ -35,8 +35,7 @@
     @endif
   </div> 
 
-  <div class="row">
-    <!-- Customer-detail Sidebar -->
+  <div class="row">    
     <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
       <!-- Customer-detail Card -->
       <div class="card mb-4">
@@ -79,19 +78,19 @@
             </div>
           </div>
           <div class="d-flex justify-content-around flex-wrap mt-4 py-3">
+          @if ($referralCount > 0)
             <div class="d-flex align-items-center gap-2">
               <div class="avatar">
                 <div class="avatar-initial rounded bg-label-primary">                              
                   <i class="bx bxs-user-plus bx-sm"></i>
                 </div>
               </div>
-              @if ($referralCount > 0)
-                <div>
-                    <h5 class="mb-0">{{ $referralCount }}</h5>
-                    <span>Referral</span>
-                </div>
-              @endif
+              <div>
+                <h5 class="mb-0">{{ $referralCount }}</h5>
+                <span>Referral</span>
+              </div>
             </div>
+          @endif
             <div class="d-flex align-items-center gap-2">
               <div class="avatar">
                 <div class="avatar-initial rounded bg-label-primary">
@@ -256,7 +255,37 @@
               </div>
           </div>
         </div>
-                          <div class="col-md-6 mb-4">
+        @if(!is_null($hasReferralCode))  
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="card-icon mb-3">
+                  <div class="avatar">
+                    <div class="avatar-initial rounded bg-label-infp">
+                        <i class="bx bx-link-alt bx-sm"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-info">           
+                  <div class="w-100 mb-3">
+                  <label class="form-label mb-0" for="referralLink">Tautan Undangan:</label>
+                    <div class="d-flex align-items-center">
+                        <input type="text"id="referralLink"name="referralLink"class="form-control me-2" value="https://bilikhukum.com/join?token={{ $hasReferralCode->code }}" readonly/>
+                        <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard()">
+                          <i class="bx bx-copy text-white bx-sm"></i>
+                        </button>
+                        <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
+                          <i class="bx bxl-whatsapp text-white bx-sm"></i>
+                        </button>
+                    </div>
+                    <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endif
+        <div class="col-md-6 mb-4">
           <div class="card">
             <div class="card-body">
               <div class="card-icon mb-3">
@@ -472,6 +501,22 @@
 </script>
 
 <script>
+  function copyURLToClipboard() {
+    var referralLink = document.getElementById("referralLink");
+    referralLink.select();
+    document.execCommand("copy");
+    var response = {
+        success: true, // Anda dapat menentukan apakah operasi berhasil atau tidak
+        title: "Success", // Judul Sweet Alert
+        message: "Tautan undangan berhasil disalin!" // Pesan Sweet Alert
+    };
+    showSweetAlert(response); // Panggil fungsi untuk menampilkan Sweet Alert
+  }
+
+  function shareToWhatsApp(url) {            
+    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
+  }
+  
   function showSweetAlert(response) {
       Swal.fire({
           icon: response.success ? 'success' : 'error',

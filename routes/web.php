@@ -34,6 +34,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/lawyer',                   [LawyerController::class, 'showLawyer'])->name('lawyer');
     Route::get('/lawyer/detil',             [LawyerController::class, 'showLawyerDetil'])->name('lawyer.detil');
     Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
+    Route::get('/lawyer/klien',             [LawyerController::class, 'showKlienLawyer'])->name('lawyer.klien');
     
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
@@ -60,7 +61,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::post('/role',                    [RoleController::class, 'rolesStore'])->name('roles.store');
     Route::post('/role/change/access',      [RoleController::class, 'changeAccess'])->name('change.access');
-    Route::post('/roles/Destrtoy',      [RoleController::class, 'rolesDestroy'])->name('roles.destroy');
+    Route::post('/roles/Destrtoy',          [RoleController::class, 'rolesDestroy'])->name('roles.destroy');
     
 
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
@@ -76,11 +77,11 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::put('/update/office-case/{id}',  [LawyerController::class, 'updateOfficeCase'])->name('updateOfficeCase');
     Route::get('/delete/officecase',        [LawyerController::class, 'deleteOfficeCase'])->name('deleteOfficeCase');
 
-    Route::post('/klienchat/store',         [KlienChatController::class, 'klienChat'])->name('klienchat.store');
-
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
     
+    Route::get('/hubungi',                  [KlienChatController::class, 'hubungi'])->name('hubungiKlien');
+    Route::post('/update/statusklien',      [KlienChatController::class, 'updateStatusKlien'])->name('updateStatusKlien');
     //Menu
         //Add
             Route::post('/menu',                        [MenuController::class, 'addMenu'])->name('add.menu');
@@ -110,6 +111,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/getdata/alloffice',            [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
         Route::get('/getdata/refferal',             [AccountController::class, 'getDataRefferal'])->name('getDataRefferal');
         Route::get('/getdata/perkara/{office_id}',  [LawyerController::class, 'getPerkaraData'])->name('getPerkaraData');
+        Route::get('/getdata/klien',                [KlienChatController::class, 'getDataKlien'])->name('getDataKlien');
 
     //Get Data
 });
@@ -130,7 +132,7 @@ Route::get('/location/{code}',              [PengacaraController::class, 'getNam
 Route::get('/search-offices',               [PengacaraController::class, 'searchOffices'])->name('search-offices');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showPengacara');
 
-
+Route::post('/klienchat/store',             [KlienChatController::class, 'klienChat'])->name('klienchat.store');
 
 
 // getData

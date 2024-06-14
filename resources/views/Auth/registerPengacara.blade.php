@@ -491,12 +491,6 @@
                         errorMessage.textContent = 'Format tanggal harus YYYY-MM-DD.';
                         valid = false;
                     }
-                } else if (input.id === 'postCode') {
-                    const postCodeRegex = /^\d{5}$/;
-                    if (!postCodeRegex.test(input.value)) {
-                        errorMessage.textContent = 'Kode Pos harus terdiri dari 5 digit angka.';
-                        valid = false;
-                    }
                 } else if (input.id === 'website') {
                     if (input.value && !input.value.startsWith('https://')) {
                         errorMessage.textContent = 'URL harus dimulai dengan https://';

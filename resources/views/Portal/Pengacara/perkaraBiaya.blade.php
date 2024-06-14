@@ -129,11 +129,14 @@
         <li class="nav-item">
             <a class="nav-link active" href="{{ route('lawyer.perkara')}}"><i class='bx bx-spreadsheet'></i></i> Perkara & Biaya</a>
         </li>
-        {{-- <li class="nav-item">
-            <a class="nav-link" href="pages-profile-connections.html"
-            ><i class="bx bx-link-alt me-1"></i> Connections</a
-            >
-        </li> --}}
+        <li class="nav-item position-relative">
+            <a class="nav-link" href="{{ route('lawyer.klien') }}">
+                <i class='bx bxs-user-detail'></i> Klien
+                @if($klienChatStatus0Count > 0)
+                    <span class="badge badge-center rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $klienChatStatus0Count }}</span>
+                @endif
+            </a>
+        </li>  
         </ul>
     </div>
     </div>

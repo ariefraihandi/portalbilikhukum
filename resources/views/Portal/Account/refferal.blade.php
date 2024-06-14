@@ -166,7 +166,7 @@
                                     id="referralLink"
                                     name="referralLink"
                                     class="form-control w-100"
-                                    value="bilikhukum.com/join?token={{$hasReferralCode->code}}"
+                                    value="https://bilikhukum.com/join?token={{$hasReferralCode->code}}"
                                     readonly
                                 />
                             </div>
@@ -174,7 +174,7 @@
                                 <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard()">
                                     <i class="bx bx-copy text-white bx-sm"></i>
                                 </button>
-                                <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('bilikhukum.com/join?token={{$hasReferralCode->code}}')">
+                                <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
                                     <i class="bx bxl-whatsapp text-white bx-sm"></i>
                                 </button>
                             </div>
