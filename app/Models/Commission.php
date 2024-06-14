@@ -14,6 +14,7 @@ class Commission extends Model
         'note',
         'type',
         'commission_amount',
+        'reference_id',        
     ];
 
     public function referral()

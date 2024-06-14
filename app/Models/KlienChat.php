@@ -18,6 +18,8 @@ class KlienChat extends Model
         'keperluan',
         'id_office',
         'status',
+        'budget',
+        'new_budget',
         'nomor_perkara ',
         'last_contacted_at',
         'is_followed_up',

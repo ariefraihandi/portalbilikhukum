@@ -196,22 +196,22 @@
                                         break;
                                     case 3:
                                         $statusText = 'Dalam Proses Persidangan';
-                                        $badgeClass = 'bg-info';
+                                        $badgeClass = 'bg-label-info';
                                         $progressPercentage = 60;
                                         break;
                                     case 4:
                                         $statusText = 'Selesai';
-                                        $badgeClass = 'bg-success';
+                                        $badgeClass = 'bg-label-success';
                                         $progressPercentage = 100;
                                         break;
                                     case 5:
                                         $statusText = 'Batal/Tidak Ada Kelanjutan';
-                                        $badgeClass = 'bg-secondary';
+                                        $badgeClass = 'bg-label-secondary';
                                         $progressPercentage = 0;
                                         break;
                                     default:
                                         $statusText = 'Status Tidak Diketahui';
-                                        $badgeClass = 'bg-warning';
+                                        $badgeClass = 'bg-label-warning';
                                         $progressPercentage = 0;
                                         break;
                                 }
@@ -247,10 +247,9 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama</th>
-                        <th>Tanggal</th>                      
-                        <th>Pesan</th>                      
-                        <th>Status</th>                   
+                        <th>Klien</th>                 
+                        <th>Keperluan</th>                 
+                        <th>Budget</th>                                                        
                         <th>Action</th>                   
                     </tr>
                 </thead>
@@ -328,9 +327,8 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'name', name: 'name' },
-                { data: 'last_contacted_at', name: 'last_contacted_at' },
                 { data: 'keperluan', name: 'keperluan' },            
-                { data: 'status', name: 'status' },
+                { data: 'budget', name: 'budget' },
                 {
                     data: 'action',
                     name: 'action',
