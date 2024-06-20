@@ -11,7 +11,7 @@
     <meta name="keywords" content="{{ $data['meta_keywords'] }}">
     <meta name="author" content="{{ $data['meta_author'] }}">
 
-    <script src="src='https://www.google.com/recaptcha/api.js'"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
