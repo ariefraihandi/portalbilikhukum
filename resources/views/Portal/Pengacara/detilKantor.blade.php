@@ -18,129 +18,138 @@
 
     <!-- Header -->
     <div class="row">
-    <div class="col-12">
-        <div class="card mb-4">
-        <div class="user-profile-header-banner">
-            <img src="{{ asset('assets') }}/img/office/cover/{{$office->cover}}" alt="Banner image" class="rounded-top" />
-        </div>
-        <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-            <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
-            <img
-                src="{{ asset('assets') }}/img/office/logo/{{$office->logo}}"
-                alt="user image"
-                class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" />
+        <div class="col-12">
+            <div class="card mb-4">
+            <div class="user-profile-header-banner">
+                <img src="{{ asset('assets') }}/img/office/cover/{{$office->cover}}" alt="Banner image" class="rounded-top" />
             </div>
-            <div class="flex-grow-1 mt-3 mt-sm-5">
-                <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
-                    <div class="user-profile-info">
-                        <h4>{{ $office->nama_kantor }}</h4>
-                        <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
-                            <li class="list-inline-item fw-medium">
-                                @for ($i = 0; $i < $labelCount; $i++)
-                                    <span>$</span>
-                                @endfor
-                            </li>
-                            @if($office->type == 1)
-                                <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Pengacara</li>
-                            @elseif($office->type == 2)
-                                <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Notaris</li>
-                            @elseif($office->type == 3)
-                                <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Mediator</li>
-                            @endif
-                            @php
-                                $codeParts = explode('.', $office->desa);
-                
-                                // Pastikan bahwa kode wilayah memiliki setidaknya 4 bagian
-                                if (count($codeParts) >= 4) {
-                                    // Ambil kode provinsi
-                                    $provinceCode = $codeParts[0];
-                
-                                    // Ambil nama provinsi dari database berdasarkan kode
-                                    $provinceName = ucfirst(strtolower(App\Models\Province::where('code', $provinceCode)->value('name')));
-                
-                                    // Ambil kode kabupaten/kota
-                                    $regencyCode = $codeParts[0] . '.' . $codeParts[1];
-                
-                                    // Ambil nama kabupaten/kota dari database berdasarkan kode
-                                    $regencyName = ucfirst(strtolower(App\Models\Regency::where('code', $regencyCode)->value('name')));
-                
-                                    // Ambil kode kecamatan
-                                    $districtCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2];
-                
-                                    // Ambil nama kecamatan dari database berdasarkan kode
-                                    $districtName = ucfirst(strtolower(App\Models\District::where('code', $districtCode)->value('name')));
-                
-                                    // Ambil kode desa/kelurahan
-                                    $villageCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2] . '.' . $codeParts[3];
-                
-                                    // Ambil nama desa/kelurahan dari database berdasarkan kode
-                                    $villageName = ucfirst(strtolower(App\Models\Village::where('code', $villageCode)->value('name')));
-                                } else {
-                                    // Jika jumlah bagian kode wilayah kurang dari 4, berikan nilai default
-                                    $provinceName = $regencyName = $districtName = $villageName = null;
-                                }
-                            @endphp
-                
-                            <li class="list-inline-item fw-medium"><i class="bx bx-map"></i> {{$provinceName}}, {{$regencyName}}</li>
-                            <li class="list-inline-item fw-medium">
-                                <i class="bx bx-calendar-alt"></i> Joined {{$joinedDate}}
-                            </li>
-                        
-                        </ul>
-                    </div>
-                    @if($office->status == 1)
-                        <a href="javascript:void(0)" class="btn btn-info text-nowrap">
-                            <i class="bx bx-time me-1"></i>Menunggu Persetujuan Verifikasi
-                        </a>
-                    @elseif($office->status == 2)
-                        <a href="javascript:void(0)" class="btn btn-success text-nowrap">
-                            <i class='bx bx-user-check me-1'></i>Verified
-                        </a>
-                    @elseif($office->status == 3)
-                        <a href="javascript:void(0)" class="btn btn-secondary text-nowrap">
-                            <i class='bx bx-pause-circle me-1'></i>Suspended
-                        </a>
-                    @elseif($office->status == 4)
-                        <a href="javascript:void(0)" class="btn btn-danger text-nowrap">
-                            <i class='bx bx-block me-1'></i>Blocked
-                        </a>
-                    @else
-                        <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
-                            <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
-                        </a>
-                    @endif
+            <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
+                <div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
+                <img
+                    src="{{ asset('assets') }}/img/office/logo/{{$office->logo}}"
+                    alt="user image"
+                    class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img" />
                 </div>
-                
+                <div class="flex-grow-1 mt-3 mt-sm-5">
+                    <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
+                        <div class="user-profile-info">
+                            <h4>{{ $office->nama_kantor }}</h4>
+                            <ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
+                                <li class="list-inline-item fw-medium">
+                                    @for ($i = 0; $i < $labelCount; $i++)
+                                        <span>$</span>
+                                    @endfor
+                                </li>
+                                @if($office->type == 1)
+                                    <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Pengacara</li>
+                                @elseif($office->type == 2)
+                                    <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Notaris</li>
+                                @elseif($office->type == 3)
+                                    <li class="list-inline-item fw-medium"><i class='bx bxs-business'></i> Mediator</li>
+                                @endif
+                                @php
+                                    $codeParts = explode('.', $office->desa);
+                    
+                                    // Pastikan bahwa kode wilayah memiliki setidaknya 4 bagian
+                                    if (count($codeParts) >= 4) {
+                                        // Ambil kode provinsi
+                                        $provinceCode = $codeParts[0];
+                    
+                                        // Ambil nama provinsi dari database berdasarkan kode
+                                        $provinceName = ucfirst(strtolower(App\Models\Province::where('code', $provinceCode)->value('name')));
+                    
+                                        // Ambil kode kabupaten/kota
+                                        $regencyCode = $codeParts[0] . '.' . $codeParts[1];
+                    
+                                        // Ambil nama kabupaten/kota dari database berdasarkan kode
+                                        $regencyName = ucfirst(strtolower(App\Models\Regency::where('code', $regencyCode)->value('name')));
+                    
+                                        // Ambil kode kecamatan
+                                        $districtCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2];
+                    
+                                        // Ambil nama kecamatan dari database berdasarkan kode
+                                        $districtName = ucfirst(strtolower(App\Models\District::where('code', $districtCode)->value('name')));
+                    
+                                        // Ambil kode desa/kelurahan
+                                        $villageCode = $codeParts[0] . '.' . $codeParts[1] . '.' . $codeParts[2] . '.' . $codeParts[3];
+                    
+                                        // Ambil nama desa/kelurahan dari database berdasarkan kode
+                                        $villageName = ucfirst(strtolower(App\Models\Village::where('code', $villageCode)->value('name')));
+                                    } else {
+                                        // Jika jumlah bagian kode wilayah kurang dari 4, berikan nilai default
+                                        $provinceName = $regencyName = $districtName = $villageName = null;
+                                    }
+                                @endphp
+                    
+                                <li class="list-inline-item fw-medium"><i class="bx bx-map"></i> {{$provinceName}}, {{$regencyName}}</li>
+                                <li class="list-inline-item fw-medium">
+                                    <i class="bx bx-calendar-alt"></i> Joined {{$joinedDate}}
+                                </li>
+                            
+                            </ul>
+                        </div>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            @if($office->status == 1)
+                                <a href="javascript:void(0)" class="btn btn-info text-nowrap">
+                                    <i class="bx bx-time me-1"></i>Menunggu Persetujuan Verifikasi
+                                </a>
+                            @elseif($office->status == 2)
+                                <a href="javascript:void(0)" class="btn btn-success text-nowrap">
+                                    <i class='bx bx-user-check me-1'></i>Verified
+                                </a>
+                            @elseif($office->status == 3)
+                                <a href="javascript:void(0)" class="btn btn-secondary text-nowrap">
+                                    <i class='bx bx-pause-circle me-1'></i>Suspended
+                                </a>
+                            @elseif($office->status == 4)
+                                <a href="javascript:void(0)" class="btn btn-danger text-nowrap">
+                                    <i class='bx bx-block me-1'></i>Blocked
+                                </a>
+                            @else
+                                <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
+                                    <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
+                                </a>
+                            @endif
+                            <a href="{{route('lawyer.website')}}" class="btn btn-info text-nowrap">
+                                <i class='bx bx-link'></i>Wesbite
+                            </a>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
             </div>
         </div>
-        </div>
-    </div>
     </div>
     <!--/ Header -->
 
     <!-- Navbar pills -->
     <div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-pills flex-column flex-sm-row mb-4">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('lawyer') }}"><i class="bx bx-user me-1"></i> Beranda</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="{{ route('lawyer.detil') }}"><i class="bx bxs-business me-1"></i> Detil Kantor</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('lawyer.perkara')}}"><i class='bx bx-spreadsheet'></i></i> Perkara & Biaya</a>
-        </li>
-        <li class="nav-item position-relative">
-            <a class="nav-link" href="{{ route('lawyer.klien') }}">
-                <i class='bx bxs-user-detail'></i> Klien
-                @if($klienChatStatus0Count > 0)
-                    <span class="badge badge-center rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $klienChatStatus0Count }}</span>
-                @endif
-            </a>
-        </li>  
-        </ul>
-    </div>
+        <div class="col-md-12">
+            <ul class="nav nav-pills flex-column flex-sm-row mb-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('lawyer') }}"><i class="bx bx-user me-1"></i> Beranda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ route('lawyer.detil') }}"><i class="bx bxs-business me-1"></i> Detil Kantor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('lawyer.perkara')}}"><i class='bx bx-spreadsheet'></i></i> Perkara & Biaya</a>
+                </li>
+                <li class="nav-item position-relative">
+                    <a class="nav-link" href="{{ route('lawyer.klien') }}">
+                        <i class='bx bxs-user-detail'></i> Klien
+                        @if($klienChatStatus0Count > 0)
+                            <span class="badge badge-center rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $klienChatStatus0Count }}</span>
+                        @endif
+                    </a>
+                </li>  
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('lawyer.website')}}"><i class='bx bx-link'></i></i> Website</a>
+                </li>
+            </ul>
+        </div>
     </div>
     <!--/ Navbar pills -->
 

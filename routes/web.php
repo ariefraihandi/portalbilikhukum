@@ -35,6 +35,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/lawyer/detil',             [LawyerController::class, 'showLawyerDetil'])->name('lawyer.detil');
     Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
     Route::get('/lawyer/klien',             [LawyerController::class, 'showKlienLawyer'])->name('lawyer.klien');
+    Route::get('/lawyer/website',           [LawyerController::class, 'showWebsiteLawyer'])->name('lawyer.website');
     
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
@@ -131,6 +132,7 @@ Route::get('/search',                       [PengacaraController::class, 'search
 Route::get('/location/{code}',              [PengacaraController::class, 'getNameByCode'])->name('getNameByCode');
 Route::get('/search-offices',               [PengacaraController::class, 'searchOffices'])->name('search-offices');
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showPengacara');
+Route::get('/pengacara/{website}',          [PengacaraController::class, 'showLandingPage'])->name('showLandingPage');
 
 Route::post('/klienchat/store',             [KlienChatController::class, 'klienChat'])->name('klienchat.store');
 

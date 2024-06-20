@@ -257,7 +257,6 @@ class AuthController extends Controller
                 'officeRegency' => 'required|string',
                 'officeDistrict' => 'required|string',
                 'officeVillage' => 'required|string',
-                'website' => 'nullable|url|max:255',
                 'slogan' => 'required|string|max:255',
                 'setuju' => 'required|accepted',
             ]);
@@ -275,8 +274,7 @@ class AuthController extends Controller
                 'provinsi' => $request->officeProvince,
                 'kabupaten_kota' => $request->officeRegency,
                 'kecamatan' => $request->officeDistrict,
-                'desa' => $request->officeVillage,
-                'website' => $request->website,
+                'desa' => $request->officeVillage,                
                 'slogan' => $request->slogan,
                 'agreement' => $request->setuju,
                 'referedby' => auth()->user()->referedby,

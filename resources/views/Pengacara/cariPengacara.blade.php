@@ -130,6 +130,12 @@
                                     <sup>+{{ $office->other_cases_count }} perkara lain</sup>
                                 @endif
                             </div>
+                            @if(!empty($office->website))
+                                <a href="{{ $office->website }}" class="btn btn-primary py-2 px-3 mt-3" target="_blank">
+                                    Web
+                                </a>
+                            @endif
+                        
                             <a href="#contact-section" class="btn btn-primary py-2 px-3 mt-3 consult-btn" 
                               data-office-id="{{ $office->id }}" 
                               data-office-name="{{ $office->nama_kantor }}" 
@@ -212,6 +218,9 @@
                     </div>
                     <div class="col-12 mb-3">
                         <textarea name="keperluan" cols="30" rows="7" class="form-control" placeholder="Message" required></textarea>
+                    </div>
+                    <div class="col-12 mb-3">
+                        {!! htmlFormSnippet() !!}
                     </div>
                     <div class="col-12">
                         <input type="submit" value="Send Message" class="btn btn-primary" />

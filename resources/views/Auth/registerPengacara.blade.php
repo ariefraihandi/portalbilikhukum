@@ -102,14 +102,9 @@
                                         <option value="" selected disabled>Pilih Desa</option>
                                     </select>
                                 </div>
-                                <!-- Website -->
-                                <div class="col-sm-6">
-                                    <label class="form-label" for="website">Website (opsional)</label>
-                                    <input type="text" id="website" name="website" class="form-control" placeholder="https://kantorsaya.com/" />
-                                    <small class="error-message text-danger"></small>
-                                </div>
+                             
                                 <!-- Slogan Kantor -->
-                                <div class="col-sm-6">
+                                <div class="col-sm-12">
                                     <label class="form-label" for="slogan">Slogan Kantor</label>
                                     <textarea id="slogan" required name="slogan" class="form-control" placeholder="Konsisten Membela Klien"></textarea>
                                     <small class="error-message text-danger"></small>
@@ -490,13 +485,6 @@
                     if (!dateRegex.test(input.value)) {
                         errorMessage.textContent = 'Format tanggal harus YYYY-MM-DD.';
                         valid = false;
-                    }
-                } else if (input.id === 'website') {
-                    if (input.value && !input.value.startsWith('https://')) {
-                        errorMessage.textContent = 'URL harus dimulai dengan https://';
-                        valid = false;
-                    } else {
-                        errorMessage.textContent = '';
                     }
                 } else {
                     errorMessage.textContent = '';

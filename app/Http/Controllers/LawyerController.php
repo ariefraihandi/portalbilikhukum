@@ -231,7 +231,64 @@ class LawyerController extends Controller
         }
     }
     
-    
+    public function showWebsiteLawyer(Request $request)
+    {
+        Carbon::setLocale('id');
+
+        $userId = Auth::id();
+        $officeMember = OfficeMember::where('id_user', $userId)->first();
+
+        if ($officeMember) {
+            $officeId = $officeMember->id_office;
+            $office = Office::where('type', 1)->find($officeId);
+
+            // Check office status
+            if ($office->status <= 1) {
+                return redirect()->route('lawyer.detil')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Gagal',
+                        'message' => 'Kantor anda belum Terverifikasi',
+                    ],
+                ]);
+            }
+
+            $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');
+            $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
+            $legalCategories            = LegalCase::all();
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get();
+            $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
+
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+
+            $labelCount = $this->determineLabel($averageFee);
+
+            $data = [
+                'title'             => 'Pengacara',
+                'subtitle'          => 'Bilik Hukum',
+                'sidebar'           => $request->get('accessMenus'),
+                'office'            => $office,
+                'joinedDate'        => $joinedDate,
+                'officeDocuments'   => $officeDocuments,
+                'legalCategories'   => $legalCategories,
+                'officeCases'       => $officeCases, // Pass office cases to the view
+                'labelCount'        => $labelCount,
+                'klienChatStatus0Count' => $klienChatStatus0Count,
+            ];
+
+            return view('Portal.Pengacara.website', $data);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda belum terdaftar sebagai anggota kantor.',
+                ],
+            ]);
+        }
+    }
     
 //Editing
     public function uploadOfficeLogo(Request $request)

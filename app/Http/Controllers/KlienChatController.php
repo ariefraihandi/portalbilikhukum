@@ -6,6 +6,7 @@ use App\Models\KlienChat;
 use App\Models\Office;
 use App\Models\Tagihan;
 use App\Models\Commission;
+use App\Models\OfficeMember;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\KlienChatNotification;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class KlienChatController extends Controller
     {
         // Validasi data yang masuk
         $validatedData = $request->validate([
+            'g-recaptcha-response' => 'recaptcha',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'whatsapp' => 'required|string|max:20',
@@ -85,8 +87,14 @@ class KlienChatController extends Controller
 
     public function getDataKlien(Request $request)
     {
+        $user = auth()->user();
+    
+        // Mendapatkan office_id dari OfficeMember berdasarkan user_id
+        $officeMember = OfficeMember::where('id_user', $user->id)->first();
+        
         if ($request->ajax()) {
-            $data = KlienChat::select(['id', 'name', 'whatsapp', 'budget', 'new_budget', 'last_contacted_at', 'nomor_perkara', 'keperluan', 'status']);
+            $data = KlienChat::where('id_office', $officeMember->id_office)->select(['id', 'name', 'whatsapp', 'budget', 'new_budget', 'last_contacted_at', 'nomor_perkara', 'keperluan', 'status']);
+            
 
             return DataTables::of($data)
                 ->addIndexColumn()              
@@ -130,7 +138,7 @@ class KlienChatController extends Controller
                 ->addColumn('budget', function($row) {
                     // Memeriksa apakah kedua budget null
                     if (is_null($row->budget) && is_null($row->new_budget)) {
-                        return '<span class="badge bg-label-info">Belum Ditentukan</span>';
+                        return '<span class="badge bg-label-warning">Belum Ditentukan</span>';
                     }
                     
                     // Format budget dan new_budget jika tidak null
@@ -139,7 +147,7 @@ class KlienChatController extends Controller
                     
                     // Menentukan output berdasarkan kehadiran budget dan new_budget
                     if ($budget && $newBudget) {
-                        return '<span class="badge bg-label-info">Budget Awal: ' . $budget . '<br>Budget Akhir: ' . $newBudget . '</span>';
+                        return '<span class="badge bg-label-info">Budget Awal: ' . $budget . '<br><br>Budget Akhir: ' . $newBudget . '</span>';
                     } elseif ($budget) {
                         return '<span class="badge bg-label-info">Budget: ' . $budget . '</span>';
                     } else {
@@ -252,7 +260,7 @@ class KlienChatController extends Controller
                     }
                     $klien->nomor_perkara = $request->nomor_perkara;
                     break;
-    
+
                 case '4':
                     // Periksa apakah budget_compare_check diaktifkan
                     if ($request->has('budget_compare_check') && $request->budget_compare_check === 'on') {

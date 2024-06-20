@@ -11,6 +11,27 @@ use App\Models\OfficeCase;
 
 class PengacaraController extends Controller
 {
+    public function showLandingPage($website)
+    {
+        $office = Office::where('website', $website)->first();
+
+        if ($office) {
+            $data = [
+                'nama_kantor' => $office->nama_kantor,
+                'alamat' => $office->alamat,
+                'hp_whatsapp' => $office->hp_whatsapp,
+                'email_kantor' => $office->email_kantor,
+                'slogan' => $office->slogan,
+                'logo' => $office->logo,
+                // Tambahkan field lain yang diperlukan
+            ];
+            
+            return view('Pengacara.landingPage.index', $data);
+        } else {
+            return response()->json(['error' => 'Office not found'], 404);
+        }
+    }
+
     public function showIndex()
     {
         $title = 'Jasa Pengacara Profesional';
@@ -54,7 +75,6 @@ class PengacaraController extends Controller
 
         return view('Pengacara.cariPengacara', compact('data'));
     }
-
 
     public function getNameByCode($code)
     {

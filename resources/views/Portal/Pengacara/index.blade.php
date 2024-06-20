@@ -120,23 +120,26 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="nav nav-pills flex-column flex-sm-row mb-4">
-            <li class="nav-item">
-                <a class="nav-link active" href="{{ route('lawyer') }}"><i class="bx bx-user me-1"></i> Beranda</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('lawyer.detil') }}"><i class="bx bxs-business me-1"></i> Detil Kantor</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('lawyer.perkara')}}"><i class='bx bx-spreadsheet'></i></i> Perkara & Biaya</a>
-            </li>
-            <li class="nav-item position-relative">
-                <a class="nav-link" href="{{ route('lawyer.klien') }}">
-                    <i class='bx bxs-user-detail'></i> Klien
-                    @if($klienChatStatus0Count > 0)
-                        <span class="badge badge-center rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $klienChatStatus0Count }}</span>
-                    @endif
-                </a>
-            </li>  
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ route('lawyer') }}"><i class="bx bx-user me-1"></i> Beranda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('lawyer.detil') }}"><i class="bx bxs-business me-1"></i> Detil Kantor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('lawyer.perkara')}}"><i class='bx bx-spreadsheet'></i></i> Perkara & Biaya</a>
+                </li>
+                <li class="nav-item position-relative">
+                    <a class="nav-link" href="{{ route('lawyer.klien') }}">
+                        <i class='bx bxs-user-detail'></i> Klien
+                        @if($klienChatStatus0Count > 0)
+                            <span class="badge badge-center rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $klienChatStatus0Count }}</span>
+                        @endif
+                    </a>
+                </li>  
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('lawyer.website')}}"><i class='bx bx-link'></i></i> Website</a>
+                </li>
             </ul>
         </div>
     </div>
