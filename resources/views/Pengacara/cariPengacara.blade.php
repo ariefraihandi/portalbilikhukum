@@ -131,7 +131,7 @@
                                 @endif
                             </div>
                             @if(!empty($office->website))
-                                <a href="{{ $office->website }}" class="btn btn-primary py-2 px-3 mt-3" target="_blank">
+                                <a href="pengacara/{{ $office->website }}" class="btn btn-primary py-2 px-3 mt-3" target="_blank">
                                     Web
                                 </a>
                             @endif
