@@ -3460,120 +3460,120 @@ h6, .h6 {
       width: 45px;
       height: 45px; } }
 
-/** hidden-sidebar * */
-.hidden-bar {
-  position: fixed;
-  right: -350px;
-  top: 0px;
-  opacity: 0;
-  width: 350px;
-  height: 100%;
-  z-index: 99999;
-  overflow-y: auto;
-  visibility: hidden;
-  background-color: var(--lighter-color);
-  border-left: 1px solid #231b26;
-  -webkit-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease; }
-  @media only screen and (max-width: 375px) {
-    .hidden-bar {
-      width: 300px; } }
-  .hidden-bar .social-style-one a {
-    width: 40px;
-    height: 40px;
-    line-height: 40px; }
+      .hidden-bar {
+        position: fixed;
+        right: -350px;
+        top: 0px;
+        opacity: 0;
+        width: 350px;
+        height: 100%;
+        z-index: 99999;
+        overflow-y: auto;
+        visibility: hidden;
+        background-color: var(--lighter-color);
+        border-left: 1px solid #231b26;
+        -webkit-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease; }
+        @media only screen and (max-width: 375px) {
+        .hidden-bar {
+            width: 300px; } }
+        .hidden-bar .social-style-one a {
+        width: 40px;
+        height: 40px;
+        line-height: 40px; }
 
-.side-content-visible .hidden-bar {
-  right: 0px;
-  opacity: 1;
-  visibility: visible; }
+    .side-content-visible .hidden-bar {
+        right: 0px;
+        opacity: 1;
+        visibility: visible; }
 
-.hidden-bar .inner-box {
-  position: relative;
-  padding: 100px 40px 50px; }
-  @media only screen and (max-width: 375px) {
     .hidden-bar .inner-box {
-      padding-left: 25px;
-      padding-right: 25px; } }
-  .hidden-bar .inner-box .cross-icon {
-    position: absolute;
-    right: 30px;
-    top: 30px;
-    cursor: pointer;
-    color: #ffffff;
-    font-size: 20px;
-    -webkit-transition: all 500ms ease;
-    -o-transition: all 500ms ease;
-    transition: all 500ms ease; }
-  .hidden-bar .inner-box h4 {
-    position: relative;
-    color: #ffffff;
-    margin-bottom: 35px; }
+        position: relative;
+        padding: 100px 40px 50px; }
+        @media only screen and (max-width: 375px) {
+        .hidden-bar .inner-box {
+            padding-left: 25px;
+            padding-right: 25px; } }
+        .hidden-bar .inner-box .cross-icon {
+        position: absolute;
+        right: 30px;
+        top: 30px;
+        cursor: pointer;
+        color: #ffffff;
+        font-size: 20px;
+        -webkit-transition: all 500ms ease;
+        -o-transition: all 500ms ease;
+        transition: all 500ms ease; }
+        .hidden-bar .inner-box h4 {
+        position: relative;
+        color: #ffffff;
+        margin-bottom: 35px; }
 
-/*Appointment Form */
-.hidden-bar .appointment-form {
-  position: relative; }
-  .hidden-bar .appointment-form .form-group {
-    position: relative;
-    margin-bottom: 20px; }
-  .hidden-bar .appointment-form input[type="text"], .hidden-bar .appointment-form input[type="email"] {
-    position: relative;
-    display: block;
-    width: 100%;
-    line-height: 23px;
-    padding: 10px 25px;
-    color: #ffffff;
-    font-size: 16px;
-    background: none;
-    -webkit-transition: all 300ms ease;
-    -o-transition: all 300ms ease;
-    transition: all 300ms ease;
-    border: 1px solid rgba(255, 255, 255, 0.1); }
-  .hidden-bar .appointment-form textarea {
-    position: relative;
-    display: block;
-    width: 100%;
-    line-height: 23px;
-    padding: 10px 25px;
-    color: #ffffff;
-    font-size: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: none;
-    -webkit-transition: all 300ms ease;
-    -o-transition: all 300ms ease;
-    transition: all 300ms ease;
-    resize: none; }
-  .hidden-bar .appointment-form input::-webkit-input-placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form input:-ms-input-placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form input::-ms-input-placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form input::placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form textarea::-webkit-input-placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form textarea:-ms-input-placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form textarea::-ms-input-placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form textarea::placeholder {
-    font-size: 14px;
-    color: #bdbdbd; }
-  .hidden-bar .appointment-form .form-group button {
-    width: 100%;
-    font-size: 16px;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    border-color: white; }
+    /*Appointment Form */
+    .hidden-bar .appointment-form {
+        position: relative; }
+        .hidden-bar .appointment-form .form-group {
+        position: relative;
+        margin-bottom: 20px; }
+        .hidden-bar .appointment-form input[type="text"], .hidden-bar .appointment-form input[type="email"] {
+        position: relative;
+        display: block;
+        width: 100%;
+        line-height: 23px;
+        padding: 10px 25px;
+        color: #ffffff;
+        font-size: 16px;
+        background: none;
+        -webkit-transition: all 300ms ease;
+        -o-transition: all 300ms ease;
+        transition: all 300ms ease;
+        border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hidden-bar .appointment-form textarea {
+        position: relative;
+        display: block;
+        width: 100%;
+        line-height: 23px;
+        padding: 10px 25px;
+        color: #ffffff;
+        font-size: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: none;
+        -webkit-transition: all 300ms ease;
+        -o-transition: all 300ms ease;
+        transition: all 300ms ease;
+        resize: none; }
+        .hidden-bar .appointment-form input::-webkit-input-placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form input:-ms-input-placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form input::-ms-input-placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form input::placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form textarea::-webkit-input-placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form textarea:-ms-input-placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form textarea::-ms-input-placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form textarea::placeholder {
+        font-size: 14px;
+        color: #bdbdbd; }
+        .hidden-bar .appointment-form .form-group button {
+        width: 100%;
+        font-size: 16px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-color: white; }
+
 
 .form-back-drop {
   position: fixed;
@@ -3826,6 +3826,7 @@ h6, .h6 {
       .hero-area-two .author-image-part .bg-circle {
         width: 300px;
         height: 300px; } }
+
 
 .hero-area-two .scroll-down {
   z-index: 3;

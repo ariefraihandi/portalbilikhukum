@@ -11,8 +11,8 @@
 @endpush
 
 @section('content')
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="py-3 mb-4"><span class="text-muted fw-light">User Profile /</span> Projects</h4>
+<div class="container-xxl flex-grow-1 container-p-y">    
+    <h4 class="py-3 mb-4"><span class="text-muted fw-light">Office / {{$title}} /</span> Klien</h4>
 
     <div class="row">
         <div class="col-12">
@@ -85,27 +85,32 @@
                                 
                                 </ul>
                             </div>
-                            @if($office->status == 1)
-                                <a href="javascript:void(0)" class="btn btn-info text-nowrap">
-                                    <i class="bx bx-time me-1"></i>Menunggu Persetujuan Verifikasi
+                            <div class="d-flex flex-column flex-sm-row gap-2">
+                                @if($office->status == 1)
+                                    <a href="javascript:void(0)" class="btn btn-info text-nowrap">
+                                        <i class="bx bx-time me-1"></i>Menunggu Persetujuan Verifikasi
+                                    </a>
+                                @elseif($office->status == 2)
+                                    <a href="javascript:void(0)" class="btn btn-success text-nowrap">
+                                        <i class='bx bx-user-check me-1'></i>Verified
+                                    </a>
+                                @elseif($office->status == 3)
+                                    <a href="javascript:void(0)" class="btn btn-secondary text-nowrap">
+                                        <i class='bx bx-pause-circle me-1'></i>Suspended
+                                    </a>
+                                @elseif($office->status == 4)
+                                    <a href="javascript:void(0)" class="btn btn-danger text-nowrap">
+                                        <i class='bx bx-block me-1'></i>Blocked
+                                    </a>
+                                @else
+                                    <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
+                                        <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
+                                    </a>
+                                @endif
+                                <a href="{{route('lawyer.website')}}" class="btn btn-info text-nowrap">
+                                    <i class='bx bx-link'></i>Wesbite
                                 </a>
-                            @elseif($office->status == 2)
-                                <a href="javascript:void(0)" class="btn btn-success text-nowrap">
-                                    <i class='bx bx-user-check me-1'></i>Verified
-                                </a>
-                            @elseif($office->status == 3)
-                                <a href="javascript:void(0)" class="btn btn-secondary text-nowrap">
-                                    <i class='bx bx-pause-circle me-1'></i>Suspended
-                                </a>
-                            @elseif($office->status == 4)
-                                <a href="javascript:void(0)" class="btn btn-danger text-nowrap">
-                                    <i class='bx bx-block me-1'></i>Blocked
-                                </a>
-                            @else
-                                <a href="javascript:void(0)" class="btn btn-warning text-nowrap" id="verifyButton">
-                                    <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
-                                </a>
-                            @endif
+                            </div>
                         </div>
                         
                     </div>
@@ -136,6 +141,9 @@
                             @endif
                         </a>
                     </li>   
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('lawyer.website')}}"><i class='bx bx-link'></i></i> Website</a>
+                    </li>
                 </ul>
             </div>
         </div>

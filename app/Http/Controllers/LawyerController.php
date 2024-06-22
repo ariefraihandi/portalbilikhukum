@@ -15,14 +15,18 @@ use App\Models\KlienChat;
 use App\Models\OfficeDocument;
 use App\Models\LegalCase;
 use App\Models\OfficeCase;
+use App\Models\OfficeGallery;
 use App\Models\Office;
+use App\Models\OfficeSite;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use App\Models\OfficeVerificationList;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
 use App\Notifications\OfficeVerificationRequestNotification;
 use DataTables;
+
 
 class LawyerController extends Controller
 {
@@ -239,8 +243,9 @@ class LawyerController extends Controller
         $officeMember = OfficeMember::where('id_user', $userId)->first();
 
         if ($officeMember) {
-            $officeId = $officeMember->id_office;
-            $office = Office::where('type', 1)->find($officeId);
+            $officeId           = $officeMember->id_office;
+            $office             = Office::where('type', 1)->find($officeId);
+            $officeSite         = OfficeSite::where('office_id', $officeId)->first();
 
             // Check office status
             if ($office->status <= 1) {
@@ -257,6 +262,58 @@ class LawyerController extends Controller
             $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
             $legalCategories            = LegalCase::all();
             $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get();
+            $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();            
+            $officeGalleries = OfficeGallery::where('office_id', $officeId)
+                                            ->orderBy('created_at', 'desc') // Urutkan berdasarkan created_at descending
+                                            ->take(10) // Ambil sepuluh data terbaru
+                                            ->get(); 
+
+            $averageFee = $officeCases->avg(function ($officeCase) {
+                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+            });
+
+            $labelCount = $this->determineLabel($averageFee);
+
+            $data = [
+                'title'                     => 'Pengacara',
+                'subtitle'                  => 'Bilik Hukum',
+                'sidebar'                   => $request->get('accessMenus'),
+                'office'                    => $office,
+                'joinedDate'                => $joinedDate,
+                'officeDocuments'           => $officeDocuments,
+                'legalCategories'           => $legalCategories,
+                'officeCases'               => $officeCases, // Pass office cases to the view
+                'labelCount'                => $labelCount,
+                'officeSite'                => $officeSite,
+                'klienChatStatus0Count'     => $klienChatStatus0Count,
+                'officeGalleries'           => $officeGalleries,
+            ];
+
+            return view('Portal.Pengacara.website', $data);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda belum terdaftar sebagai anggota kantor.',
+                ],
+            ]);
+        }
+    }
+
+    public function showMemberDetil(Request $request)
+    {
+        Carbon::setLocale('id');
+
+        $userId         = Auth::id();
+        $officeMember   = OfficeMember::where('id_user', $userId)->first();
+
+        if ($officeMember) {
+            $officeId                   = $officeMember->id_office;
+            $office                     = Office::where('type', 1)->find($officeId);            
+            $joinedDate                 = Carbon::parse($office->created_at)->translatedFormat('F Y');            
+            $officeDocuments            = OfficeDocument::where('office_id', $officeId)->get();
+            $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
             $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
 
             $averageFee = $officeCases->avg(function ($officeCase) {
@@ -272,13 +329,11 @@ class LawyerController extends Controller
                 'office'            => $office,
                 'joinedDate'        => $joinedDate,
                 'officeDocuments'   => $officeDocuments,
-                'legalCategories'   => $legalCategories,
-                'officeCases'       => $officeCases, // Pass office cases to the view
                 'labelCount'        => $labelCount,
                 'klienChatStatus0Count' => $klienChatStatus0Count,
             ];
 
-            return view('Portal.Pengacara.website', $data);
+            return view('Portal.Pengacara.member', $data);
         } else {
             return redirect()->back()->with([
                 'response' => [
@@ -286,7 +341,7 @@ class LawyerController extends Controller
                     'title' => 'Gagal',
                     'message' => 'Anda belum terdaftar sebagai anggota kantor.',
                 ],
-            ]);
+            ]);    
         }
     }
     
@@ -390,9 +445,13 @@ class LawyerController extends Controller
             ]);
         }
 
-        if ($request->hasFile('cover')) {
-            $user = Auth::user();
-            $office = Office::where('user_id', $user->id)->first(); // Ambil data kantor dari ID user yang login
+        if ($request->hasFile('cover')) {      
+            $userId = Auth::id();
+               
+            $officeMember = OfficeMember::where('id_user', $userId)->firstOrFail();
+
+
+            $office = Office::where('id', $officeMember->id_office)->first(); 
 
             if ($office) {
                 $oldImage = $office->logo; // Ambil nama gambar lama dari kolom logo
@@ -463,9 +522,7 @@ class LawyerController extends Controller
             'officeEmail' => 'required|email|max:255',
             'officePhone' => 'required|string|max:20',
             'officedesa' => 'required|string|max:255',
-            'postCode' => 'required|string|max:10',
-            'slogan' => 'required|string|max:255',
-            'website' => 'nullable|url|max:255',
+            'postCode' => 'required|string|max:10',   
             'multiStepsProvince' => 'required|string|max:255',
             'multiStepsRegency' => 'required|string|max:255',
             'multiStepsDistrict' => 'required|string|max:255',
@@ -804,7 +861,164 @@ class LawyerController extends Controller
         ]);
     }
     
+//Website
+    public function addWebsite(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'websiteName' => 'required|string|max:255',
+            'office_id' => 'required|exists:offices,id',
+        ]);
 
+        if ($validator->fails()) {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Validation Error',
+                    'message' => $validator->errors()->first(),
+                ]
+            ])->withInput();
+        }
+
+        // URL encode the websiteName to replace spaces with +
+        $encodedWebsiteName = str_replace([' ', '-'], '+', $request->websiteName);
+
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            if (Office::where('website', $encodedWebsiteName)->exists()) {
+                DB::rollBack();
+                return redirect()->back()->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'URL Exists',
+                        'message' => 'URL sudah ada. Silakan pilih nama lain.',
+                    ]
+                ])->withInput();
+            }
+
+            // Find the office by id using where
+            $office = Office::where('id', $request->office_id)->first();
+
+            // Check if the office is null
+            if (!$office) {
+                DB::rollBack();
+                return redirect()->back()->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Office Not Found',
+                        'message' => 'Kantor tidak ditemukan.',
+                    ]
+                ])->withInput();
+            }
+
+            // Log the office details to verify the name attribute
+            Log::info('Office Details: ', $office->toArray());
+
+            // Update the office website field
+            $office->website = $encodedWebsiteName;
+            $office->save();
+
+            // Create a new OfficeSite record with default values
+            OfficeSite::create([
+                'office_id' => $office->id,
+                'office_name' => $encodedWebsiteName,
+                'logo_image' => 'logo_default.png', // Default value
+                'owner_image' => 'default-image.webp', // Default value
+                'owner_sec_image' => 'default-image.webp', // Default value
+                'icon_image' => 'icon_default.webp',
+                'tagline' => 'Default Tagline', // Default value
+                'aboutMe_title' => 'Default About Me Title', // Default value
+                'aboutMe_description' => 'Default About Me Description', // Default value
+                'aboutMe_legalcategory' => json_encode(['Default Category']), // Default value
+            ]);
+
+            // Commit the transaction
+            DB::commit();
+
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Nama page berhasil ditambahkan.',
+                ]
+            ]);
+        } catch (\Exception $e) {
+            // Rollback the transaction on error
+            DB::rollBack();
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => $e->getMessage(),
+                ]
+            ])->withInput();
+        }
+    }
+
+    public function storeGallery(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'shortTitle' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'imageFile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+    
+        $userId = Auth::id();
+        $officeMember = OfficeMember::where('id_user', $userId)->firstOrFail();
+        $office = Office::where('id', $officeMember->id_office)->first();
+    
+        if ($office) {
+            $file = $request->file('imageFile');
+            $imageName = time() . '.' . $file->getClientOriginalExtension();
+            $newName = Str::random(12) . '.webp';
+    
+            $file->move('temp', $imageName);
+    
+            $imgManager = new ImageManager(new Driver());
+            $gallery = $imgManager->read('temp/' . $imageName);
+            $encodedImage = $gallery->encode(new WebpEncoder(quality: 65));
+            $encodedImage->save(public_path('assets/img/office/site/'. $newName));
+            unlink('temp/' . $imageName);
+
+            // Save gallery entry
+            OfficeGallery::create([
+                'short_title' => $request->input('shortTitle'),
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'image_file' => $newName,
+                'office_id' => $office->id,
+            ]);
+
+            OfficeActivity::create([
+                'office_id' => $office->id,
+                'name' => 'Gallery Updated',
+                'description' => 'The office gallery has been updated.',
+                'badge' => 'primary',
+                'status' => '1',
+            ]);
+
+            return redirect()->route('lawyer.website')->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Gallery ditambahkan',
+                ],
+            ]);
+        }
+    }
+
+    public function checkWebsite(Request $request)
+    {
+        $websiteName = str_replace([' ', '-'], '+', $request->query('websiteName'));
+
+        $exists = Office::where('website', $websiteName)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+//!Website
 //Editing
 //Get Data
     public function getCase()
@@ -855,6 +1069,7 @@ class LawyerController extends Controller
                 ->make(true);
         }
     }
+
 
     private function determineLabel($averageFee)
     {

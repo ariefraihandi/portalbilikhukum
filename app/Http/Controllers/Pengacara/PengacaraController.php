@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Province;
 use App\Models\Regency;
+use App\Models\OfficeGallery;
 use App\Models\Office;
 use App\Models\OfficeCase;
+use App\Models\OfficeSite;
+use App\Models\KlienChat;
 
 class PengacaraController extends Controller
 {
@@ -15,20 +18,60 @@ class PengacaraController extends Controller
     {
         $office = Office::where('website', $website)->first();
 
+        // Check if the office exists
         if ($office) {
-            $data = [
-                'nama_kantor' => $office->nama_kantor,
-                'alamat' => $office->alamat,
-                'hp_whatsapp' => $office->hp_whatsapp,
-                'email_kantor' => $office->email_kantor,
-                'slogan' => $office->slogan,
-                'logo' => $office->logo,
-                // Tambahkan field lain yang diperlukan
-            ];
+            // Query the OfficeSite model using the office_id
+            $officeSite = OfficeSite::where('office_id', $office->id)->first();
+
+            // Check if officeSite exists
+            if ($officeSite) {
+                $establishedDate = new \DateTime($office->tanggal_pendirian);
+                $currentDate = new \DateTime();
+                $interval = $currentDate->diff($establishedDate);
+                $yearsOfExperience = $interval->y;
+                $klienChatCount = KlienChat::where('id_office', $office->id)->count();
+                $legalCases = $office->legalCases()->get();
+                $services = $legalCases->random(min($legalCases->count(), 20));
+
+                // Filter unique categories and select random case for each
+                $uniqueCategories = $legalCases->unique('kategori')->take(8);
+                $legalCasesRandomized = $uniqueCategories->map(function ($category) use ($legalCases) {
+                    $casesInCategory = $legalCases->where('kategori', $category->kategori);
+                    return $casesInCategory->random();
+                });
+
+                $officeGalleries = OfficeGallery::where('office_id', $office->id)
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
             
-            return view('Pengacara.landingPage.index', $data);
-        } else {
-            return response()->json(['error' => 'Office not found'], 404);
+                $data = [
+                    'nama_kantor' => $office->nama_kantor,
+                    'type' => $office->type,
+                    'alamat' => $office->alamat,
+                    'slogan' => $office->slogan,
+                    'logo' => $office->logo,                   
+                    'yearsOfExperience' => $yearsOfExperience,
+                    'klien_chat_count' => $klienChatCount,
+                    'legalCasesRandomized' => $legalCasesRandomized,
+                    'services' => $services,
+                    'officeGalleries' => $officeGalleries, 
+                    // OfficeSite fields
+                    // 'office_name' => $officeSite->office_name,
+                    // 'logo_image' => $officeSite->logo_image,
+                    'owner_image'           => $officeSite->owner_image,
+                    'owner_sec_image'       => $officeSite->owner_sec_image,
+                    'icon_image'            => $officeSite->icon_image,
+                    'tagline'            => $officeSite->tagline,
+                    'aboutMe_title'         => $officeSite->aboutMe_title,
+                    'aboutMe_description'   => $officeSite->aboutMe_description,
+                    // 'aboutMe_legalcategory' => $officeSite->aboutMe_legalcategory,
+                ];
+                
+                return view('Pengacara.landingPage.index', $data);
+            } else {
+                return response()->json(['error' => 'Office not found'], 404);
+            }
         }
     }
 

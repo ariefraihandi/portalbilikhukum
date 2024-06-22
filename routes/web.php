@@ -36,6 +36,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
     Route::get('/lawyer/klien',             [LawyerController::class, 'showKlienLawyer'])->name('lawyer.klien');
     Route::get('/lawyer/website',           [LawyerController::class, 'showWebsiteLawyer'])->name('lawyer.website');
+    Route::get('/lawyer/member',           [LawyerController::class, 'showMemberDetil'])->name('lawyer.member');
     
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
@@ -77,6 +78,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/getcase',                  [LawyerController::class, 'getCase'])->name('getcase');
     Route::put('/update/office-case/{id}',  [LawyerController::class, 'updateOfficeCase'])->name('updateOfficeCase');
     Route::get('/delete/officecase',        [LawyerController::class, 'deleteOfficeCase'])->name('deleteOfficeCase');
+    Route::post('/store/gallery',           [LawyerController::class, 'storeGallery'])->name('storeGallery');
+    
 
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
     Route::post('/account/avatar',          [AccountController::class, 'uploadAvatar'])->name('upload.avatar');
@@ -112,8 +115,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/getdata/alloffice',            [BisnisController::class, 'getAllOffice'])->name('getAllOffice');
         Route::get('/getdata/refferal',             [AccountController::class, 'getDataRefferal'])->name('getDataRefferal');
         Route::get('/getdata/perkara/{office_id}',  [LawyerController::class, 'getPerkaraData'])->name('getPerkaraData');
+        Route::get('/getWebsite',                   [LawyerController::class, 'checkWebsite'])->name('checkWebsite');
+        Route::post('/addWebsite',                  [LawyerController::class, 'addWebsite'])->name('addWebsite');
         Route::get('/getdata/klien',                [KlienChatController::class, 'getDataKlien'])->name('getDataKlien');
-
     //Get Data
 });
 
