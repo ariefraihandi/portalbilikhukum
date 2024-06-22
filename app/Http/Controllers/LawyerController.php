@@ -19,6 +19,7 @@ use App\Models\OfficeGallery;
 use App\Models\Office;
 use App\Models\OfficeSite;
 use App\Models\User;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use App\Models\OfficeVerificationList;
 use Intervention\Image\ImageManager;
@@ -30,6 +31,105 @@ use DataTables;
 
 class LawyerController extends Controller
 {
+    public function showJoinOffice(Request $request)
+    {
+        // Ambil nilai token, office_id, dan type dari query string
+        $token = $request->query('token');
+        $officeId = $request->query('office_id');
+        $type = $request->query('type');
+    
+        // Pastikan nilai token, office_id, dan type tidak kosong
+        if ($token && $officeId && $type) {
+            // Simpan nilai token, office_id, dan type ke dalam session
+            $request->session()->put('referral_token', $token);
+            $request->session()->put('office_id', $officeId);
+            $request->session()->put('type', $type);
+    
+            // Kirim data ke view
+            $data = [
+                'officeId' => $officeId,
+                'type' => $type,
+            ];
+    
+            return view('Auth.joinOffice', $data);
+        } else {
+            // Handle jika token, office_id, atau type tidak ada
+            return abort(404);
+        }
+    }
+    
+    public function submitJoinOffice(Request $request)
+{
+    try {
+        // Ambil id pengguna yang sedang login
+        $userId = Auth::id();
+        
+        // Cek apakah pengguna sudah terdaftar di office_members
+        $existingMember = OfficeMember::where('id_user', $userId)->exists();
+        if ($existingMember) {
+            return redirect()->route('account.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Undangan gagal',
+                    'message' => 'Anda sudah bergabung dengan kantor lain.',
+                ]
+            ]);
+        }
+
+        // Ambil data pengguna dari database
+        $user = User::findOrFail($userId);
+
+        // Ambil data dari form
+        $officeId = $request->input('office_id');
+        $type = $request->input('type');
+
+        // Validasi bahwa office_id dan type tidak kosong
+        if (!$officeId || !$type) {
+            return redirect()->route('account.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Data office_id dan type tidak valid.',
+                ]
+            ]);
+        }
+
+        // Validasi apakah office_id ada di database offices
+        $office = Office::find($officeId);
+        if (!$office) {
+            return redirect()->route('account.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'ID kantor tidak valid atau tidak ditemukan.',
+                ]
+            ]);
+        }
+
+        // Ubah role pengguna menjadi 4
+        $user->role = 4;
+        $user->save();
+
+        // Tambahkan pengguna ke dalam office_members
+        $officeMember = OfficeMember::create([
+            'id_user' => $userId,
+            'id_office' => $officeId,
+            'level' => $type,
+        ]);
+
+        return redirect()->route('lawyer')->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Anda telah berhasil bergabung dengan kantor.',
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Gagal bergabung dengan kantor: ' . $e->getMessage());
+    }
+}
+
+
     public function showLawyer(Request $request)
     {
         Carbon::setLocale('id');
@@ -306,6 +406,9 @@ class LawyerController extends Controller
         Carbon::setLocale('id');
 
         $userId         = Auth::id();
+        $user           = User::where('id', $userId)->first();
+        $referedby      = $user->referedby;
+
         $officeMember   = OfficeMember::where('id_user', $userId)->first();
 
         if ($officeMember) {
@@ -323,13 +426,14 @@ class LawyerController extends Controller
             $labelCount = $this->determineLabel($averageFee);
 
             $data = [
-                'title'             => 'Pengacara',
-                'subtitle'          => 'Bilik Hukum',
-                'sidebar'           => $request->get('accessMenus'),
-                'office'            => $office,
-                'joinedDate'        => $joinedDate,
-                'officeDocuments'   => $officeDocuments,
-                'labelCount'        => $labelCount,
+                'title'                 => 'Pengacara',
+                'subtitle'              => 'Bilik Hukum',
+                'sidebar'               => $request->get('accessMenus'),
+                'office'                => $office,
+                'joinedDate'            => $joinedDate,
+                'officeDocuments'       => $officeDocuments,
+                'labelCount'            => $labelCount,
+                'referedby'             => $referedby,
                 'klienChatStatus0Count' => $klienChatStatus0Count,
             ];
 

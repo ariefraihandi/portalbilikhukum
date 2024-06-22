@@ -74,6 +74,8 @@
                         </div>
                         <input type="hidden" name="token" id="token" value="{{ $token }}">
                         <input type="hidden" name="url" id="url" value="{{ $url }}">
+                        <input type="hidden" name="office_id" id="office_id" value="{{ $office_id }}">
+                        <input type="hidden" name="type" id="type" value="{{ $type }}">
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" required />

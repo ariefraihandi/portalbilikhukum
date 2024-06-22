@@ -17,6 +17,17 @@ class AuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $token = $request->query('token');
+        $officeId = $request->query('office_id');
+        $type = $request->query('type');
+
+        // Jika ada nilai token, office_id, dan type, simpan ke dalam sesi
+        if ($token && $officeId && $type) {
+            $request->session()->put('referral_token', $token);
+            $request->session()->put('office_id', $officeId);
+            $request->session()->put('type', $type);
+        }
+
         // Periksa apakah pengguna terautentikasi
         if (Auth::check()) {
             // Jika terautentikasi, ambil pengguna

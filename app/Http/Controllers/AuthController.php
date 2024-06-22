@@ -121,6 +121,8 @@ class AuthController extends Controller
         }
     
         $token = session('referral_token');
+        $office_id = session('office_id');
+        $type = session('type');
 
         if (config('app.url') === 'http://localhost') {
             // Application is running in a local environment
@@ -137,7 +139,9 @@ class AuthController extends Controller
             'title' => 'Pendaftaran Member',
             'subTitle' => 'Bilik Hukum',
             'url' => $url,
-            'token' => $token
+            'token' => $token,
+            'office_id' => $office_id,
+            'type' => $type
         ];
 
         return view('Auth.join', $data);
@@ -147,6 +151,9 @@ class AuthController extends Controller
     {
         try {
             $token = $request->input('token');
+            $officeId = $request->input('office_id');
+            $type = $request->input('type');
+    
             if (empty($token)) {
                 // Jika tidak ada, kembalikan respons dengan pesan tautan pendaftaran tidak valid
                 $response = [
@@ -156,8 +163,7 @@ class AuthController extends Controller
                 ];
                 return redirect()->back()->with('response', $response);
             }
-
-            
+    
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:255',
@@ -178,15 +184,24 @@ class AuthController extends Controller
                     'name' => $validatedData['name'],
                     'email' => $validatedData['email'],
                     'password' => bcrypt($validatedData['password']),   
-                    'role'              => 3,
-                    'verified'          => 0,
+                    'role' => $officeId ? 4 : 3, // Jika ada office_id, set role 4, jika tidak set role 3
+                    'verified' => 0,
                     'email_verified_at' => null,
-                    'whatsapp'          => 'default_value',
-                    'address'           => 'default_value',
-                    'gender'            => 'default_value',
-                    'image'             => 'default.webp',
-                    'dob'               => null, // or '1900-01-01'         
+                    'whatsapp' => 'default_value',
+                    'address' => 'default_value',
+                    'gender' => 'default_value',
+                    'image' => 'default.webp',
+                    'dob' => null, // or '1900-01-01'         
                 ]);
+    
+                // Jika ada office_id, tambahkan user ke dalam office_members
+                if ($officeId) {
+                    OfficeMember::create([
+                        'id_user' => $user->id,
+                        'id_office' => $officeId,
+                        'level' => $type,
+                    ]);
+                }
     
                 $token = Str::random(64);
                 $emailVerificationToken = EmailVerificationToken::create([
@@ -214,7 +229,7 @@ class AuthController extends Controller
                 $response = [
                     'success' => true,
                     'title' => 'Berhasil',
-                    'message' => 'Akun anda berhasil terdaftar. Check Mailbox untuk verifikasi dan Login.',
+                    'message' => 'Akun Anda berhasil terdaftar. Periksa email untuk verifikasi dan Login.',
                 ];
                 return redirect()->route('login')->with('response', $response);
             } else {
@@ -240,6 +255,7 @@ class AuthController extends Controller
             return redirect()->back()->with('response', $response);
         }
     }
+    
 
     public function submitFormDaftar(Request $request)
     {

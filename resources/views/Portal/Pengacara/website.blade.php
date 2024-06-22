@@ -145,6 +145,9 @@
           <li class="nav-item">
               <a class="nav-link active" href="{{ route('lawyer.website')}}"><i class='bx bx-link'></i></i> Website</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('lawyer.member')}}"><i class='bx bxs-group'></i></i> Member</a>
+          </li>
           </ul>
       </div>
     </div>

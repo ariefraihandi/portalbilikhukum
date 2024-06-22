@@ -47,10 +47,10 @@
                     </div>
                   </div>
                 <div class="mb-3">
-                <div class="form-check">
+                {{-- <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="remember-me" />
                   <label class="form-check-label" for="remember-me"> Remember Me </label>
-                </div>
+                </div> --}}
               </div>
               <div class="mb-3">
                   <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
@@ -58,7 +58,7 @@
             </form>
             <p class="text-center">
             <span>Belum punya akun?</span>                
-              <a href="#" id="openModalDaftar"><span>Daftar</span></a>
+              <a href="{{route('join')}}"><span>Daftar</span></a>
             </p>
           </div>
         </div>
@@ -147,32 +147,7 @@
 
 @push('footer-Sec-script')
     <script src="{{ asset('assets') }}/js/pages-auth.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Ambil elemen tautan "Daftar"
-            var openModalDaftarLink = document.getElementById("openModalDaftar");
-    
-            // Ambil modal
-            var createAppModal = document.getElementById("createApp");
-    
-            // Ketika pengguna mengklik tautan "Daftar"
-            openModalDaftarLink.addEventListener("click", function(event) {
-                // Hentikan aksi default dari tautan
-                event.preventDefault();
-    
-                // Tampilkan modal
-                createAppModal.classList.add("show");
-                createAppModal.style.display = "block";
-            });
-    
-            // Tambahkan event listener untuk tombol close modal jika diperlukan
-            var closeModalButton = document.querySelector("#createApp .btn-close");
-            closeModalButton.addEventListener("click", function() {
-                createAppModal.classList.remove("show");
-                createAppModal.style.display = "none";
-            });
-        });
-    </script>
+  
     
     <script>
       function showSweetAlert(response) {

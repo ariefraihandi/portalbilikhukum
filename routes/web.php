@@ -26,6 +26,7 @@ Route::get('/', function () {
 Route::get('/',                             [IndexController::class, 'index'])->name('index.index');
 
 Route::get('/login',                        [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);
+
 Route::post('/login',                       [AuthController::class, 'login'])->name('submitLogin');
 Route::get('/logout',                       [AuthController::class, 'logout'])->name('logout');
 
@@ -36,7 +37,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/lawyer/perkara',           [LawyerController::class, 'showLawyerPerkara'])->name('lawyer.perkara');
     Route::get('/lawyer/klien',             [LawyerController::class, 'showKlienLawyer'])->name('lawyer.klien');
     Route::get('/lawyer/website',           [LawyerController::class, 'showWebsiteLawyer'])->name('lawyer.website');
-    Route::get('/lawyer/member',           [LawyerController::class, 'showMemberDetil'])->name('lawyer.member');
+    Route::get('/lawyer/member',            [LawyerController::class, 'showMemberDetil'])->name('lawyer.member');
     
     Route::get('/menu',                     [MenuController::class, 'showMenu'])->name('menu');
     Route::get('/role',                     [RoleController::class, 'showRole'])->name('role');
@@ -79,6 +80,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::put('/update/office-case/{id}',  [LawyerController::class, 'updateOfficeCase'])->name('updateOfficeCase');
     Route::get('/delete/officecase',        [LawyerController::class, 'deleteOfficeCase'])->name('deleteOfficeCase');
     Route::post('/store/gallery',           [LawyerController::class, 'storeGallery'])->name('storeGallery');
+    Route::get('/join/office',              [LawyerController::class, 'showJoinOffice'])->name('storeGallery');
+    Route::post('/join/office',             [LawyerController::class, 'submitJoinOffice'])->name('submitJoinOffice');
     
 
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    
