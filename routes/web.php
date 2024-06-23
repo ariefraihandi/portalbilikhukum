@@ -70,9 +70,11 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/refferal/generate',       [ReferralController::class, 'refferalGenerate'])->name('refferal.generate');
 
     Route::post('/office/update',           [LawyerController::class, 'officeUpdate'])->name('office.update');    
+    Route::post('/office/update/website',   [LawyerController::class, 'updateWebsite'])->name('office.updateWebsite');    
     Route::post('/office/documents',        [LawyerController::class, 'officeDocuments'])->name('office.documents');    
     Route::post('/office/update/logo',      [LawyerController::class, 'uploadOfficeLogo'])->name('upload.logo');    
     Route::post('/office/update/cover',     [LawyerController::class, 'uploadOfficeCover'])->name('upload.cover'); 
+    Route::post('/office/update/image',     [LawyerController::class, 'uploadImageWebsite'])->name('upload.imageWebsite'); 
     Route::post('/office/update/perkara',   [LawyerController::class, 'officeUpperkara'])->name('office.upperkara'); 
     Route::get('/office/askverified',       [LawyerController::class, 'officeAskverified'])->name('office.askverified'); 
     Route::delete('/office/documents/{id}', [LawyerController::class, 'destroy'])->name('office.documents.delete');      

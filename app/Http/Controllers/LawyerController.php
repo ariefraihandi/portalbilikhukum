@@ -59,76 +59,75 @@ class LawyerController extends Controller
     }
     
     public function submitJoinOffice(Request $request)
-{
-    try {
-        // Ambil id pengguna yang sedang login
-        $userId = Auth::id();
-        
-        // Cek apakah pengguna sudah terdaftar di office_members
-        $existingMember = OfficeMember::where('id_user', $userId)->exists();
-        if ($existingMember) {
-            return redirect()->route('account.profile')->with([
+    {
+        try {
+            // Ambil id pengguna yang sedang login
+            $userId = Auth::id();
+            
+            // Cek apakah pengguna sudah terdaftar di office_members
+            $existingMember = OfficeMember::where('id_user', $userId)->exists();
+            if ($existingMember) {
+                return redirect()->route('account.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Undangan gagal',
+                        'message' => 'Anda sudah bergabung dengan kantor lain.',
+                    ]
+                ]);
+            }
+
+            // Ambil data pengguna dari database
+            $user = User::findOrFail($userId);
+
+            // Ambil data dari form
+            $officeId = $request->input('office_id');
+            $type = $request->input('type');
+
+            // Validasi bahwa office_id dan type tidak kosong
+            if (!$officeId || !$type) {
+                return redirect()->route('account.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Error',
+                        'message' => 'Data office_id dan type tidak valid.',
+                    ]
+                ]);
+            }
+
+            // Validasi apakah office_id ada di database offices
+            $office = Office::find($officeId);
+            if (!$office) {
+                return redirect()->route('account.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Error',
+                        'message' => 'ID kantor tidak valid atau tidak ditemukan.',
+                    ]
+                ]);
+            }
+
+            // Ubah role pengguna menjadi 4
+            $user->role = 4;
+            $user->save();
+
+            // Tambahkan pengguna ke dalam office_members
+            $officeMember = OfficeMember::create([
+                'id_user' => $userId,
+                'id_office' => $officeId,
+                'level' => $type,
+            ]);
+
+            return redirect()->route('lawyer')->with([
                 'response' => [
-                    'success' => false,
-                    'title' => 'Undangan gagal',
-                    'message' => 'Anda sudah bergabung dengan kantor lain.',
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Anda telah berhasil bergabung dengan kantor.',
                 ]
             ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal bergabung dengan kantor: ' . $e->getMessage());
         }
-
-        // Ambil data pengguna dari database
-        $user = User::findOrFail($userId);
-
-        // Ambil data dari form
-        $officeId = $request->input('office_id');
-        $type = $request->input('type');
-
-        // Validasi bahwa office_id dan type tidak kosong
-        if (!$officeId || !$type) {
-            return redirect()->route('account.profile')->with([
-                'response' => [
-                    'success' => false,
-                    'title' => 'Error',
-                    'message' => 'Data office_id dan type tidak valid.',
-                ]
-            ]);
-        }
-
-        // Validasi apakah office_id ada di database offices
-        $office = Office::find($officeId);
-        if (!$office) {
-            return redirect()->route('account.profile')->with([
-                'response' => [
-                    'success' => false,
-                    'title' => 'Error',
-                    'message' => 'ID kantor tidak valid atau tidak ditemukan.',
-                ]
-            ]);
-        }
-
-        // Ubah role pengguna menjadi 4
-        $user->role = 4;
-        $user->save();
-
-        // Tambahkan pengguna ke dalam office_members
-        $officeMember = OfficeMember::create([
-            'id_user' => $userId,
-            'id_office' => $officeId,
-            'level' => $type,
-        ]);
-
-        return redirect()->route('lawyer')->with([
-            'response' => [
-                'success' => true,
-                'title' => 'Berhasil',
-                'message' => 'Anda telah berhasil bergabung dengan kantor.',
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Gagal bergabung dengan kantor: ' . $e->getMessage());
     }
-}
-
 
     public function showLawyer(Request $request)
     {
@@ -618,6 +617,100 @@ class LawyerController extends Controller
         ]);
     }
 
+    public function uploadImageWebsite(Request $request)
+    {
+        // Validate file
+        $validator = Validator::make($request->all(), [
+            'fileImage' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->route('lawyer.website')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Failed to Change Image',
+                    'message' => 'Invalid image format',
+                ],
+            ]);
+        }
+    
+        if ($request->hasFile('fileImage')) {      
+            $userId = Auth::id();
+            $officeMember = OfficeMember::where('id_user', $userId)->firstOrFail();
+            $office = OfficeSite::where('office_id', $officeMember->id_office)->first(); 
+    
+            if ($office) {
+                $type = $request->input('type');
+                $columnMap = [
+                    'icon_imageFile' => 'icon_image',
+                    'logo_imageFile' => 'logo_image',
+                    'owner_imageFile' => 'owner_image',
+                    'owner_sec_imageFile' => 'owner_sec_image'
+                ];
+                
+                $column = $columnMap[$type];
+                $oldImage = $office->$column; // Get the old image name from the respective column
+    
+                // Ensure default images are not deleted
+                if (!in_array($oldImage, ['profile-banner.png', 'logo_default.png', 'default-image.webp', 'icon_default.webp'])) {
+                    if (file_exists(public_path('assets/img/office/site/' . $oldImage))) {
+                        unlink(public_path('assets/img/office/site/' . $oldImage));
+                    }
+                }
+    
+                $file = $request->file('fileImage');
+                $imageName = time() . '.' . $file->getClientOriginalExtension();
+                $newName = Str::random(12) . '.webp';
+    
+                $file->move('temp', $imageName);
+    
+                $imgManager = new ImageManager(new Driver());
+                $profile = $imgManager->read('temp/' . $imageName);                  
+                $encodedImage = $profile->encode(new WebpEncoder(quality: 65));                 
+                $encodedImage->save(public_path('assets/img/office/site/'. $newName));  
+    
+                // Delete temporary image
+                unlink('temp/' . $imageName);
+    
+                // Update the respective column in the database
+                $office->update([$column => $newName]);
+    
+                OfficeActivity::create([
+                    'office_id' => $office->id,
+                    'name' => ucfirst(str_replace('_', ' ', $column)) . ' Updated',
+                    'description' => 'The office ' . str_replace('_', ' ', $column) . ' has been updated.',
+                    'badge' => 'primary',
+                    'status' => '1',
+                ]);
+    
+                return redirect()->route('lawyer.website')->with([
+                    'response' => [
+                        'success' => true,
+                        'title' => 'Success',
+                        'message' => 'Gambar Diupdated',
+                    ],
+                ]);
+            } else {
+                return redirect()->route('lawyer.website')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Failed to Change Cover',
+                        'message' => 'Office not found',
+                    ],
+                ]);
+            }
+        }
+    
+        return redirect()->route('lawyer.detil')->with([
+            'response' => [
+                'success' => false,
+                'title' => 'Failed to Change Logo',
+                'message' => 'Failed to upload logo',
+            ],
+        ]);
+    }
+    
+
     public function officeUpdate(Request $request)
     {
         // Validasi input
@@ -644,8 +737,6 @@ class LawyerController extends Controller
                 'hp_whatsapp' => $validatedData['officePhone'],
                 'alamat' => $validatedData['officedesa'],
                 'kode_pos' => $validatedData['postCode'],
-                'slogan' => $validatedData['slogan'],
-                'website' => $validatedData['website'],
                 'provinsi' => $validatedData['multiStepsProvince'],
                 'kabupaten_kota' => $validatedData['multiStepsRegency'],
                 'kecamatan' => $validatedData['multiStepsDistrict'],
@@ -678,6 +769,59 @@ class LawyerController extends Controller
             ]);
         }
     }
+
+    public function updateWebsite(Request $request)
+    {
+        // Fetch the authenticated user
+        $user = Auth::user();
+        // Find the office record for the user
+        $office = Office::where('user_id', $user->id)->first();
+    
+        if ($office) {
+            // Validate the request data
+            $validated = $request->validate([
+                'aboutMe_title' => 'required|string|max:255',
+                'aboutMe_description' => 'required|string|max:255',
+                'slogan' => 'required|string|max:255',
+                'tagLine' => 'required|string|max:255',
+            ]);
+    
+            // Update the slogan in the Office table
+            $office->update([
+                'slogan' => $validated['slogan'],
+            ]);
+    
+            // Find the office site record or create a new one
+            $officeSite = OfficeSite::firstOrNew(['office_id' => $office->id]);
+    
+            // Update the record with the validated data
+            $officeSite->aboutMe_title = $validated['aboutMe_title'];
+            $officeSite->aboutMe_description = $validated['aboutMe_description'];
+            $officeSite->tagline = $validated['tagLine'];
+    
+            // Save the record
+            $officeSite->save();
+    
+            // Redirect back with a success message
+            return redirect()->route('lawyer.website')->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Data kantor telah diperbarui',
+                ],
+            ]);            
+        } else {
+            return redirect()->route('lawyer.website')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'Office record not found.',
+                ],
+            ]);
+       
+        }
+    }
+    
 
     public function officeAskverified(Request $request)
     {

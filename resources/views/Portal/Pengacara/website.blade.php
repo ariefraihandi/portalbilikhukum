@@ -161,7 +161,7 @@
               <li class="nav-item">
                 <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#configuration">
                   <i class="bx bx-cog faq-nav-icon me-1"></i>
-                  <span class="align-middle">Hero</span>
+                  <span class="align-middle">Konfigurasi</span>
                 </button>
               </li>
               <li class="nav-item">
@@ -199,104 +199,93 @@
                     <div class="row" id="configuration-row">
                       <!-- Row Pertama -->
                       <div class="col-md-6 mb-4">
-                        <form id="uploadCoverForm" action="{{ route('upload.cover') }}" method="POST" enctype="multipart/form-data">
-                          @csrf
-                          <div class="d-flex align-items-start align-items-sm-center gap-4">                                
-                            <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->icon_image ? $officeSite->icon_image : 'icon_default.webp' }}" alt="cover-image" class="d-block rounded" height="100" width="100" id="uploadedCover" />
-                            <div class="button-wrapper">
-                              <label for="uploadCover" class="btn btn-secondary me-2 mb-4" tabindex="0">
-                                <span class="d-none d-sm-block">Ganti Icon Kantor</span>
-                                <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file" id="uploadCover" name="cover" hidden class="account-file-input" accept="image/png, image/jpeg" />
-                              </label>
-                              <p class="text-muted mb-0">Gambar Harus Berukuran 200x200. Max size of 2MB</p>
-                              <p>
-                                <a href="{{ asset('assets/index/landingPage/images/logos/logo_home_20.png') }}" target="_blank">Lihat contoh gambar</a>
-                              </p>
-                              <small class="error-message text-danger">
-                                @if($office->cover == 'profile-banner.png')
-                                  <span class="badge badge-dot bg-danger me-1"></span> Anda belum mengganti cover
-                                @endif
-                              </small>
-                            </div>
-                          </div>
-                        </form>
+                          <form id="uploadCoverForm" action="{{ route('upload.imageWebsite') }}" method="POST" enctype="multipart/form-data">
+                              @csrf
+                              <input type="hidden" name="type" value="icon_imageFile">
+                              <div class="d-flex align-items-start align-items-sm-center gap-4">                                
+                                  <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->icon_image ? $officeSite->icon_image : 'icon_default.webp' }}" alt="cover-image" class="d-block rounded" height="100" width="100" id="uploadedCoverIcon" />
+                                  <div class="button-wrapper">
+                                      <label for="uploadCoverIcon" class="btn btn-secondary me-2 mb-4" tabindex="0">
+                                          <span class="d-none d-sm-block">Ganti Icon Kantor</span>
+                                          <i class="bx bx-upload d-block d-sm-none"></i>
+                                          <input type="file" id="uploadCoverIcon" name="fileImage" hidden class="account-file-input" accept="image/png, image/jpeg" />
+                                      </label>
+                                      <p class="text-muted mb-0">Gambar Harus Berukuran 200x200. Max size of 2MB</p>
+                                      <p>
+                                          <a href="{{ asset('assets/index/landingPage/images/logos/logo_home_20.png') }}" target="_blank">Lihat contoh gambar</a>
+                                      </p>
+                                  </div>
+                              </div>
+                          </form>
                       </div>
-      
+                  
                       <!-- Row Kedua -->
                       <div class="col-md-6 mb-4">
-                        <form id="uploadCoverForm" action="{{ route('upload.cover') }}" method="POST" enctype="multipart/form-data">
-                          @csrf
-                          <div class="d-flex align-items-start align-items-sm-center gap-4">
-                            <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->logo_image ? $officeSite->logo_image : 'logo_default.png' }}" alt="cover-image" class="d-block rounded" height="40" width="100" id="uploadedCover" />                             
-                            <div class="button-wrapper">
-                              <label for="uploadCover" class="btn btn-secondary me-2 mb-4" tabindex="0">
-                                <span class="d-none d-sm-block">Ganti Logo Kantor</span>
-                                <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file" id="uploadCover" name="cover" hidden class="account-file-input" accept="image/png, image/jpeg" />
-                              </label>
-                              <p class="text-muted mb-0">Gambar Harus Berukuran 221x83. Max size of 2MB</p>
-                              <p>
-                                <a href="{{ asset('assets/index/landingPage/images/logos/logo_home_20.png') }}" target="_blank">Lihat contoh gambar</a>
-                              </p>
-                              <small class="error-message text-danger">
-                                @if($office->cover == 'profile-banner.png')
-                                  <span class="badge badge-dot bg-danger me-1"></span> Anda belum mengganti cover
-                                @endif
-                              </small>
-                            </div>
-                          </div>
-                        </form>
+                          <form id="uploadCoverForm" action="{{ route('upload.imageWebsite') }}" method="POST" enctype="multipart/form-data">
+                              @csrf
+                              <input type="hidden" name="type" value="logo_imageFile">
+                              <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                  <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->logo_image ? $officeSite->logo_image : 'logo_default.png' }}" alt="cover-image" class="d-block rounded" height="40" width="100" id="uploadedCoverLogo" />                             
+                                  <div class="button-wrapper">
+                                      <label for="uploadCoverLogo" class="btn btn-secondary me-2 mb-4" tabindex="0">
+                                          <span class="d-none d-sm-block">Ganti Logo Kantor</span>
+                                          <i class="bx bx-upload d-block d-sm-none"></i>
+                                          <input type="file" id="uploadCoverLogo" name="fileImage" hidden class="account-file-input" accept="image/png, image/jpeg" />
+                                      </label>
+                                      <p class="text-muted mb-0">Gambar Harus Berukuran 221x83. Max size of 2MB</p>
+                                      <p>
+                                          <a href="{{ asset('assets/index/landingPage/images/logos/logo_home_20.png') }}" target="_blank">Lihat contoh gambar</a>
+                                      </p>
+                                  </div>
+                              </div>
+                          </form>
                       </div>
-      
+                  
                       <div class="col-md-6 mb-4">
-                        <form id="uploadLogoForm" action="{{ route('upload.logo') }}" method="POST" enctype="multipart/form-data">
-                          @csrf
-                          <div class="d-flex align-items-start align-items-sm-center gap-4">
-                            <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->owner_image ? $officeSite->owner_image : 'default-image.webp' }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedCover" />
-                            <div class="button-wrapper">
-                              <label for="uploadLogo" class="btn btn-secondary me-2 mb-4" tabindex="0">
-                                <span class="d-none d-sm-block">Foto Direktur/Pemilik Kantor</span>
-                                <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file" id="uploadLogo" name="logo" hidden class="account-file-input" accept="image/png, image/jpeg" />
-                              </label>
-                              <p class="text-muted mb-0">Allowed Square PNG. Max size of 2MB</p>
-                              <p>
-                                <a href="{{ asset('assets/img/office/site/default-image.webp') }}" target="_blank">Lihat contoh gambar</a>
-                              </p>
-                              <small class="error-message text-danger">
-                                @if($office->logo == 'default.webp')
-                                  <span class="badge badge-dot bg-danger me-1"></span> Anda belum mengganti logo
-                                @endif
-                              </small>
-                            </div>
-                          </div>
-                        </form>
+                          <form id="uploadCoverForm" action="{{ route('upload.imageWebsite') }}" method="POST" enctype="multipart/form-data">
+                              @csrf
+                              <input type="hidden" name="type" value="owner_imageFile">
+                              <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                  <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->owner_image ? $officeSite->owner_image : 'default-image.webp' }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedCoverOwner" />
+                                  <div class="button-wrapper">
+                                      <label for="uploadLogoOwner" class="btn btn-secondary me-2 mb-4" tabindex="0">
+                                          <span class="d-none d-sm-block">Foto Direktur/Pemilik Kantor</span>
+                                          <i class="bx bx-upload d-block d-sm-none"></i>
+                                          <input type="file" id="uploadLogoOwner" name="fileImage" hidden class="account-file-input" accept="image/png, image/jpeg" />
+                                      </label>
+                                      <p class="text-muted mb-0">Allowed Square PNG. Max size of 2MB</p>
+                                      <p>
+                                          <a href="{{ asset('assets/img/office/site/default-image.webp') }}" target="_blank">Lihat contoh gambar</a>
+                                      </p>
+                                  </div>
+                              </div>
+                          </form>
                       </div>
-      
+                  
                       <div class="col-md-6 mb-4">
-                        <form id="uploadCoverForm" action="{{ route('upload.cover') }}" method="POST" enctype="multipart/form-data">
-                          @csrf
-                          <div class="d-flex align-items-start align-items-sm-center gap-4">
-                            <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->owner_sec_image ? $officeSite->owner_sec_image : 'default-image.webp' }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedCover" />                                                                
-                            <div class="button-wrapper">
-                              <label for="uploadCover" class="btn btn-secondary me-2 mb-4" tabindex="0">
-                                <span class="d-none d-sm-block">Foto 2 Direktur/Pemilik Kantor</span>
-                                <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file" id="uploadCover" name="cover" hidden class="account-file-input" accept="image/png, image/jpeg" />
-                              </label>
-                              <p class="text-muted mb-0">Allowed Square PNG. Max size of 2MB</p>
-                              <p>
-                                <a href="{{ asset('assets/img/office/site/default-image.webp') }}" target="_blank">Lihat contoh gambar</a>
-                              </p>
-                              <small class="error-message text-danger">
-                                @if($office->cover == 'profile-banner.png')
-                                  <span class="badge badge-dot bg-danger me-1"></span> Anda belum mengganti cover
-                                @endif
-                              </small>
-                            </div>
-                          </div>
-                        </form>
+                          <form id="uploadCoverForm" action="{{ route('upload.imageWebsite') }}" method="POST" enctype="multipart/form-data">
+                              @csrf
+                              <input type="hidden" name="type" value="owner_sec_imageFile">
+                              <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                  <img src="{{ asset('assets/img/office/site/') }}/{{ $officeSite && $officeSite->owner_sec_image ? $officeSite->owner_sec_image : 'default-image.webp' }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedCoverOwnerSec" />                                                                
+                                  <div class="button-wrapper">
+                                      <label for="uploadCoverOwnerSec" class="btn btn-secondary me-2 mb-4" tabindex="0">
+                                          <span class="d-none d-sm-block">Foto 2 Direktur/Pemilik Kantor</span>
+                                          <i class="bx bx-upload d-block d-sm-none"></i>
+                                          <input type="file" id="uploadCoverOwnerSec" name="fileImage" hidden class="account-file-input" accept="image/png, image/jpeg" />
+                                      </label>
+                                      <p class="text-muted mb-0">Allowed Square PNG. Max size of 2MB</p>
+                                      <p>
+                                          <a href="{{ asset('assets/img/office/site/default-image.webp') }}" target="_blank">Lihat contoh gambar</a>
+                                      </p>
+                                      <small class="error-message text-danger">
+                                          @if($office->cover == 'profile-banner.png')
+                                              <span class="badge badge-dot bg-danger me-1"></span> Anda belum mengganti cover
+                                          @endif
+                                      </small>
+                                  </div>
+                              </div>
+                          </form>
                       </div>
                     </div>
                   </div>
@@ -310,33 +299,36 @@
                   <div class="card-header d-flex justify-content-center">
                     <h5 class="card-title">Tentang Kami</h5>
                   </div>
-                  <div class="card-body">
-                    <div class="row g-3">
-                      <div class="col-sm-6">
-                        <label class="form-label" for="aboutMe_title">Judul</label>
-                        <input type="text" required name="aboutMe_title" id="aboutMe_title" class="form-control" value="{{ $officeSite->aboutMe_title ?? '' }}" />
-                        <small class="error-message text-danger"></small>
-                      </div>
-                      <div class="col-sm-6">
-                        <label class="form-label" for="aboutMe_description">Deskripsi</label>
-                        <input type="text" required name="aboutMe_description" id="aboutMe_description" class="form-control" value="{{ $officeSite->aboutMe_description ?? '' }}" />
-                        <small class="error-message text-danger"></small>
-                      </div>
-                      <div class="col-sm-6">
-                        <label class="form-label" for="slogan">Slogan</label>
-                        <input type="text" required name="slogan" id="slogan" class="form-control" value="{{ $office->slogan }}" />
-                        <small class="error-message text-danger"></small>
-                      </div>
-                      <div class="col-sm-6">
-                        <label class="form-label" for="tagLine">Tag Line</label>                            
-                        <input type="text" required name="tagLine" id="tagLine" class="form-control" value="{{ $officeSite->tagline ?? '' }}" />
-                        <small class="error-message text-danger"></small>
-                      </div>
+                  <form action="{{ route('office.updateWebsite') }}" method="POST">
+                    @csrf
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label" for="aboutMe_title">Judul</label>
+                                <input type="text" required name="aboutMe_title" id="aboutMe_title" class="form-control" value="{{ $officeSite->aboutMe_title ?? '' }}" />
+                                <small class="error-message text-danger"></small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="aboutMe_description">Deskripsi</label>
+                                <input type="text" required name="aboutMe_description" id="aboutMe_description" class="form-control" value="{{ $officeSite->aboutMe_description ?? '' }}" />
+                                <small class="error-message text-danger"></small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="slogan">Slogan</label>
+                                <input type="text" required name="slogan" id="slogan" class="form-control" value="{{ $office->slogan }}" />
+                                <small class="error-message text-danger"></small>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="tagLine">Tag Line</label>
+                                <input type="text" required name="tagLine" id="tagLine" class="form-control" value="{{ $officeSite->tagline ?? '' }}" />
+                                <small class="error-message text-danger"></small>
+                            </div>
+                        </div>
+                        <div class="mt-4 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Kirim</button>
+                        </div>
                     </div>
-                    <div class="mt-4 d-flex justify-content-end">
-                      <button type="submit" class="btn btn-primary">Kirim</button>
-                    </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -503,26 +495,34 @@
 
 @push('footer-Sec-script')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if the office's website is null
-            var officeWebsite = "{{ $office->website }}";
-            if (!officeWebsite) {
-                // Show the modal
-                var websiteModal = new bootstrap.Modal(document.getElementById('websiteModal'), {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                websiteModal.show();
+      document.addEventListener('DOMContentLoaded', function() {
+          // Check if the office's website is null
+          var officeWebsite = "{{ $office->website }}";
+          if (!officeWebsite) {
+              // Show the modal
+              var websiteModal = new bootstrap.Modal(document.getElementById('websiteModal'), {
+                  backdrop: 'static',
+                  keyboard: false
+              });
+              websiteModal.show();
 
-                // Disable the configuration row
-                document.getElementById('configuration-row').classList.add('disabled');
-            }
+              // Disable the configuration row
+              document.getElementById('configuration-row').classList.add('disabled');
+          }
 
-            // Handle the back button click to redirect
-            document.getElementById('backButton').addEventListener('click', function() {
-                window.history.back();
+          // Handle the back button click to redirect
+          document.getElementById('backButton').addEventListener('click', function() {
+              window.history.back();
+          });
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('input[type="file"]').forEach(function(input) {
+            input.addEventListener('change', function() {
+                this.closest('form').submit();
             });
         });
+      });
     </script>
 
     <script>
@@ -554,97 +554,6 @@
                     }
                 });
         });
-    </script>
-    
-
-    <script>
-        $(document).ready(function() {
-            function fetchData(url, data, callback) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    data: data,
-                    dataType: 'json',
-                    success: function(response) {
-                        callback(response);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
-
-            // Initialize Select2
-            $('#kategoriPerkara').select2({
-                placeholder: "Pilih Kategori",
-                allowClear: true
-            });
-
-            // Fetch data for kategoriPerkara
-            fetchData('{{ route("getcase") }}', {}, function(data) {
-                // Create a map to group cases by kategori
-                var groupedData = {};
-                data.forEach(function(caseItem) {
-                    if (!groupedData[caseItem.kategori]) {
-                        groupedData[caseItem.kategori] = [];
-                    }
-                    groupedData[caseItem.kategori].push(caseItem);
-                });
-
-                // Append grouped options to select
-                for (var kategori in groupedData) {
-                    var optgroup = $('<optgroup>').attr('label', kategori);
-                    groupedData[kategori].forEach(function(caseItem) {
-                        var displayText = caseItem.name + ' | ' + caseItem.kategori;
-                        optgroup.append(new Option(displayText, caseItem.id, false, false));
-                    });
-                    $('#kategoriPerkara').append(optgroup);
-                }
-                $('#kategoriPerkara').trigger('change');
-            });
-        });
-
-        $(document).ready(function() {
-            function formatRupiah(number) {
-                var rupiah = new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                }).format(number);
-
-                // Remove 'Rp' from the start
-                return rupiah.replace('Rp', '').trim();
-            }
-
-            function handleBiayaInput(event) {
-                var value = event.target.value.replace(/\D/g, ''); // Remove non-numeric characters
-                if (value) {
-                    event.target.value = formatRupiah(parseInt(value, 10)); // Format as rupiah
-                } else {
-                    event.target.value = '';
-                }
-            }
-
-            $('#minBiaya, #maxBiaya').on('input', handleBiayaInput);
-        });
-
-        function showDeleteConfirmation(url, message) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: message,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            });
-        }
-      
     </script>
 
     <script>

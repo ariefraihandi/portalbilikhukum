@@ -342,37 +342,40 @@
                     <form id="formChangePassword" method="POST" action="{{ route('office.update') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row g-3">
+                            @php
+                                $readonly = $office->status >= 2 ? 'readonly' : '';
+                            @endphp
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="officeName">Nama Kantor</label>
-                                <input type="text" required name="officeName" id="officeName" class="form-control" value="{{ $office->nama_kantor }}" />
+                                <input type="text" required name="officeName" id="officeName" class="form-control" value="{{ $office->nama_kantor }}" {{ $readonly }} />
                                 <small class="error-message text-danger"></small>
                             </div>
-            
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="officeEmail">Email Kantor</label>
                                 <input type="email" readonly name="officeEmail" id="officeEmail" class="form-control" value="{{ $office->email_kantor }}" />
                                 <small class="error-message text-danger"></small>
                             </div>
-            
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="officePhone">HP/WhatsApp</label>
-                                <input type="text" required name="officePhone" id="officePhone" class="form-control" value="{{ $office->hp_whatsapp }}" />
+                                <input type="text" required name="officePhone" id="officePhone" class="form-control" value="{{ $office->hp_whatsapp }}" {{ $readonly }} />
                                 <small class="error-message text-danger"></small>
                             </div>
-            
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="officedesa">Alamat</label>
-                                <input type="text" required name="officedesa" id="officedesa" class="form-control" value="{{ $office->alamat }}" />
+                                <input type="text" required name="officedesa" id="officedesa" class="form-control" value="{{ $office->alamat }}" {{ $readonly }} />
                                 <small class="error-message text-danger"></small>
                             </div>
-            
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="postCode">Kode Pos</label>
-                                <input type="text" required name="postCode" id="postCode" class="form-control" value="{{ $office->kode_pos }}" />
+                                <input type="text" required name="postCode" id="postCode" class="form-control" value="{{ $office->kode_pos }}" {{ $readonly }} />
                                 <small class="error-message text-danger"></small>
                             </div>
-            
-
+                    
                             @php
                                 use Carbon\Carbon;
                                 $tanggalPendirian = Carbon::parse($office->tanggal_pendirian)->format('d-m-Y');
@@ -382,11 +385,11 @@
                                 <label for="tanggal-pendirian" class="form-label">Tanggal Pendirian</label>
                                 <input type="text" class="form-control" readonly id="tanggal-pendirian" name="tanggal-pendirian" value="{{ $tanggalPendirian }}" />
                                 <small class="error-message text-danger"></small>
-                            </div>                           
-
+                            </div>
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="multiStepsProvince">Provinsi</label>
-                                <select class="form-select select2" required id="multiStepsProvince" name="multiStepsProvince">
+                                <select class="form-select select2" required id="multiStepsProvince" name="multiStepsProvince" {{ $readonly }}>
                                     <option value="" selected disabled>Pilih Provinsi</option>
                                 </select>
                                 <small class="error-message text-danger">
@@ -395,6 +398,7 @@
                                     @endif
                                 </small>
                             </div>
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="multiStepsRegency">Kabupaten/Kota</label>
                                 <select class="form-select select2" required id="multiStepsRegency" name="multiStepsRegency" disabled>
@@ -406,6 +410,7 @@
                                     @endif
                                 </small>
                             </div>
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="multiStepsDistrict">Kecamatan</label>
                                 <select class="form-select select2" required id="multiStepsDistrict" name="multiStepsDistrict" disabled>
@@ -417,6 +422,7 @@
                                     @endif
                                 </small>
                             </div>
+                    
                             <div class="col-sm-6">
                                 <label class="form-label" for="multiStepsVillage">Desa</label>
                                 <select class="form-select select2" required id="multiStepsVillage" name="multiStepsVillage" disabled>
@@ -427,7 +433,7 @@
                                         <span class="badge badge-dot bg-danger me-1"></span> Not Set
                                     @endif
                                 </small>
-                            </div>                             
+                            </div>
                         </div>
                         <div class="row g-3 mt-1">
                             <div class="d-grid gap-2 col-lg-12 mx-auto">

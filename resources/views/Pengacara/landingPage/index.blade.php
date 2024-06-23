@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="{{ asset('assets/index/landingPage') }}/css/slick.min.css">
     <!-- Main Style -->
     <link rel="stylesheet" href="{{ asset('assets/index/landingPage') }}/css/style.css">
-    
+    <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 <body class="home-one">
     <div class="page-wrapper">
@@ -44,7 +44,7 @@
 
                     <div class="header-inner rel d-flex align-items-center">
                         <div class="logo-outer">
-                            <div class="logo"><a href="index.html"><img src="{{ asset('assets/img/office') }}/site/logo_default.png" alt="Logo" title="Logo"></a></div>
+                            <img src="{{ asset('assets/img/office/site/' . $logo_image) }}" alt="Logo" title="Logo" style="max-height: 83px;">
                         </div>
 
                         <div class="nav-outer clearfix mx-auto">
@@ -52,8 +52,8 @@
                             <nav class="main-menu navbar-expand-lg">
                                 <div class="navbar-header">
                                    <div class="mobile-logo my-15">
-                                       <a href="index.html">
-                                            <img src="{{ asset('assets/img/office') }}/site/logo_default.png" alt="Logo" title="Logo">
+                                       <a href="{{ url('/pengacara') }}{{ $website }}">
+                                            <img src="{{ asset('assets/img/office') }}/site/{{$logo_image}}" alt="Logo" title="Logo">
                                        </a>
                                    </div>
                                    
@@ -75,7 +75,7 @@
                                             <li><a href="#gallery">Gallery</a></li>
                                         @endif
                                         <li><a href="#member">Member</a></li>
-                                        <li><a href="#contact">Contact</a></li>
+                                        <li><a href="#" class="hire-me-btn">Contact</a></li>
                                     </ul>
                                 </div>
 
@@ -113,28 +113,36 @@
 
                 <!-- Appointment Form -->
                 <div class="appointment-form">
-                    <form method="post" action="contact.html">
+                    <form action="{{ route('klienchat.store') }}" method="POST">
+                        @csrf
                         <div class="form-group">
-                            <input type="text" name="text" value="" placeholder="Name" required>
+                            <input type="text" name="name"  placeholder="Nama Lengkap" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" value="" placeholder="Email Address" required>
+                            <input type="email" name="email" value="" placeholder="Alamat Email" required>
                         </div>
                         <div class="form-group">
-                            <textarea placeholder="Message" rows="5"></textarea>
+                            <input type="text" name="whatsapp"  placeholder="Whatsapp" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="keperluan" rows="3"  placeholder="Keperluan"></textarea>
+                        </div>
+                        <div class="form-group">
+                            {!! htmlFormSnippet() !!}
                         </div>
                         <div class="form-group">
                             <button type="submit" class="theme-btn">Hubungi Kami</button>
                         </div>
+
+                        <input type="hidden" name="office_id"  value="{{$id}}" required>
                     </form>
                 </div>
-
                 <!-- Social Icons -->
                 <div class="social-style-one">
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61558597477236"><i class="fab fa-twitter"></i></a>
+                    <a href="https://x.com/bilikhukum"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/bilik.hukum/"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/bilik-hukum-772554315/"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
         </section>
@@ -183,7 +191,7 @@
                     <div class="col-lg-5">
                         <div class="author-image-part wow fadeIn delay-0-3s">
                             <div class="bg-circle"></div>
-                            <img src="{{ asset('assets/img/office') }}/site/{{$owner_image}}" alt="Author">
+                            <img src="{{ asset('assets/img/office') }}/site/{{$owner_image}}" alt="Author" style="width: 500px;">
                             <div class="progress-shape">
                                 <img src="{{ asset('assets/index/landingPage') }}/images/hero/progress-shape.png" alt="Progress">
                             </div>
@@ -337,7 +345,7 @@
         
         
         <!-- Testimonial Area start -->
-        <section class="testimonials-area rel z-1">
+        {{-- <section class="testimonials-area rel z-1">
             <div class="for-bgc-black py-130 rpy-100">
                 <div class="container">
                     <div class="row gap-90">
@@ -408,7 +416,7 @@
                <span></span><span></span>
                <span></span><span></span>
             </div>
-        </section>
+        </section> --}}
         <!-- Testimonial Area end -->        
         
         <!-- Blog Area start -->
@@ -418,48 +426,31 @@
                     <div class="row justify-content-center">
                         <div class="col-xl-12">
                             <div class="section-title text-center mb-60 wow fadeInUp delay-0-2s">
-                                <span class="sub-title mb-15">Member</span>
-                                <h2>Latest News & <span>Blog</span></h2>
-                            </div>
+                                <span class="sub-title mb-15">Anggota</span>
+                                <h2>Tim Kami yang Andal dan Kompak di <span>{{$nama_kantor}}</span></h2>
+                            </div>                            
                         </div>
                     </div>
                     <div class="row">
+                        @foreach ($officeMembers as $member)
                         <div class="col-lg-6">
                             <div class="blog-item wow fadeInUp delay-0-2s">
                                 <div class="image">
-                                    <img src="{{ asset('assets/index/landingPage') }}/images/blog/blog1.png" alt="Blog">
+                                    <img src="{{ asset('assets/img/member/' . $member->user->image) }}" alt="User Image" title="User Image" style="max-width: 290px; max-height: 330px;">
                                 </div>
                                 <div class="content">
                                     <div class="blog-meta mb-35">
-                                        <a class="tag" href="blog.html">Design</a>
-                                        <a class="tag" href="blog.html">Figma</a>
+                                        <a class="tag" href="#" class="hire-me-btn">{{ $member->level }}</a>
                                     </div>
-                                    <h5><a href="blog-details.html">Tips For Conductin See Usability Studies</a></h5>
+                                    <h5><a href="#" class="hire-me-btn">{{ $member->user->name }}</a></h5>
                                     <hr>
                                     <div class="blog-meta mt-35">
-                                        <a class="date" href="#"><i class="far fa-calendar-alt"></i> September 25, 2023</a>
+                                        <a class="date hire-me-btn" href="#"><i class="fas fa-user-alt"></i> {{ $nama_kantor }}</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="blog-item wow fadeInUp delay-0-2s">
-                                <div class="image">
-                                    <img src="{{ asset('assets/index/landingPage') }}/images/blog/blog2.png" alt="Blog">
-                                </div>
-                                <div class="content">
-                                    <div class="blog-meta mb-35">
-                                        <a class="tag" href="blog.html">Design</a>
-                                        <a class="tag" href="blog.html">Figma</a>
-                                    </div>
-                                    <h5><a href="blog-details.html">Keyboard-Only Suppor Assistive Technology</a></h5>
-                                    <hr>
-                                    <div class="blog-meta mt-35">
-                                        <a class="date" href="#"><i class="far fa-calendar-alt"></i> September 25, 2023</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -481,7 +472,7 @@
                         <div class="col-lg-2 col-md-12">
                             <div class="footer-widget widget_logo wow fadeInUp delay-0-2s">
                                 <div class="footer-logo">
-                                    <a href="index.html"><img src="{{ asset('assets/img/office') }}/site/logo_default.png" alt="Logo"></a>
+                                    <a href="{{ url('/pengacara') }}{{ $website }}"><img src="{{ asset('assets/img/office') }}/site/{{$logo_image}}" alt="Logo" style="max-height: 83px;"></a>                                    
                                 </div>
                             </div>
                         </div>

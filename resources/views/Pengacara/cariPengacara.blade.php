@@ -208,16 +208,16 @@
                 <input type="hidden" id="office-id" name="office_id" value="">
                 <div class="row">
                     <div class="col-6 mb-3">
-                        <input type="text" class="form-control" name="name" placeholder="Your Name" required />
+                        <input type="text" class="form-control" name="name" placeholder="Nama Lengkap" required />
                     </div>
                     <div class="col-6 mb-3">
-                        <input type="email" class="form-control" name="email" placeholder="Your Email" required />
+                        <input type="email" class="form-control" name="email" placeholder="Alamat Email" required />
                     </div>
                     <div class="col-12 mb-3">
-                        <input type="text" class="form-control" name="whatsapp" placeholder="Your WhatsApp" required />
+                        <input type="text" class="form-control" name="whatsapp" placeholder="WhatsApp" required />
                     </div>
                     <div class="col-12 mb-3">
-                        <textarea name="keperluan" cols="30" rows="7" class="form-control" placeholder="Message" required></textarea>
+                        <textarea name="keperluan" cols="30" rows="7" class="form-control" placeholder="Keperluan" required></textarea>
                     </div>
                     <div class="col-12 mb-3">
                         {!! htmlFormSnippet() !!}

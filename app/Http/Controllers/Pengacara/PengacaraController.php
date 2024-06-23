@@ -10,6 +10,7 @@ use App\Models\OfficeGallery;
 use App\Models\Office;
 use App\Models\OfficeCase;
 use App\Models\OfficeSite;
+use App\Models\OfficeMember;
 use App\Models\KlienChat;
 
 class PengacaraController extends Controller
@@ -25,13 +26,14 @@ class PengacaraController extends Controller
 
             // Check if officeSite exists
             if ($officeSite) {
-                $establishedDate = new \DateTime($office->tanggal_pendirian);
-                $currentDate = new \DateTime();
-                $interval = $currentDate->diff($establishedDate);
-                $yearsOfExperience = $interval->y;
-                $klienChatCount = KlienChat::where('id_office', $office->id)->count();
-                $legalCases = $office->legalCases()->get();
-                $services = $legalCases->random(min($legalCases->count(), 20));
+                $establishedDate    = new \DateTime($office->tanggal_pendirian);
+                $currentDate        = new \DateTime();
+                $interval           = $currentDate->diff($establishedDate);
+                $yearsOfExperience  = $interval->y;
+                $klienChatCount     = KlienChat::where('id_office', $office->id)->count();
+                $legalCases         = $office->legalCases()->get();
+                $services           = $legalCases->random(min($legalCases->count(), 20));
+                $officeMembers      = OfficeMember::where('id_office', $office->id)->with('user')->get();
 
                 // Filter unique categories and select random case for each
                 $uniqueCategories = $legalCases->unique('kategori')->take(8);
@@ -47,22 +49,26 @@ class PengacaraController extends Controller
             
                 $data = [
                     'nama_kantor' => $office->nama_kantor,
+                    'id' => $office->id,
                     'type' => $office->type,
                     'alamat' => $office->alamat,
                     'slogan' => $office->slogan,
+                    'website' => $website,
                     'logo' => $office->logo,                   
                     'yearsOfExperience' => $yearsOfExperience,
                     'klien_chat_count' => $klienChatCount,
                     'legalCasesRandomized' => $legalCasesRandomized,
                     'services' => $services,
                     'officeGalleries' => $officeGalleries, 
+                    'officeMembers' => $officeMembers, 
                     // OfficeSite fields
                     // 'office_name' => $officeSite->office_name,
                     // 'logo_image' => $officeSite->logo_image,
                     'owner_image'           => $officeSite->owner_image,
                     'owner_sec_image'       => $officeSite->owner_sec_image,
                     'icon_image'            => $officeSite->icon_image,
-                    'tagline'            => $officeSite->tagline,
+                    'logo_image'            => $officeSite->logo_image,
+                    'tagline'               => $officeSite->tagline,
                     'aboutMe_title'         => $officeSite->aboutMe_title,
                     'aboutMe_description'   => $officeSite->aboutMe_description,
                     // 'aboutMe_legalcategory' => $officeSite->aboutMe_legalcategory,
