@@ -58,7 +58,9 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     
     Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
     Route::post('/bisnis/updateDoc',        [BisnisController::class, 'officeUpdateDoc'])->name('bisnis.updateDoc');    
-    Route::get('/delete-office/{id}',       [BisnisController::class, 'destroy'])->name('delete-office');
+    Route::get('/delete-office/{id}',       [BisnisController::class, 'destroy'])->name('delete-office');    
+    Route::get('/bisnis/officestatus',      [BisnisController::class, 'changeStatus'])->name('office.changeStatus');
+
 
     Route::get('/register/pengacara',       [AuthController::class, 'showRegisterPengacara'])->name('showRegisterPengacara');
     
@@ -145,7 +147,6 @@ Route::get('/pengacara',                    [PengacaraController::class, 'showIn
 Route::get('/pengacara/{website}',          [PengacaraController::class, 'showLandingPage'])->name('showLandingPage');
 
 Route::post('/klienchat/store',             [KlienChatController::class, 'klienChat'])->name('klienchat.store');
-
 
 // getData
     Route::get('/provinces',                [AuthController::class, 'getProvinces'])->name('getProvinces');

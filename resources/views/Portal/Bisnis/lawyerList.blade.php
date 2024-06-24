@@ -165,7 +165,7 @@
                     <th>Since</th>
                     <th>klien</th>
                     <th>Profit</th>
-                    <th>INVOICE STATUS</th>
+                    <th>STATUS</th>
                     <th>ACTIONS</th>
                 </tr>
             </thead>

@@ -548,36 +548,67 @@ class BisnisController extends Controller
     }
 
 
+    public function changeStatus(Request $request)
+    {
+        $officeId = $request->input('id');
+        $office = Office::find($officeId);
+
+        if ($office) {
+            // Toggle status logic
+            // If the current status is greater than 0, change it to 0. Otherwise, change it to 2.
+            $office->status = $office->status > 0 ? 0 : 2;
+            $office->save();
+
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => true,
+                    'title'   => 'Berhasil',
+                    'message' => 'Status sudah di ubah.',
+                ],
+            ]);
+        }
+
+        return redirect()->back()->with([
+            'response' => [
+                'success' => false,
+                'title'   => 'Gagal',
+                'message' => 'Office tidak ditemukan.',
+            ],
+        ]);
+    }
+
+
     public function getAllOffice(Request $request)
     {
         if ($request->ajax()) {
-            $type                       = $request->input('Type');
-            $status                     = $request->input('Status');
-
-            $start_date                 = $request->input('start_date');
-            $end_date                   = $request->input('end_date');           
-                      
-            $query = Office::with('user')->orderByDesc('created_at');
-                    
+            $type = $request->input('Type');
+            $status = $request->input('Status');
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');           
+    
+            $query = Office::with('user')
+                ->withCount('klienChats') // Add this line to count clients
+                ->orderByDesc('created_at');
+    
             if ($type != '') {
                 $query->where('type', $type);
             }
-        
+    
             if ($status != '') {
                 $query->where('status', $status);
             }
-            
+    
             if ($start_date && $end_date) {
                 $query->whereBetween('created_at', [$start_date, $end_date]);   
             }
-            
-            // Ambil data sesuai dengan query yang telah dibuat
+    
             $offices = $query->get();
-            $counter = 0; // Initialize counter variable
+            $counter = 0;
+    
             return DataTables::of($offices)
                 ->addColumn('no', function ($office) use (&$counter) {
-                    $counter++; // Increment the counter for each row
-                    return $counter; // Return the current value of the counter
+                    $counter++;
+                    return $counter;
                 })
                 ->addColumn('nama_kantor', function ($office) {
                     $officeName = $office->nama_kantor;
@@ -585,7 +616,7 @@ class BisnisController extends Controller
                     $officeWa = $office->hp_whatsapp;
                     $ownerImage = $office->user->image;
                     $typeText = '';
-                    
+    
                     if ($office->type == 1) {
                         $typeText = 'Pengacara';
                     } elseif ($office->type == 2) {
@@ -595,7 +626,7 @@ class BisnisController extends Controller
                     } else {
                         $typeText = 'Unknown';
                     }
-                    
+    
                     $output = '<div class="d-flex justify-content-start align-items-center customer-name">' .
                               '<div class="avatar-wrapper">' .
                               '<div class="avatar me-2">' .
@@ -608,21 +639,19 @@ class BisnisController extends Controller
                               '<small class="text-muted">' . $officeWa . '</small>' .
                               '</div>' .
                               '</div>';
-                              
+    
                     return $output;
-                })                
+                })
                 ->addColumn('alamat', function ($office) {
-                    // Get the address components
                     $alamat = $office->alamat;
                     $desa = $office->village ? $office->village->name : 'Unknown village';
                     $kecamatan = $office->district ? $office->district->name : 'Unknown district';
                     $kabupaten_kota = $office->regency ? $office->regency->name : 'Unknown regency';
                     $provinsi = $office->province ? $office->province->name : 'Unknown province';
-                
-                    // Concatenate address
+    
                     $addressLine1 = $alamat . ', ' . $desa . ', ' . $kecamatan;
                     $addressLine2 = $kabupaten_kota . ', ' . $provinsi;
-                
+    
                     return '<div>' .
                            '<i class="bx bx-map"></i> ' .
                            '<span class="fw-medium">' . $addressLine1 . '</span><br>' .
@@ -631,29 +660,25 @@ class BisnisController extends Controller
                 })
                 ->addColumn('since', function ($office) {
                     $created = Carbon::parse($office->created_at);
-                    $created->locale('id'); // Set locale to Indonesian
+                    $created->locale('id');
                     $formattedDate = $created->translatedFormat('d F Y');
-                    
+    
                     return $formattedDate;
                 })
                 ->addColumn('klien', function ($office) {
-                    $created = Carbon::parse($office->created_at);
-                    $created->locale('id'); // Set locale to Indonesian
-                    $formattedDate = $created->translatedFormat('d F Y');
-                    
-                    return $formattedDate;
+                    return $office->klien_chats_count; // This will output the count of clients
                 })
                 ->addColumn('profit', function ($office) {
                     $created = Carbon::parse($office->created_at);
-                    $created->locale('id'); // Set locale to Indonesian
+                    $created->locale('id');
                     $formattedDate = $created->translatedFormat('d F Y');
-                    
+    
                     return $formattedDate;
                 })
                 ->addColumn('status', function ($office) {
                     $statusText = '';
                     $badgeClass = '';
-                
+    
                     switch ($office->status) {
                         case 0:
                             $statusText = 'Not Verified';
@@ -662,12 +687,10 @@ class BisnisController extends Controller
                         case 1:
                             $statusText = 'Ask Verified';
                             $badgeClass = 'bg-label-info';
-                            // Creating the URL directly in HTML using an anchor tag
                             if ($office->officeVerificationList) {
                                 $url = '/bisnis/office/verify?token=' . $office->officeVerificationList->token . '&user_id=' . $office->user_id . '&office_id=' . $office->id;
                                 $statusText = '<a href="' . $url . '" class="' . $badgeClass . '" style="color: inherit; text-decoration: none;">' . $statusText . '</a>';
                             } else {
-                                // If no verification list exists, just display the text without a link
                                 $statusText = '<span class="' . $badgeClass . '" style="color: inherit;">' . $statusText . '</span>';
                             }
                             break;
@@ -687,30 +710,41 @@ class BisnisController extends Controller
                             $statusText = 'Unknown';
                             $badgeClass = 'bg-label-dark';
                     }
-                
-                    // Return the badge HTML
+    
                     return '<div class="text-center"><span class="badge ' . $badgeClass . '">' . $statusText . '</span></div>';
                 })
                 ->addColumn('action', function ($office) {
                     $officeId = $office->id;
+                    $officeWa = $office->hp_whatsapp;
+                    
+                    // Modify the WhatsApp number
+                    if (preg_match('/^0/', $officeWa)) {
+                        $officeWa = preg_replace('/^0/', '62', $officeWa);
+                    } elseif (preg_match('/^8/', $officeWa)) {
+                        $officeWa = '62' . $officeWa;
+                    }
+                
+                    // Determine active/inactive status
+                    $activeStatus = $office->status == 2 ? 'active' : '';
+                    $inactiveStatus = $office->status != 2 ? 'active' : '';
+                    
                 
                     return '<div class="d-flex align-items-center">' .
                         '<a href="/office/add?id=' . $officeId . '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit"><i class="bx bxs-message-square-edit mx-1"></i></a>' .
                         '<a href="javascript:void(0);" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="showDeleteConfirmation(\'/delete-office/' . $officeId . '\', \'Do you want to delete this office?\')"><i class="bx bx-trash mx-1"></i></a>' .
+                        '<a href="https://wa.me/' . $officeWa . '" target="_blank" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Contact via WhatsApp"><i class="bx bxl-whatsapp mx-1"></i></a>' .
                         '<div class="dropdown">' .
                             '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' .
                             '<div class="dropdown-menu dropdown-menu-end">' .
-                                '<a href="/print/' . $officeId . '" class="dropdown-item" target="_blank">Download</a>' .
-                                '<a href="/send-office?id=' . $officeId . '" class="dropdown-item">Kirim office</a>' .                                
+                                '<a href="/bisnis/officestatus?id=' . $officeId . '" class="dropdown-item ' . $activeStatus . '"> Aktif </a>' .
+                                '<a href="/bisnis/officestatus?id=' . $officeId . '" class="dropdown-item ' . $inactiveStatus . '"> Tidak Aktif </a>' .                               
                             '</div>' .
                         '</div>' .
                     '</div>';
-                })
-                
+                })          
                 ->rawColumns(['nama_kantor', 'alamat', 'status', 'action'])
                 ->make(true); 
         }
     }
-
     
 }
