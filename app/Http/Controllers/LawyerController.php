@@ -418,11 +418,12 @@ class LawyerController extends Controller
             $officeCases                = OfficeCase::where('office_id', $officeId)->with('legalCase')->get(); // Fetch office cases
             $klienChatStatus0Count      = KlienChat::where('id_office', $officeId)->where('status', 0)->count();
 
-            $averageFee = $officeCases->avg(function ($officeCase) {
-                return ($officeCase->min_fee + $officeCase->max_fee) / 2;
-            });
+            $averageFee                 = $officeCases->avg(function ($officeCase) {
+                                            return ($officeCase->min_fee + $officeCase->max_fee) / 2;
+                                        });
 
-            $labelCount = $this->determineLabel($averageFee);
+            $labelCount                 = $this->determineLabel($averageFee);
+            $officeMembers              = OfficeMember::where('id_office', $officeId)->with('user')->get();
 
             $data = [
                 'title'                 => 'Pengacara',
@@ -434,6 +435,7 @@ class LawyerController extends Controller
                 'labelCount'            => $labelCount,
                 'referedby'             => $referedby,
                 'klienChatStatus0Count' => $klienChatStatus0Count,
+                'officeMembers'         => $officeMembers,
             ];
 
             return view('Portal.Pengacara.member', $data);

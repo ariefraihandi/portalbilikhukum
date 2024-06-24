@@ -83,9 +83,11 @@ class PengacaraController extends Controller
 
     public function showIndex()
     {
-        $title = 'Jasa Pengacara Profesional';
-        $subTitle = 'Bilik Hukum';
-        $offices = Office::with(['user', 'village', 'regency', 'district', 'province'])->get();
+        $title      = 'Jasa Pengacara Profesional';
+        $subTitle   = 'Bilik Hukum';
+        $offices    = Office::with(['user', 'village', 'regency', 'district', 'province'])
+                    ->where('status', 2)
+                    ->get();
 
         foreach ($offices as $office) {
             $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
@@ -181,8 +183,9 @@ class PengacaraController extends Controller
 
     public function searchOffices(Request $request)
     {
-        $query = Office::with(['user', 'village', 'regency', 'district', 'province']);
-        
+        $query = Office::with(['user', 'village', 'regency', 'district', 'province'])
+                       ->where('status', 2);
+    
         if ($request->has('selectedValue')) {
             $selectedValue = $request->get('selectedValue');
             $values = explode('-', $selectedValue);
@@ -192,9 +195,9 @@ class PengacaraController extends Controller
                 $query->where('provinsi', $values[0]);
             }
         }
-        
+    
         $offices = $query->get();
-
+    
         foreach ($offices as $office) {
             $officeCases = OfficeCase::where('office_id', $office->id)->with('legalCase')->get();
             $averageFee = $officeCases->avg(function ($officeCase) {
@@ -202,12 +205,11 @@ class PengacaraController extends Controller
             });
             $office->average_fee = $averageFee;
             $office->label_count = $this->determineLabel($averageFee);
-
+    
             $legalCases = $officeCases->map(function ($officeCase) {
                 return $officeCase->legalCase;
             })->unique('id');
-
-
+    
             if ($legalCases->isNotEmpty()) {
                 $office->random_legal_case = $legalCases->random();
                 $office->other_cases_count = $legalCases->count() - 1;
@@ -216,9 +218,10 @@ class PengacaraController extends Controller
                 $office->other_cases_count = 0;
             }
         }
-        
+    
         return response()->json($offices);
     }
+    
  
     private function determineLabel($averageFee)
     {

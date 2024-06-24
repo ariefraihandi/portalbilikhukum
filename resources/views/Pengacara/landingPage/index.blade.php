@@ -29,6 +29,7 @@
     <!-- Main Style -->
     <link rel="stylesheet" href="{{ asset('assets/index/landingPage') }}/css/style.css">
     <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" /> 
 </head>
 <body class="home-one">
     <div class="page-wrapper">
@@ -532,9 +533,7 @@
         <!-- footer area end -->
 
     </div>
-    <!--End pagewrapper-->
-   
-    
+    <!--End pagewrapper-->    
     <!-- Jquery -->
     <script src="{{ asset('assets/index/landingPage') }}/js/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap -->
@@ -553,11 +552,13 @@
     <script src="{{ asset('assets/index/landingPage') }}/js/wow.min.js"></script>
     <!-- Custom script -->
     <script src="{{ asset('assets/index/landingPage') }}/js/script.js"></script>
+    <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
     
     <!-- For Contact Form -->
     <script src="{{ asset('assets/index/landingPage') }}/js/jquery.ajaxchimp.min.js"></script>
     <script src="{{ asset('assets/index/landingPage') }}/js/form-validator.min.js"></script>
     <script src="{{ asset('assets/index/landingPage') }}/js/contact-form-script.js"></script>
+   
     <script>
         $(document).ready(function(){
             $('.hire-me-btn').on('click', function(e){
@@ -568,6 +569,23 @@
             $('#close-sidebar').on('click', function(){
                 $('body').removeClass('side-content-visible');
             });
+        });
+    </script>
+    
+    <script>
+        function showSweetAlert(response) {
+          Swal.fire({
+              icon: response.success ? 'success' : 'error',
+              title: response.title,
+              text: response.message,
+          });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          @if(session('response'))
+              var response = @json(session('response'));
+              showSweetAlert(response);
+          @endif
         });
     </script>
 </body>

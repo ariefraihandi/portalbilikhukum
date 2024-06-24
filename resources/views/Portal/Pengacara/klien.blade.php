@@ -107,9 +107,16 @@
                                         <i class='bx bxs-user-x me-1'></i>Not Verified / Ajukan Verifikasi
                                     </a>
                                 @endif
-                                <a href="{{route('lawyer.website')}}" class="btn btn-info text-nowrap">
-                                    <i class='bx bx-link'></i>Wesbite
+                                @if($office->website)
+                                <a href="https://bilikhukum.com/pengacara/{{ $office->website }}" target="_blank" class="btn btn-info text-nowrap">
+                                    <i class='bx bx-link'></i> Lihat Website
                                 </a>
+                            @else
+                                <a href="{{ route('lawyer.website') }}" class="btn btn-info text-nowrap">
+                                    <i class='bx bx-link'></i> Website
+                                </a>
+                            @endif
+                            
                             </div>
                         </div>
                         
