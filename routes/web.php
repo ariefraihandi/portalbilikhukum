@@ -84,6 +84,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::post('/store/gallery',           [LawyerController::class, 'storeGallery'])->name('storeGallery');
     Route::get('/join/office',              [LawyerController::class, 'showJoinOffice'])->name('storeGallery');
     Route::post('/join/office',             [LawyerController::class, 'submitJoinOffice'])->name('submitJoinOffice');
+    Route::get('/delete/member',            [LawyerController::class, 'deleteMember'])->name('delete.member');
     
 
     Route::post('/account/update',          [AccountController::class, 'accountUpdate'])->name('account.update');    

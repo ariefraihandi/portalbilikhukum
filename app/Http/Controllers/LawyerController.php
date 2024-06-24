@@ -711,7 +711,6 @@ class LawyerController extends Controller
             ],
         ]);
     }
-    
 
     public function officeUpdate(Request $request)
     {
@@ -824,7 +823,6 @@ class LawyerController extends Controller
         }
     }
     
-
     public function officeAskverified(Request $request)
     {
         try {
@@ -1267,6 +1265,42 @@ class LawyerController extends Controller
         $exists = Office::where('website', $websiteName)->exists();
 
         return response()->json(['exists' => $exists]);
+    }
+
+    public function deleteMember(Request $request)
+    {
+        $userId = $request->query('id');
+
+        // Find the OfficeMember
+        $officeMember = OfficeMember::where('id_user', $userId)->first();
+
+        if ($officeMember) {
+            // Delete the OfficeMember
+            $officeMember->delete();
+
+            // Update the User's role
+            $user = User::where('id', $userId)->first();
+            if ($user && $user->role == 4) {
+                $user->role = 3;
+                $user->save();
+            }
+
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Member berhasil dihapus',
+                ],
+            ]);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Member tidak ditemukan',
+                ],
+            ]);
+        }
     }
 //!Website
 //Editing

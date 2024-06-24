@@ -183,10 +183,7 @@
                             <i class="bx bx-dots-vertical-rounded"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="javascript:void(0);">Share connection</a></li>
-                            <li><a class="dropdown-item" href="javascript:void(0);">Block connection</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url('delete/member?id=' . $officeMember->user->id) }}">Delete</a></li>
                         </ul>
                     </div>
                     <div class="mx-auto mb-3">
@@ -195,7 +192,7 @@
                     <h5 class="mb-1 card-title">{{ $officeMember->user->name }}</h5>
                     <span>{{ $office->name }}</span>
                     <div class="d-flex align-items-center justify-content-center my-3 gap-2">
-                        <a href="#"><span class="badge bg-label-info">{{ $officeMember->user->role }}</span></a>
+                        <a href="#"><span class="badge bg-label-info">{{ $officeMember->level }}</span></a>
                     </div>
                         @if($formattedWhatsapp)
                             <a href="https://wa.me/{{ $formattedWhatsapp }}" class="btn btn-label-success btn-icon">
