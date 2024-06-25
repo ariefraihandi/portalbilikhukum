@@ -7,7 +7,7 @@
 				<div class="row">
 					<div class="col-lg-4 col-md-12">
 						<div class="footer_widget headline">
-							<h3 class="widget_title">
+							<h3 class="widget_title" style="color: black;">
 								<span class="title_shape_left"></span>
 								About Us
 							</h3>
@@ -21,13 +21,14 @@
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="footer_widget headline">
-							<h3 class="widget_title">
+							<h3 class="widget_title" style="color: black;">
 								<span class="title_shape_left"></span>
-								Practice Area
+								Useful Link
 							</h3>
+							
 							<div class="practice_list ul-li-block clearfix">
 								<ul>
-									<li><a href="!#">Admiralty & Maritime</a></li>
+									<li><a href="https://article.bilikhukum.com/category/hukum-pidana/" target="_blank">Hukum Pidana</a></li>
 									<li><a href="!#">Family Matters</a></li>
 									<li><a href="!#">Arbitration & ADR</a></li>
 									<li><a href="!#">Social Issue</a></li>
@@ -48,56 +49,24 @@
 					</div>
 					<div class="col-lg-4 col-md-12">
 						<div class="footer_widget headline">
-							<h3 class="widget_title">
+							<h3 class="widget_title" style="color: black;">
 								<span class="title_shape_left"></span>
 								News Feeds
 							</h3>
 							<div class="latest-blog-widget">
-								<div class="blog-img-content">
-									<div class="blog-img">
-										<img src="{{ asset('assets/index/assets-index') }}/img/blog/bt1.jpg" alt="">
+								@foreach($posts->take(4) as $post)
+									<div class="blog-img-content">
+									
+										<div class="blog-text headline">
+											<span class="blog-meta"><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($post->post_date)->format('jS F Y') }}</span>
+											<h4 style="color: grey;"> 
+												<a href="{{ $post->guid }}" target="_blank">{{ $post->post_title }}</a>
+											</h4>
+										</div>
 									</div>
-									<div class="blog-text headline">
-										<span class="blog-meta"><i class="fas fa-calendar-alt"></i> 12th June 2020</span>
-										<h4> <a href="#">Managing Partner along
-										with Senior Counsels.</a></h4>
-									</div>
-								</div>
-								<!-- /blog post -->
-								<div class="blog-img-content">
-									<div class="blog-img">
-										<img src="{{ asset('assets/index/assets-index') }}/img/blog/bt2.jpg" alt="">
-									</div>
-									<div class="blog-text headline">
-										<span class="blog-meta"><i class="fas fa-calendar-alt"></i> 12th June 2020</span>
-										<h4> <a href="#">Managing Partner along
-										with Senior Counsels.</a></h4>
-									</div>
-								</div>
-								<!-- /blog post -->
-								<div class="blog-img-content">
-									<div class="blog-img">
-										<img src="{{ asset('assets/index/assets-index') }}/img/blog/bt3.jpg" alt="">
-									</div>
-									<div class="blog-text headline">
-										<span class="blog-meta"><i class="fas fa-calendar-alt"></i> 12th June 2020</span>
-										<h4> <a href="#">Managing Partner along
-										with Senior Counsels.</a></h4>
-									</div>
-								</div>
-								<!-- /blog post -->
-								<div class="blog-img-content">
-									<div class="blog-img">
-										<img src="{{ asset('assets/index/assets-index') }}/img/blog/bt4.jpg" alt="">
-									</div>
-									<div class="blog-text headline">
-										<span class="blog-meta"><i class="fas fa-calendar-alt"></i> 12th June 2020</span>
-										<h4> <a href="#">Managing Partner along
-										with Senior Counsels.</a></h4>
-									</div>
-								</div>
-								<!-- /blog post -->
+								@endforeach
 							</div>
+							
 						</div>
 					</div>
 				</div>

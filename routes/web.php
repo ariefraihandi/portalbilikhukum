@@ -19,10 +19,6 @@
     use App\Http\Controllers\Index\IndexController;
 //!Controllers
 
-Route::get('/', function () {
-    return redirect('https://bilikhukum.com');
-});
-
 Route::get('/',                             [IndexController::class, 'index'])->name('index.index');
 
 Route::get('/login',                        [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);

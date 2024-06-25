@@ -45,7 +45,7 @@
 
                     <div class="header-inner rel d-flex align-items-center">
                         <div class="logo-outer">
-                            <img src="{{ asset('assets/img/office/site/' . $logo_image) }}" alt="Logo" title="Logo" style="max-height: 83px;">
+                            <img src="{{ asset('assets/img/office/site/' . $logo_image) }}" alt="Logo" title="Logo" style="max-height: 120px;">
                         </div>
 
                         <div class="nav-outer clearfix mx-auto">
