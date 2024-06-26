@@ -31,7 +31,7 @@ $(function () {
   if (select2.length) {
     var $this = select2;
     $this.wrap('<div class="position-relative"></div>').select2({
-      placeholder: 'Select Country',
+      placeholder: 'Pilih Tipe',
       dropdownParent: $this.parent()
     });
   }

@@ -8,6 +8,17 @@
   margin-top: 12px;
 }
 
+.ayat-group {
+  margin-left: 0px;
+}
+.hurufSection {
+  margin-left: 20px;
+}
+.angkaSection {
+  margin-left: 40px;
+}
+
+
 .disabled {
   pointer-events: none;
   opacity: 0.6;

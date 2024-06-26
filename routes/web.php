@@ -12,6 +12,7 @@
     use App\Http\Controllers\AccountController;
     use App\Http\Controllers\BisnisController;
     use App\Http\Controllers\ReferralController;
+    use App\Http\Controllers\JdihController;
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\KlienChatController;
     use App\Http\Controllers\LawyerController;
@@ -44,6 +45,9 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     Route::get('/account/detil',            [AccountController::class, 'showAccountDetil'])->name('account.detil');
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
     
+    Route::get('/jdih/uu/list',             [JdihController::class, 'showUUList'])->name('jdih.uu.list');
+    
+
     Route::get('/bisnis/office/list',       [BisnisController::class, 'showOfficeList'])->name('bisnis.office.list');
     Route::get('/bisnis/office/verify',     [BisnisController::class, 'showOfficeVerify'])->name('bisnis.office.verify');
     Route::get('/bisnis/user/list',         [BisnisController::class, 'showUserList'])->name('bisnis.user.list');
@@ -51,6 +55,16 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
+
+    Route::post('/jdih/uu/store',           [JdihController::class, 'storeRule'])->name('store.rule');
+    Route::post('/jdih/uu/bab',             [JdihController::class, 'storeBab'])->name('storeBab');
+    Route::post('/jdih/uu/bagian',          [JdihController::class, 'storebagian'])->name('store.bagian');
+    Route::get('/ruleData',                 [JdihController::class, 'getRuleData'])->name('getRuleData');
+    Route::get('/babs/{rule_b_undang_id}',  [JdihController::class, 'getBabs']);
+    Route::get('/bagian/{babId}',           [JdihController::class, 'getBagiansByBabId']);
+    
+    Route::post('jdih/uu/pasal',            [JdihController::class, 'storePasal'])->name('store.pasal');
+
     
     Route::get('/bisnis/verify',            [BisnisController::class, 'officeVerify'])->name('bisnis.verify');
     Route::post('/bisnis/updateDoc',        [BisnisController::class, 'officeUpdateDoc'])->name('bisnis.updateDoc');    
@@ -142,6 +156,9 @@ Route::get('/search-offices',               [PengacaraController::class, 'search
 Route::get('/pengacara',                    [PengacaraController::class, 'showIndex'])->name('showPengacara');
 Route::get('/pengacara/{website}',          [PengacaraController::class, 'showLandingPage'])->name('showLandingPage');
 
+Route::get('/kamus',                        [JdihController::class, 'showLaw'])->name('showDictionary');
+Route::get('/kamus/{type?}/{number?}/{year?}/{pasal?}/{ayat?}/{huruf?}/{angka?}', [JdihController::class, 'showLaw'])->name('showLaw');
+
 Route::post('/klienchat/store',             [KlienChatController::class, 'klienChat'])->name('klienchat.store');
 
 // getData
@@ -149,4 +166,5 @@ Route::post('/klienchat/store',             [KlienChatController::class, 'klienC
     Route::get('/regencies',                [AuthController::class, 'getRegencies'])->name('getRegencies');
     Route::get('/districts',                [AuthController::class, 'getDistricts'])->name('getDistricts');
     Route::get('/villages',                 [AuthController::class, 'getVillages'])->name('getVillages');
+    Route::get('/search/law',                   [JdihController::class, 'search'])->name('search.law');
 //! getData
