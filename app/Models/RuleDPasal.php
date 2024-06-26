@@ -9,7 +9,7 @@ class RuleDPasal extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['rule_c_bab_id', 'pasal_content', 'pasal_ke'];
+    protected $fillable = ['rule_c_bab_id', 'pasal_content', 'rule_ca_bagian_id', 'pasal_ke'];
 
     public function bab()
     {
@@ -19,5 +19,10 @@ class RuleDPasal extends Model
     public function ayats()
     {
         return $this->hasMany(RuleEAyat::class, 'rule_d_pasal_id');
+    }
+
+    public function bagian()
+    {
+        return $this->belongsTo(RuleCaBagian::class, 'rule_ca_bagian_id');
     }
 }

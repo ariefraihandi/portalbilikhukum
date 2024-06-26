@@ -521,13 +521,13 @@
 <script>
     $(document).ready(function() {
         let ayatCounter = 1; // Counter for unique IDs
-    
+
         // Handle modal show event to populate rule_b_undang_id and fetch babs
         $('#addPasalModal').on('show.bs.modal', function(event) {
             const button = $(event.relatedTarget);
             const ruleId = button.data('id');
             $('#addPasalRuleId').val(ruleId);
-    
+
             // Fetch babs based on rule_b_undang_id
             $.ajax({
                 url: `/babs/${ruleId}`,
@@ -540,11 +540,11 @@
                 }
             });
         });
-    
+
         // Handle change event on rule_c_bab_id to fetch bagian if exists
         $('#rule_c_bab_id').change(function() {
             const babId = $(this).val();
-    
+
             if (babId) {
                 $.ajax({
                     url: `/bagian/${babId}`,
@@ -565,7 +565,7 @@
                 $('#bagianSection').hide();
             }
         });
-    
+
         // Toggle Ayat section
         $('#checkAyat').change(function() {
             if ($(this).is(':checked')) {
@@ -574,7 +574,7 @@
                 $('#ayatSection').hide();
             }
         });
-    
+
         // Function to add Ayat
         window.addAyat = function() {
             const ayatId = ayatCounter++;
@@ -610,17 +610,17 @@
                 </div>`
             );
         };
-    
+
         // Function to toggle Huruf section
         window.toggleHuruf = function(counter) {
             $(`#hurufSection${counter}`).toggle();
         };
-    
+
         // Function to toggle Angka section
         window.toggleAngka = function(ayatCounter, hurufCounter) {
             $(`#angkaSection${ayatCounter}_${hurufCounter}`).toggle();
         };
-    
+
         // Function to add Huruf
         window.addHuruf = function(counter) {
             const hurufCounter = $(`#hurufInputs${counter} .form-group`).length;
@@ -642,12 +642,13 @@
                 </div>`
             );
         };
-    
+
         // Function to add Angka
         window.addAngka = function(ayatCounter, hurufCounter) {
+            const angkaIndex = $(`#angkaInputs${ayatCounter}_${hurufCounter} .form-group`).length;
             $(`#angkaInputs${ayatCounter}_${hurufCounter}`).append(
                 `<div class="form-group mb-3">
-                    <textarea class="form-control" name="angka_content[${ayatCounter}][]" rows="2" placeholder="Isi Angka Baru"></textarea>
+                    <textarea class="form-control" name="angka_content[${ayatCounter}][${hurufCounter}][]" rows="2" placeholder="Isi Angka Baru"></textarea>
                 </div>`
             );
         };

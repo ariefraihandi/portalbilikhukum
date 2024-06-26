@@ -58,30 +58,31 @@ class JdihController extends Controller
                 if ($typeRecord) {
                     // Get the id from the typeRecord
                     $typeId = $typeRecord->id;
-
+    
                     // Fetch the corresponding records from rule_b_undang
                     $lawsQuery = RuleBUndang::where('type_id', $typeId);
-
+    
                     // If number is provided, add it to the query
                     if ($number) {
                         $lawsQuery->where('nomor', $number);
                     }
-
+    
                     // If year is provided, add it to the query
                     if ($year) {
                         $lawsQuery->where('tahun', $year);
                     }
-
-                    // If pasal is provided, find the related pasal
+    
+                    // Get the laws and related data
+                    $laws = $lawsQuery->with(['babs.pasals.ayats.hurufs.angkas'])->get();
+    
+                    // Fetch paginated pasal details
+                    $pasalDetails = null;
                     if ($pasal) {
-                        $lawsQuery->whereHas('babs.pasals', function ($query) use ($pasal) {
-                            $query->where('pasal_ke', $pasal);
-                        });
+                        $pasalDetails = RuleDPasal::where('pasal_ke', $pasal)
+                            ->with(['ayats.hurufs.angkas', 'bab', 'bagian'])
+                            ->paginate(1);
                     }
-
-                    // Get the results
-                    $laws = $lawsQuery->with(['babs.pasals.ayats'])->get();
-
+    
                     // Prepare meta description and keywords based on the laws
                     $metaDescription = 'Daftar peraturan di bilikhukum.com. ';
                     $metaKeywords = 'undang-undang, pasal, hukum, peraturan, bilik hukum, ';
@@ -89,29 +90,18 @@ class JdihController extends Controller
                         $metaDescription .= $law->name . ' ' . $law->nomor . ' ' . $law->tahun . ', ';
                         $metaKeywords .= $law->name . ', ' . $law->tentang . ', ';
                     }
-
-                    // If only type and number are provided, return the view with the laws
-                    if ($laws && is_null($year) && is_null($pasal)) {
-                        $data = [
-                            'meta_description' => rtrim($metaDescription, ', '),
-                            'meta_keywords' => rtrim($metaKeywords, ', '),
-                            'meta_author' => 'Bilik Hukum',
-                            'title' => 'Daftar Peraturan',
-                            'subTitle' => $law->name,
-                            'laws' => $laws,
-                        ];
-                        return view('Pengacara.lawDictinory', compact('data'));
-                    }
-
-                    // Return the view with the laws and meta information
+    
+                    // Prepare data for the view
                     $data = [
                         'meta_description' => rtrim($metaDescription, ', '),
                         'meta_keywords' => rtrim($metaKeywords, ', '),
                         'meta_author' => 'Bilik Hukum',
                         'title' => 'Daftar Peraturan',
-                        'subTitle' => $law->name,
+                        'subTitle' => $laws->first()->name ?? 'Daftar Peraturan',
                         'laws' => $laws,
+                        'pasalDetails' => $pasalDetails,
                     ];
+    
                     return view('Pengacara.lawDictinory', compact('data'));
                 } else {
                     return redirect()->route('showDictionary')->with('error', 'Type not found');
@@ -120,12 +110,13 @@ class JdihController extends Controller
                 return redirect()->route('showDictionary')->with('error', 'Invalid type provided');
             }
         }
-
+    
         // If type, number, year, and pasal are not provided, show the initial data
         if (is_null($type) && is_null($number) && is_null($year) && is_null($pasal)) {
             return $this->showIndex();
         }
     }
+    
 
     public function search(Request $request)
     {
@@ -220,8 +211,10 @@ class JdihController extends Controller
         DB::beginTransaction();
     
         try {
-            // Debugging: Check if data is being received correctly
-            \Log::info('Request Data: ', $request->all());
+            // Check if ayat_content is an array
+            if (!is_array($request->ayat_content)) {
+                throw new \Exception('ayat_content must be an array.');
+            }
     
             // Determine if there are any ayat_contents
             $hasAyat = false;
@@ -233,7 +226,7 @@ class JdihController extends Controller
             }
     
             if ($hasAyat) {
-                // Create Pasal with empty content since it has Ayat
+                // Create Pasal with content
                 $pasal = RuleDPasal::create([
                     'rule_c_bab_id' => $request->rule_c_bab_id,
                     'pasal_ke' => $request->pasal_number,
@@ -241,7 +234,11 @@ class JdihController extends Controller
                     'pasal_content' => $request->pasal_content
                 ]);
     
-                foreach ($request->ayat_content as $key => $ayatContents) {
+                foreach ($request->ayat_content as $ayatKey => $ayatContents) {
+                    if (!is_array($ayatContents)) {
+                        continue; // Skip if ayatContents is not an array
+                    }
+    
                     foreach ($ayatContents as $ayatContent) {
                         if (!is_null($ayatContent)) {
                             // Create Ayat
@@ -250,8 +247,8 @@ class JdihController extends Controller
                                 'ayat_content' => $ayatContent
                             ]);
     
-                            if (isset($request->huruf_content[$key])) {
-                                foreach ($request->huruf_content[$key] as $hurufKey => $hurufContent) {
+                            if (isset($request->huruf_content[$ayatKey]) && is_array($request->huruf_content[$ayatKey])) {
+                                foreach ($request->huruf_content[$ayatKey] as $hurufKey => $hurufContent) {
                                     if (!is_null($hurufContent)) {
                                         // Create Huruf
                                         $huruf = RuleFHuruf::create([
@@ -259,19 +256,31 @@ class JdihController extends Controller
                                             'huruf_content' => $hurufContent
                                         ]);
     
-                                        if (isset($request->angka_content[$key][$hurufKey])) {
-                                            foreach ($request->angka_content[$key][$hurufKey] as $angkaContent) {
+                                        // Log huruf creation for debugging
+                                        \Log::info('Created Huruf: ', ['huruf' => $huruf]);
+    
+                                        if (isset($request->angka_content[$ayatKey][$hurufKey]) && is_array($request->angka_content[$ayatKey][$hurufKey])) {
+                                            foreach ($request->angka_content[$ayatKey][$hurufKey] as $angkaContent) {
                                                 if (!is_null($angkaContent)) {
                                                     // Create Angka
-                                                    RuleGAngka::create([
+                                                    $angka = RuleGAngka::create([
                                                         'rule_f_huruf_id' => $huruf->id,
                                                         'angka_content' => $angkaContent
                                                     ]);
+    
+                                                    // Log angka creation for debugging
+                                                    \Log::info('Created Angka: ', ['angka' => $angka]);
                                                 }
                                             }
+                                        } else {
+                                            // Log if no angka_content is found
+                                            \Log::info('No angka_content found for huruf', ['huruf_id' => $huruf->id]);
                                         }
                                     }
                                 }
+                            } else {
+                                // Log if no huruf_content is found
+                                \Log::info('No huruf_content found for ayat', ['ayat_id' => $ayat->id]);
                             }
                         }
                     }
@@ -291,10 +300,10 @@ class JdihController extends Controller
                 'response' => [
                     'success' => true,
                     'title' => 'Berhasil',
-                    'message' => 'AtData has been saved successfully',
+                    'message' => 'Data has been saved successfully',
                 ],
             ]);
-            
+    
         } catch (\Exception $e) {
             DB::rollBack();
             // Log the error for debugging purposes
@@ -303,11 +312,13 @@ class JdihController extends Controller
                 'response' => [
                     'success' => false,
                     'title' => 'Gagal',
-                    'message' => 'error: ' . $e->getMessage(),
+                    'message' => 'Error: ' . $e->getMessage(),
                 ],
             ]);
         }
     }
+    
+    
 
     
     public function getRuleData(Request $request)

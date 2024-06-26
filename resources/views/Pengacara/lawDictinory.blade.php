@@ -70,18 +70,19 @@
             </div>
         </div>
     </div>
-
-  
-    <div class="section" id="detail-uud-section" style="display: none;">
+    
+    
+    
+    <div class="section" id="detail-uud-section">
         <div class="container">
             <div class="row justify-content-center footer-cta" data-aos="fade-up">
-                <div class="col-lg-7 mx-auto text-center">
-                    <h2 class="mb-4">Detail UUD</h2>
+                <div class="col-lg-7 mx-auto text-left">
+                    <h2 class="mb-4" style="text-align: center;">Detail Peraturan</h2>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th style="text-align: left;"></th>
-                                <th style="text-align: left;"></th>
+                                <th style="text-align: left;">Field</th>
+                                <th style="text-align: left;">Value</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -118,16 +119,74 @@
                                     <td style="text-align: left;">Sumber</td>
                                     <td style="text-align: left;">{{ $law->sumber }}</td>
                                 </tr>
-                                <!-- Add more fields as necessary -->
                             @endforeach
                         </tbody>
                     </table>
+    
+                    <hr style="border: none; border-top: 3px solid #000;">
+
+                    @if($data['pasalDetails'])
+                    @foreach($data['pasalDetails'] as $pasalDetail)
+                        <div class="pasal-detail" style="text-align: left;">
+                            <p style="text-align: center;">Bab {{ $pasalDetail->bab->bab_ke }}<br> {{ $pasalDetail->bab->bab_name }}</p>
+                            @if($pasalDetail->bagian)
+                                <p style="text-align: center;">Bagian {{ $pasalDetail->bagian->bagian_ke }}<br>{{ $pasalDetail->bagian->bagian_name }}</p>
+                            @endif
+                            <h4 style="text-align: center;">Pasal {{ $pasalDetail->pasal_ke }}</h4>
+                            @if($pasalDetail->pasal_content && strtolower($pasalDetail->pasal_content) !== 'null' && $pasalDetail->pasal_content !== '-')
+                                <p style="text-align: left;">{{ $pasalDetail->pasal_content }}</p>
+                            @endif
+                            @php $numbering = 1; @endphp
+                            @foreach($pasalDetail->ayats as $ayat)
+                                @if($ayat->ayat_content == '-')
+                                    <div style="display: flex; align-items: flex-start;">
+                                        <p style="text-align: left; margin-right: 10px;"><strong>{{ $numbering++ }}.</strong></p>
+                                        <div style="text-align: left;">
+                                            @php $hurufNumbering = 'a'; @endphp
+                                            @foreach($ayat->hurufs as $huruf)
+                                                <p style="text-align: left;"><strong>{{ $hurufNumbering++ }}. </strong> {{ $huruf->huruf_content }}</p>
+                                                @if($huruf->angkas->count() > 0)
+                                                    <ul style="text-align: left;">
+                                                        @php $angkaNumbering = 1; @endphp
+                                                        @foreach($huruf->angkas as $angka)
+                                                            <li>{{ $angkaNumbering++ }}. {{ $angka->angka_content }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    <p style="text-align: left;"><strong>{{ $numbering++ }}. </strong> {{ $ayat->ayat_content }}</p>
+                                    @php $hurufNumbering = 'a'; @endphp
+                                    @foreach($ayat->hurufs as $huruf)
+                                        <p style="text-align: left; margin-left: 20px;"><strong>{{ $hurufNumbering++ }}.</strong> {{ $huruf->huruf_content }}</p>
+                                        @if($huruf->angkas->count() > 0)
+                                            <ul style="text-align: left; margin-left: 40px;">
+                                                @php $angkaNumbering = 1; @endphp
+                                                @foreach($huruf->angkas as $angka)
+                                                    <li>{{ $angkaNumbering++ }}. {{ $angka->angka_content }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        </div>
+                    @endforeach
+                    {{-- <div id="property-nav" class="controls" tabindex="0" aria-label="Carousel Navigation">
+                        <span class="prev" data-controls="prev" aria-controls="property" tabindex="-1">Prev</span>
+                        <span class="next" data-controls="next" aria-controls="property" tabindex="-1">Next</span>
+                    </div> --}}
+                    @endif
+    
                 </div>
-                <!-- /.col-lg-7 -->
             </div>
-            <!-- /.row -->
         </div>
     </div>
+    
+    
+    
     
     
 
