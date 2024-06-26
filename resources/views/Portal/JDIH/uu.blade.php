@@ -271,7 +271,7 @@
             <form id="addBabForm" action="{{ route('storeBab') }}" method="POST">
                 @csrf
                 <div class="modal-body">
-                    <input type="text" name="rule_b_undang_id" id="addBabRuleId">
+                    <input type="hidden" name="rule_b_undang_id" id="addBabRuleId">
 
                     <div class="mb-3">
                         <label for="babKe" class="form-label">Bab Ke</label>
