@@ -217,6 +217,10 @@
                         <input type="text" class="form-control" id="tentang" name="tentang" required>
                     </div>
                     <div class="mb-3">
+                        <label for="materi_pokok" class="form-label">Materi Pokok</label>
+                        <textarea class="form-control" id="materi_pokok" name="materi_pokok" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
                         <label for="menimbang" class="form-label">Menimbang</label>
                         <textarea class="form-control" id="menimbang" name="menimbang" rows="3" required></textarea>
                     </div>

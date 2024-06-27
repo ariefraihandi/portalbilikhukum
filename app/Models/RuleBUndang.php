@@ -16,6 +16,7 @@ class RuleBUndang extends Model
         'name',
         'nomor',
         'tahun',
+        'materi_pokok',
         'tentang',
         'menimbang',
         'mengingat',

@@ -166,6 +166,7 @@ class JdihController extends Controller
                 'nomor' => 'required|string|max:255',
                 'tahun' => 'required|integer',
                 'tentang' => 'required|string|max:255',
+                'materi_pokok' => 'required',
                 'menimbang' => 'required',
                 'mengingat' => 'required',
                 'mencabut' => 'required',
