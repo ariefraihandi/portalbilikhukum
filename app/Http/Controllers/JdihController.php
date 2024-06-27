@@ -75,12 +75,21 @@ class JdihController extends Controller
                     // Get the laws and related data
                     $laws = $lawsQuery->with(['babs.pasals.ayats.hurufs.angkas'])->get();
     
-                    // Fetch paginated pasal details
+                    // Fetch pasal details from specific law
                     $pasalDetails = null;
-                    if ($pasal) {
-                        $pasalDetails = RuleDPasal::where('pasal_ke', $pasal)
-                            ->with(['ayats.hurufs.angkas', 'bab', 'bagian'])
-                            ->paginate(1);
+                    if ($pasal && $number && $year) {
+                        $law = RuleBUndang::where('nomor', $number)
+                            ->where('tahun', $year)
+                            ->first();
+    
+                        if ($law) {
+                            $pasalDetails = RuleDPasal::where('pasal_ke', $pasal)
+                                ->whereHas('bab', function ($query) use ($law) {
+                                    $query->where('rule_b_undang_id', $law->id);
+                                })
+                                ->with(['ayats.hurufs.angkas', 'bab', 'bagian'])
+                                ->paginate(1);
+                        }
                     }
     
                     // Prepare meta description and keywords based on the laws
@@ -117,30 +126,6 @@ class JdihController extends Controller
         }
     }
     
-
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-
-        // Search for laws (undang-undang) and their articles (pasal)
-        $laws = RuleBUndang::query()
-            ->where('name', 'LIKE', "%{$query}%")
-            ->orWhere('nomor', 'LIKE', "%{$query}%")
-            ->orWhere('tahun', 'LIKE', "%{$query}%")
-            ->orWhere('tentang', 'LIKE', "%{$query}%")
-            ->with(['babs.pasals.ayats'])
-            ->get();
-
-        $articles = RuleDPasal::query()
-            ->where('pasal_ke', 'LIKE', "%{$query}%")
-            ->with(['bab.ruleBUndang', 'ayats'])
-            ->get();
-
-        return response()->json([
-            'laws' => $laws,
-            'articles' => $articles,
-        ]);
-    }
 
     public function showUUList(Request $request)
     {
