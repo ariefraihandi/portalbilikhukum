@@ -623,35 +623,35 @@
 
         // Function to add Huruf
         window.addHuruf = function(counter) {
-            const hurufCounter = $(`#hurufInputs${counter} .form-group`).length;
-            $(`#hurufInputs${counter}`).append(
-                `<div class="form-group mb-3">
-                    <textarea class="form-control" name="huruf_content[${counter}][]" rows="2" placeholder="Isi Huruf Baru"></textarea>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="checkAngka${counter}_${hurufCounter}" onchange="toggleAngka(${counter}, ${hurufCounter})">
-                        <label class="form-check-label" for="checkAngka${counter}_${hurufCounter}">Memiliki Angka</label>
-                    </div>
-                    <div id="angkaSection${counter}_${hurufCounter}" class="angkaSection" style="display: none;">
-                        <hr>
-                        <label for="angka_content">Angka</label>
-                        <div class="angkaInputs" id="angkaInputs${counter}_${hurufCounter}">
-                            <!-- Placeholder for angka inputs -->
-                        </div>
-                        <button type="button" class="btn btn-success btn-sm mb-2" onclick="addAngka(${counter}, ${hurufCounter})">Tambah Angka</button>
-                    </div>
-                </div>`
-            );
-        };
+    const hurufCounter = $(`#hurufInputs${counter} .form-group`).length;
+    $(`#hurufInputs${counter}`).append(
+        `<div class="form-group mb-3">
+            <textarea class="form-control" name="huruf_content[${counter}][]" rows="2" placeholder="Isi Huruf Baru"></textarea>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="checkAngka${counter}_${hurufCounter}" onchange="toggleAngka(${counter}, ${hurufCounter})">
+                <label class="form-check-label" for="checkAngka${counter}_${hurufCounter}">Memiliki Angka</label>
+            </div>
+            <div id="angkaSection${counter}_${hurufCounter}" class="angkaSection" style="display: none;">
+                <hr>
+                <label for="angka_content">Angka</label>
+                <div class="angkaInputs" id="angkaInputs${counter}_${hurufCounter}">
+                    <!-- Placeholder for angka inputs -->
+                </div>
+                <button type="button" class="btn btn-success btn-sm mb-2" onclick="addAngka(${counter}, ${hurufCounter})">Tambah Angka</button>
+            </div>
+        </div>`
+    );
+};
 
-        // Function to add Angka
-        window.addAngka = function(ayatCounter, hurufCounter) {
-            const angkaIndex = $(`#angkaInputs${ayatCounter}_${hurufCounter} .form-group`).length;
-            $(`#angkaInputs${ayatCounter}_${hurufCounter}`).append(
-                `<div class="form-group mb-3">
-                    <textarea class="form-control" name="angka_content[${ayatCounter}][${hurufCounter}][]" rows="2" placeholder="Isi Angka Baru"></textarea>
-                </div>`
-            );
-        };
+// Function to add Angka
+window.addAngka = function(ayatCounter, hurufCounter) {
+    const angkaIndex = $(`#angkaInputs${ayatCounter}_${hurufCounter} .form-group`).length;
+    $(`#angkaInputs${ayatCounter}_${hurufCounter}`).append(
+        `<div class="form-group mb-3">
+            <textarea class="form-control" name="angka_content[${ayatCounter}][${hurufCounter}][]" rows="2" placeholder="Isi Angka Baru"></textarea>
+        </div>`
+    );
+};
     });
 </script>
 

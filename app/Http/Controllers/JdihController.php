@@ -207,118 +207,116 @@ class JdihController extends Controller
     }
 
     public function storePasal(Request $request)
-    {
-        DB::beginTransaction();
-    
-        try {
-            // Check if ayat_content is an array
-            if (!is_array($request->ayat_content)) {
-                throw new \Exception('ayat_content must be an array.');
+{
+    DB::beginTransaction();
+
+    try {
+        // Check if ayat_content is an array
+        if (!is_array($request->ayat_content)) {
+            throw new \Exception('ayat_content must be an array.');
+        }
+
+        // Determine if there are any ayat_contents
+        $hasAyat = false;
+        foreach ($request->ayat_content as $ayatContents) {
+            if (!empty($ayatContents[0])) {
+                $hasAyat = true;
+                break;
             }
-    
-            // Determine if there are any ayat_contents
-            $hasAyat = false;
-            foreach ($request->ayat_content as $ayatContents) {
-                if (!empty($ayatContents[0])) {
-                    $hasAyat = true;
-                    break;
+        }
+
+        if ($hasAyat) {
+            // Create Pasal with content
+            $pasal = RuleDPasal::create([
+                'rule_c_bab_id' => $request->rule_c_bab_id,
+                'pasal_ke' => $request->pasal_number,
+                'rule_ca_bagian_id' => $request->rule_ca_bagian_id,
+                'pasal_content' => $request->pasal_content
+            ]);
+
+            foreach ($request->ayat_content as $ayatKey => $ayatContents) {
+                if (!is_array($ayatContents)) {
+                    continue; // Skip if ayatContents is not an array
                 }
-            }
-    
-            if ($hasAyat) {
-                // Create Pasal with content
-                $pasal = RuleDPasal::create([
-                    'rule_c_bab_id' => $request->rule_c_bab_id,
-                    'pasal_ke' => $request->pasal_number,
-                    'rule_ca_bagian_id' => $request->rule_ca_bagian_id,
-                    'pasal_content' => $request->pasal_content
-                ]);
-    
-                foreach ($request->ayat_content as $ayatKey => $ayatContents) {
-                    if (!is_array($ayatContents)) {
-                        continue; // Skip if ayatContents is not an array
-                    }
-    
-                    foreach ($ayatContents as $ayatContent) {
-                        if (!is_null($ayatContent)) {
-                            // Create Ayat
-                            $ayat = RuleEAyat::create([
-                                'rule_d_pasal_id' => $pasal->id,
-                                'ayat_content' => $ayatContent
-                            ]);
-    
-                            if (isset($request->huruf_content[$ayatKey]) && is_array($request->huruf_content[$ayatKey])) {
-                                foreach ($request->huruf_content[$ayatKey] as $hurufKey => $hurufContent) {
-                                    if (!is_null($hurufContent)) {
-                                        // Create Huruf
-                                        $huruf = RuleFHuruf::create([
-                                            'rule_e_ayat_id' => $ayat->id,
-                                            'huruf_content' => $hurufContent
-                                        ]);
-    
-                                        // Log huruf creation for debugging
-                                        \Log::info('Created Huruf: ', ['huruf' => $huruf]);
-    
-                                        if (isset($request->angka_content[$ayatKey][$hurufKey]) && is_array($request->angka_content[$ayatKey][$hurufKey])) {
-                                            foreach ($request->angka_content[$ayatKey][$hurufKey] as $angkaContent) {
-                                                if (!is_null($angkaContent)) {
-                                                    // Create Angka
-                                                    $angka = RuleGAngka::create([
-                                                        'rule_f_huruf_id' => $huruf->id,
-                                                        'angka_content' => $angkaContent
-                                                    ]);
-    
-                                                    // Log angka creation for debugging
-                                                    \Log::info('Created Angka: ', ['angka' => $angka]);
-                                                }
+
+                foreach ($ayatContents as $ayatContent) {
+                    if (!is_null($ayatContent)) {
+                        // Create Ayat
+                        $ayat = RuleEAyat::create([
+                            'rule_d_pasal_id' => $pasal->id,
+                            'ayat_content' => $ayatContent
+                        ]);
+
+                        if (isset($request->huruf_content[$ayatKey]) && is_array($request->huruf_content[$ayatKey])) {
+                            foreach ($request->huruf_content[$ayatKey] as $hurufKey => $hurufContent) {
+                                if (!is_null($hurufContent)) {
+                                    // Create Huruf
+                                    $huruf = RuleFHuruf::create([
+                                        'rule_e_ayat_id' => $ayat->id,
+                                        'huruf_content' => $hurufContent
+                                    ]);
+
+                                    // Log huruf creation for debugging
+                                    \Log::info('Created Huruf: ', ['huruf' => $huruf]);
+
+                                    if (isset($request->angka_content[$ayatKey][$hurufKey]) && is_array($request->angka_content[$ayatKey][$hurufKey])) {
+                                        foreach ($request->angka_content[$ayatKey][$hurufKey] as $angkaContent) {
+                                            if (!is_null($angkaContent)) {
+                                                // Create Angka
+                                                $angka = RuleGAngka::create([
+                                                    'rule_f_huruf_id' => $huruf->id,
+                                                    'angka_content' => $angkaContent
+                                                ]);
+
+                                                // Log angka creation for debugging
+                                                \Log::info('Created Angka: ', ['angka' => $angka]);
                                             }
-                                        } else {
-                                            // Log if no angka_content is found
-                                            \Log::info('No angka_content found for huruf', ['huruf_id' => $huruf->id]);
                                         }
+                                    } else {
+                                        // Log if no angka_content is found
+                                        \Log::info('No angka_content found for huruf', ['huruf_id' => $huruf->id]);
                                     }
                                 }
-                            } else {
-                                // Log if no huruf_content is found
-                                \Log::info('No huruf_content found for ayat', ['ayat_id' => $ayat->id]);
                             }
+                        } else {
+                            // Log if no huruf_content is found
+                            \Log::info('No huruf_content found for ayat', ['ayat_id' => $ayat->id]);
                         }
                     }
                 }
-            } else {
-                // If 'Memiliki Ayat' is not checked, save only the pasal_content directly
-                $pasal = RuleDPasal::create([
-                    'rule_c_bab_id' => $request->rule_c_bab_id,
-                    'rule_ca_bagian_id' => $request->rule_ca_bagian_id,
-                    'pasal_ke' => $request->pasal_number,
-                    'pasal_content' => $request->pasal_content
-                ]);
             }
-    
-            DB::commit();
-            return redirect()->back()->with([
-                'response' => [
-                    'success' => true,
-                    'title' => 'Berhasil',
-                    'message' => 'Data has been saved successfully',
-                ],
-            ]);
-    
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log the error for debugging purposes
-            \Log::error('Error in storePasal: ', ['error' => $e->getMessage()]);
-            return redirect()->back()->with([
-                'response' => [
-                    'success' => false,
-                    'title' => 'Gagal',
-                    'message' => 'Error: ' . $e->getMessage(),
-                ],
+        } else {
+            // If 'Memiliki Ayat' is not checked, save only the pasal_content directly
+            $pasal = RuleDPasal::create([
+                'rule_c_bab_id' => $request->rule_c_bab_id,
+                'rule_ca_bagian_id' => $request->rule_ca_bagian_id,
+                'pasal_ke' => $request->pasal_number,
+                'pasal_content' => $request->pasal_content
             ]);
         }
+
+        DB::commit();
+        return redirect()->back()->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Data has been saved successfully',
+            ],
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        // Log the error for debugging purposes
+        \Log::error('Error in storePasal: ', ['error' => $e->getMessage()]);
+        return redirect()->back()->with([
+            'response' => [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => 'Error: ' . $e->getMessage(),
+            ],
+        ]);
     }
-    
-    
+}
 
     
     public function getRuleData(Request $request)
