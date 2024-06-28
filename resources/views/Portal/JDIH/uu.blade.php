@@ -507,6 +507,9 @@
         url: `/babs/${id}`, // Sesuaikan dengan endpoint sesuai dengan rute aplikasi Anda
         method: 'GET',
         success: function(data) {
+            data.sort(function(a, b) {
+                        return a.bab_ke - b.bab_ke;
+                    });
             $('#rule_c_bab_id_bagian').empty().append('<option value="">Pilih Bab</option>');
             data.forEach(function(bab) {
                 $('#rule_c_bab_id_bagian').append(`<option value="${bab.id}">${bab.bab_name}-${bab.bab_ke}</option>`);
@@ -537,6 +540,9 @@
                 url: `/babs/${ruleId}`,
                 method: 'GET',
                 success: function(data) {
+                    data.sort(function(a, b) {
+                        return a.bab_ke - b.bab_ke;
+                    });
                     $('#rule_c_bab_id').empty().append('<option value="">Pilih Bab</option>');
                     data.forEach(function(bab) {
                         $('#rule_c_bab_id').append(`<option value="${bab.id}">${bab.bab_name}-${bab.bab_ke}</option>`);
@@ -554,6 +560,9 @@
                     url: `/bagian/${babId}`,
                     method: 'GET',
                     success: function(data) {
+                        data.sort(function(a, b) {
+                        return a.bagian_ke - b.bagian_ke;
+                    });
                         if (data.length > 0) {
                             $('#bagianSection').show();
                             $('#rule_ca_bagian_id').empty().append('<option value="">Pilih Bagian</option>');
