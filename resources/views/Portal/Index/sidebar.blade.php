@@ -1,6 +1,6 @@
   <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
+            <a href="https://bilikhukum.com/" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <img src="{{ asset('assets/img/member/default.webp') }}" alt="Bilik Hukum Logo" width="35">
               </span>
