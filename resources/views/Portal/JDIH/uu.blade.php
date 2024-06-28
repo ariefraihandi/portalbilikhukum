@@ -509,7 +509,7 @@
         success: function(data) {
             $('#rule_c_bab_id_bagian').empty().append('<option value="">Pilih Bab</option>');
             data.forEach(function(bab) {
-                $('#rule_c_bab_id_bagian').append(`<option value="${bab.id}">${bab.bab_name}</option>`);
+                $('#rule_c_bab_id_bagian').append(`<option value="${bab.id}">${bab.bab_name}-${bab.bab_ke}</option>`);
             });
             $('#addBagianModal').modal('show'); // Tampilkan modal setelah data diambil
         },
@@ -539,7 +539,7 @@
                 success: function(data) {
                     $('#rule_c_bab_id').empty().append('<option value="">Pilih Bab</option>');
                     data.forEach(function(bab) {
-                        $('#rule_c_bab_id').append(`<option value="${bab.id}">${bab.bab_name}</option>`);
+                        $('#rule_c_bab_id').append(`<option value="${bab.id}">${bab.bab_name}-${bab.bab_ke}</option>`);
                     });
                 }
             });
@@ -558,7 +558,7 @@
                             $('#bagianSection').show();
                             $('#rule_ca_bagian_id').empty().append('<option value="">Pilih Bagian</option>');
                             data.forEach(function(bagian) {
-                                $('#rule_ca_bagian_id').append(`<option value="${bagian.id}">${bagian.bagian_name}</option>`);
+                                $('#rule_ca_bagian_id').append(`<option value="${bagian.id}">${bagian.bagian_name}-${bagian.bagian_ke}</option>`);
                             });
                         } else {
                             $('#bagianSection').hide();
