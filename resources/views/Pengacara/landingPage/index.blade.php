@@ -76,7 +76,7 @@
                                             <li><a href="#gallery">Gallery</a></li>
                                         @endif
                                         <li><a href="#member">Member</a></li>
-                                        <li><a href="#" class="hire-me-btn">Contact</a></li>
+                                        
                                     </ul>
                                 </div>
 
@@ -480,12 +480,16 @@
                         <div class="col-lg-7 col-md-7">
                             <div class="footer-widget widget_nav_menu wow fadeInUp delay-0-4s">
                                 <h6 class="footer-title">Quick Link</h6>
-                                <ul>
-                                    <li><a href="services.html">Service</a></li>
-                                    <li><a href="projects.html">Projects</a></li>
-                                    <li><a href="services.html#pricing">Pricing</a></li>
-                                    <li><a href="about.html#faqs">Faqs</a></li>
-                                    <li><a href="contact.html">Contact</a></li>
+                                <ul>                                  
+                                    <li><a href="#home">Home</a></li>
+                                    <li><a href="#about">Tentang kami</a></li>                                 
+                                    <li><a href="#perkara">Perkara Kami</a></li>
+                                
+                                    @if($officeGalleries->isNotEmpty())
+                                        <li><a href="#gallery">Gallery</a></li>
+                                    @endif
+                                    <li><a href="#member">Member</a></li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -493,7 +497,7 @@
                             <div class="footer-widget widget_contact_info wow fadeInUp delay-0-6s">
                                 <h6 class="footer-title">Alamat</h6>
                                 <ul>
-                                    <li><i class="far fa-map-marker-alt"></i> 55 Main Street, 2nd block, New York City</li>                                   
+                                    <li><i class="far fa-map-marker-alt"></i> {{$alamat}}, {{$desa}}, {{$kecamatan}}, {{$kabupaten_kota}} {{$provinsi}}, {{$kode_pos}}</li>                                   
                                 </ul>
                             </div>
                         </div>

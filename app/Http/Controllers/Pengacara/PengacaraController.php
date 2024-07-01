@@ -17,7 +17,7 @@ class PengacaraController extends Controller
 {
     public function showLandingPage($website)
     {
-        $office = Office::where('website', $website)->first();
+        $office = Office::where('website', $website)->with(['village', 'district', 'regency', 'province'])->first();
 
         // Check if the office exists
         if ($office) {
@@ -61,6 +61,12 @@ class PengacaraController extends Controller
                     'services' => $services,
                     'officeGalleries' => $officeGalleries, 
                     'officeMembers' => $officeMembers, 
+                    'alamat' => $office->alamat,
+                    'kode_pos' => $office->kode_pos,
+                    'desa' => $office->village->name,
+                    'kecamatan' => $office->district->name,
+                    'kabupaten_kota' => $office->regency->name,
+                    'provinsi' => $office->province->name,
                     // OfficeSite fields
                     // 'office_name' => $officeSite->office_name,
                     // 'logo_image' => $officeSite->logo_image,
