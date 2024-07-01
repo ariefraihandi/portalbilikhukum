@@ -385,7 +385,7 @@
           </p>
           <div class="row mx-0 gy-3">
             <!-- Basic -->
-            <div class="col-lg mb-md-0 mb-4">
+            {{-- <div class="col-lg mb-md-0 mb-4">
               <div class="card border rounded shadow-none">
                 <div class="card-body position-relative">
                   <div class="my-3 pt-2 text-center">
@@ -399,7 +399,7 @@
                   <button type="button" class="btn btn-label-success d-grid w-100" data-bs-toggle="modal" data-bs-target="#twoFactorAuthOne">Mendaftar</button>                                                       
                 </div>
               </div>
-            </div>
+            </div> --}}
             <!-- Pro -->
             <div class="col-lg mb-md-0 mb-4">
               <div class="card border-primary border shadow-none">
@@ -418,7 +418,7 @@
             </div>
 
             <!-- Enterprise -->
-            <div class="col-lg">
+            {{-- <div class="col-lg">
               <div class="card border rounded shadow-none">
                 <div class="card-body">
                   <div class="my-3 pt-2 text-center">
@@ -432,7 +432,7 @@
                   <a href="#" class="btn btn-label-success d-grid w-100">Mendaftar</a>
                 </div>
               </div>
-            </div>
+            </div> --}}
           </div>
         </div>
       </div>

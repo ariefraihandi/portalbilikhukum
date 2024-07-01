@@ -166,5 +166,5 @@ Route::post('/klienchat/store',             [KlienChatController::class, 'klienC
     Route::get('/regencies',                [AuthController::class, 'getRegencies'])->name('getRegencies');
     Route::get('/districts',                [AuthController::class, 'getDistricts'])->name('getDistricts');
     Route::get('/villages',                 [AuthController::class, 'getVillages'])->name('getVillages');
-    Route::get('/search/law',                   [JdihController::class, 'search'])->name('search.law');
+    Route::get('/search/law',               [JdihController::class, 'search'])->name('search.law');
 //! getData

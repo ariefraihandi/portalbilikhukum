@@ -12,7 +12,7 @@
             <li class="has-children">
               <a href="#">Layanan</a>
               <ul class="dropdown">
-                <li><a href="#">Cari Pengacara</a></li>
+                <li><a href="/pengacara">Cari Pengacara</a></li>
                 <li><a href="#">Cari Notaris</a></li>                
                 <li><a href="#">Cari Mediator</a></li>                
               </ul>
