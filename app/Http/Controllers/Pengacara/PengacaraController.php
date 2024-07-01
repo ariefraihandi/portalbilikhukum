@@ -61,12 +61,12 @@ class PengacaraController extends Controller
                     'services' => $services,
                     'officeGalleries' => $officeGalleries, 
                     'officeMembers' => $officeMembers, 
-                    'alamat' => $office->alamat,
+                    'alamat' => $this->capitalizeWords($office->alamat),
                     'kode_pos' => $office->kode_pos,
-                    'desa' => $office->village->name,
-                    'kecamatan' => $office->district->name,
-                    'kabupaten_kota' => $office->regency->name,
-                    'provinsi' => $office->province->name,
+                    'desa' => $this->capitalizeWords($office->village->name),
+                    'kecamatan' => $this->capitalizeWords($office->district->name),
+                    'kabupaten_kota' => $this->capitalizeWords($office->regency->name),
+                    'provinsi' => $this->capitalizeWords($office->province->name),
                     // OfficeSite fields
                     // 'office_name' => $officeSite->office_name,
                     // 'logo_image' => $officeSite->logo_image,
@@ -85,6 +85,10 @@ class PengacaraController extends Controller
                 return response()->json(['error' => 'Office not found'], 404);
             }
         }
+    }
+
+    private function capitalizeWords($string) {
+        return ucwords(strtolower($string));
     }
 
     public function showIndex()
