@@ -134,7 +134,8 @@
                         <div class="form-group">
                             <button type="submit" class="theme-btn">Hubungi Kami</button>
                         </div>
-
+                        
+                        <input type="hidden" class="form-control" name="token" id="token" value="{{$referralToken}}" />
                         <input type="hidden" name="office_id"  value="{{$id}}" required>
                     </form>
                 </div>

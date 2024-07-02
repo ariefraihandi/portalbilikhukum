@@ -47,14 +47,14 @@ class ReferralController extends Controller
                 ]);
             }
         //! Menghitung Eror
-
-
+        
 
         $data = [
             'title'             => 'Referral',
             'subtitle'          => 'Bilik Hukum',
             'sidebar'           => $accessMenus,
-            'hasReferralCode'   => $referralCode
+            'hasReferralCode'   => $referralCode,
+            'referralCount'     => $user->referral_count,
         ];
 
         return view('Portal.Account.refferal', $data);

@@ -47,6 +47,7 @@ class KlienChatController extends Controller
                 'id_office' => $validatedData['office_id'],
                 'status' => 0,
                 'chat_history' => '',
+                'referrer' => $request->input('token'),
                 'last_contacted_at' => now(),                
             ]);
     
@@ -264,7 +265,8 @@ class KlienChatController extends Controller
                 case '4':
                     // Periksa apakah budget_compare_check diaktifkan
                     if ($request->has('budget_compare_check') && $request->budget_compare_check === 'on') {
-                        $budgetAmount = (int)str_replace([',', '.'], '', $klien->budget);
+                        $budgetParts = explode('.', $klien->budget);
+                        $budgetAmount = (int) str_replace(',', '', $budgetParts[0]);
     
                         if ($budgetAmount) {
                             $klien->status = 4;
@@ -272,6 +274,7 @@ class KlienChatController extends Controller
     
                             // Hitung referral share berdasarkan bilikhukumShare
                             $referralShare = $this->calculateReferralShare($bilikhukumShare);
+                            $klienreferralShare = $this->calculateKlienRefShare($bilikhukumShare);
     
                             $invoiceNumber = $this->generateInvoiceNumber();
     
@@ -292,8 +295,19 @@ class KlienChatController extends Controller
                                 'referral_id' => $office->referedby,
                                 'note' => 'Bagi Hasil Dari Penanganan Klien Oleh Kantor ' . $office->nama_kantor,
                                 'type' => 1,
-                                'commission_amount' => $referralShare
+                                'commission_amount' => $referralShare,
+                                'reference_id' => $klien->id
                             ]);
+
+                            if (!is_null($klien->referrer)) {
+                                Commission::create([
+                                    'referral_id' => $klien->referrer,
+                                    'note' => 'Bagi Hasil Dari Klien ' . $klien->id,
+                                    'type' => 1,
+                                    'commission_amount' => $klienreferralShare,
+                                    'reference_id' => $klien->id
+                                ]);
+                            }
                         } else {
                             throw new Exception('Budget Klien Belum Diinput');
                         }
@@ -312,8 +326,7 @@ class KlienChatController extends Controller
                         $referralShare = $this->calculateReferralShare($bilikhukumShare);
     
                         $invoiceNumber = $this->generateInvoiceNumber();
-    
-                        // Insert into tagihan
+                         
                         Tagihan::create([
                             'user_id' => $userId,
                             'amount' => $bilikhukumShare,
@@ -326,7 +339,6 @@ class KlienChatController extends Controller
                             'reference_id' => $klien->id
                         ]);
     
-                        // Insert into commissions
                         Commission::create([
                             'referral_id' => $office->referedby,
                             'note' => 'Bagi Hasil Dari Penanganan Klien Oleh Kantor ' . $office->nama_kantor,
@@ -334,6 +346,16 @@ class KlienChatController extends Controller
                             'commission_amount' => $referralShare,
                             'reference_id' => $klien->id
                         ]);
+
+                        if (!is_null($klien->referrer)) {
+                            Commission::create([
+                                'referral_id' => $klien->referrer,
+                                'note' => 'Bagi Hasil Dari Klien ' . $klien->id,
+                                'type' => 1,
+                                'commission_amount' => $klienreferralShare,
+                                'reference_id' => $klien->id
+                            ]);
+                        }
                     }
                     break;
     
@@ -384,6 +406,15 @@ class KlienChatController extends Controller
             return $bilikhukumShare * 0.20;
         } else {
             return $bilikhukumShare * 0.10;
+        }
+    }
+
+    private function calculateKlienRefShare($bilikhukumShare)
+    {
+        if ($bilikhukumShare < 10000000) {
+            return 70000;
+        } else {
+            return 100000;
         }
     }
     

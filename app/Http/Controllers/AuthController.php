@@ -177,7 +177,7 @@ class AuthController extends Controller
             $username = strtolower($validatedData['username']);
 
             DB::beginTransaction();
-
+            $validatedData['whatsapp'] = $this->formatWhatsAppNumber($validatedData['whatsapp']);
             $user = User::create([
                 'username' => $username,
                 'referedby' => $token,
@@ -560,6 +560,30 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/login');
+    }
+
+    private function formatWhatsappNumber($number)
+    {      
+        $number = preg_replace('/\s|\(|\)|-/', '', $number);
+
+        // Jika nomor diawali dengan 0, ubah menjadi 62
+        if (substr($number, 0, 1) == '0') {
+            $number = '62' . substr($number, 1);
+        }
+
+        // Jika nomor diawali dengan 8, tambahkan 62 di depan
+        if (substr($number, 0, 1) == '8') {
+            $number = '62' . $number;
+        }
+
+        // Jika nomor sudah diawali dengan 62, biarkan
+        if (substr($number, 0, 2) == '62') {
+            return $number;
+        }
+
+        // Jika nomor diawali dengan selain 0, 8, atau 62, mungkin nomor tidak valid
+        // Kembalikan nomor apa adanya
+        return $number;
     }
 
     //Get Data

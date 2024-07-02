@@ -9,7 +9,7 @@
     <meta name="author" content="{{ $meta_author }}">
 	<!-- Mobile Specific Meta -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 	<link rel="stylesheet" href="{{ asset('assets/index/assets-index') }}/css/owl.carousel.css">
 	<link rel="stylesheet" href="{{ asset('assets/index/assets-index') }}/css/fontawesome-all.css">
 	<link rel="stylesheet" href="{{ asset('assets/index/assets-index') }}/css/animate.css">

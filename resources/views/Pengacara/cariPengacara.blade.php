@@ -222,6 +222,9 @@
                     <div class="col-12 mb-3">
                         {!! htmlFormSnippet() !!}
                     </div>
+                
+                        <input type="hidden" class="form-control" name="token" id="token" value="{{$data['referralToken']}}" />
+                
                     <div class="col-12">
                         <input type="submit" value="Send Message" class="btn btn-primary" />
                     </div>

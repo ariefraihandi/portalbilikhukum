@@ -23,6 +23,7 @@ class KlienChat extends Model
         'nomor_perkara ',
         'last_contacted_at',
         'is_followed_up',
+        'referrer',
     ];
 
     protected $casts = [

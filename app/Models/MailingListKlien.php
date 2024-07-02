@@ -9,17 +9,12 @@ class MailingListKlien extends Model
 {
     use HasFactory;
 
-    protected $table = 'mailing_list_kliens'; // Pastikan nama tabel benar jika diperlukan
+    protected $table = 'mailing_lists_klien'; // Pastikan nama tabel benar jika diperlukan
 
     protected $fillable = [
-        'klien_id',
         'email',
         'status',
     ];
 
-    // Relasi ke model KlienChat
-    public function klien()
-    {
-        return $this->belongsTo(KlienChat::class, 'klien_id');
-    }
+    // Relasi ke model KlienChat dihapus karena klien_id tidak ada lagi
 }

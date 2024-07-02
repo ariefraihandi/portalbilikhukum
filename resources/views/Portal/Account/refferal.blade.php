@@ -11,8 +11,7 @@
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="py-3 mb-4"><span class="text-muted fw-light">eCommerce / </span> Referrals</h4>
-
+    <h4 class="py-3 mb-4"><span class="text-muted fw-light">Profile / </span> Referrals</h4>
     <div class="row mb-4 g-3">
     <div class="col-sm-6 col-xl-3">
         <div class="card">
@@ -49,7 +48,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between">
             <div class="content-left">
-                <h3 class="mb-0">Member</h3>
+                <h3 class="mb-0">{{$referralCount}} Member</h3>
                 <small>Refferal</small>
             </div>
             <span class="badge bg-label-danger rounded-circle p-2">
@@ -76,8 +75,155 @@
     </div>
     </div>
 
+  
     <div class="row mb-4 g-4">
-        <div class="col-lg-7">
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">                           
+                    @if(!is_null($hasReferralCode))
+                    <div class="mb-4 mt-1 text-center">
+                        <span><i class="bx bx-money text-success bx-md p-3 border border-success rounded-circle border-dashed mb-0"></i></span>
+                    </div>
+                    
+                    @endif
+                    @if(is_null($hasReferralCode))
+                        <div class="mb-4 mt-1">
+                            <h5>Buat Link Undangan</h5>
+                            <div class="d-grid gap-2 col-lg-12 mx-auto">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#referAndEarn">Generate Link</button>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(is_null($hasReferralCode))
+                    <div>
+                        <h5>Ajukan Refferal Code</h5>
+                        <div class="d-flex flex-wrap flex-lg-nowrap gap-3 align-items-end">
+                            <div class="w-75">
+                                <label class="form-label mb-0" for="referralLink1">Ajukan refferal code</label>
+                                <input
+                                    type="text"
+                                    id="referralLink1"
+                                    name="referralLink"
+                                    class="form-control w-100"
+                                    value="Daftar dan ajukan refferal code untuk memulai"
+                                    readonly
+                                />
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink1')">
+                                    <i class="bx bx-copy text-white bx-sm"></i>
+                                </button>
+                                <a href="{{ route('refferal') }}" class="btn btn-success btn-icon">
+                                    <i class="bx bx-user-plus text-white bx-sm"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div>
+                        <h5>Bagikan tautan undangan</h5>
+                        <div class="d-flex flex-wrap flex-lg-nowrap gap-3 align-items-end">
+                            <div class="w-75">
+                                <label class="form-label mb-0" for="referralLink1">Bagikan tautan ini di sosial media</label>
+                                <input
+                                    type="text"
+                                    id="referralLink1"
+                                    name="referralLink"
+                                    class="form-control w-100"
+                                    value="https://bilikhukum.com/join?token={{$hasReferralCode->code}}"
+                                    readonly
+                                />
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink1')">
+                                    <i class="bx bx-copy text-white bx-sm"></i>
+                                </button>
+                                <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
+                                    <i class="bx bxl-whatsapp text-white bx-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @endif    
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">                           
+                    @if(!is_null($hasReferralCode))
+                    <div class="mb-4 mt-1 text-center">
+                        <span><i class="bx bx-user text-primary bx-md p-3 border border-primary rounded-circle border-dashed mb-0"></i></span>
+                    </div>
+                    
+                    @endif
+                    @if(is_null($hasReferralCode))
+                        <div class="mb-4 mt-1">
+                            <h5>Buat Link Undangan</h5>
+                            <div class="d-grid gap-2 col-lg-12 mx-auto">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#referAndEarn">Generate Link</button>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    @if(is_null($hasReferralCode))
+                    <div>
+                        <h5>Ajukan Refferal Code</h5>
+                        <div class="d-flex flex-wrap flex-lg-nowrap gap-3 align-items-end">
+                            <div class="w-75">
+                                <label class="form-label mb-0" for="referralLink2">Ajukan refferal code</label>
+                                <input
+                                    type="text"
+                                    id="referralLink2"
+                                    name="referralLink"
+                                    class="form-control w-100"
+                                    value="Daftar dan ajukan refferal code untuk memulai"
+                                    readonly
+                                />
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink2')">
+                                    <i class="bx bx-copy text-white bx-sm"></i>
+                                </button>
+                                <a href="{{ route('refferal') }}" class="btn btn-success btn-icon">
+                                    <i class="bx bx-user-plus text-white bx-sm"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div>
+                        <h5>Hyper URL (Tautan Untuk Calon Klien)</h5>
+                        <div class="d-flex flex-wrap flex-lg-nowrap gap-3 align-items-end">
+                            <div class="w-75">
+                                <label class="form-label mb-0" for="referralLink2">Tautan undangan layanan hukum</label>
+                                <input
+                                    type="text"
+                                    id="referralLink2"
+                                    name="referralLink"
+                                    class="form-control w-100"
+                                    value="https://bilikhukum.com/?token={{$hasReferralCode->code}}#service"
+                                    readonly
+                                />
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink2')">
+                                    <i class="bx bx-copy text-white bx-sm"></i>
+                                </button>
+                                <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/?token={{$hasReferralCode->code}}#service')">
+                                    <i class="bx bxl-whatsapp text-white bx-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @endif    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4 g-4">
+        <div class="col-lg-12">
             <div class="card h-100">
             <div class="card-body">
                 <h5 class="mb-1">Penggunaan</h5>
@@ -109,81 +255,6 @@
                 </div>
                 </div>
             </div>
-            </div>
-        </div>
-
-        <div class="col-lg-5">
-            <div class="card h-100">
-                <div class="card-body">                           
-                    @if(!is_null($hasReferralCode))
-                    <div class="mb-4 mt-1 text-center">
-                        <span><i class="bx bx-money text-success bx-md p-3 border border-success rounded-circle border-dashed mb-2"></i></span>
-                    </div>
-                    
-                    @endif
-                    @if(is_null($hasReferralCode))
-                        <div class="mb-4 mt-1">
-                            <h5>Buat Link Undangan</h5>
-                            <div class="d-grid gap-2 col-lg-12 mx-auto">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#referAndEarn">Generate Link</button>
-                            </div>
-                        </div>
-                    @endif
-                    
-                    @if(is_null($hasReferralCode))
-                    <div>
-                        <h5>Ajukan Refferal Code</h5>
-                        <div class="d-flex flex-wrap flex-lg-nowrap gap-3 align-items-end">
-                            <div class="w-75">
-                                <label class="form-label mb-0" for="referralLink">Ajukan refferal code</label>
-                                <input
-                                    type="text"
-                                    id="referralLink"
-                                    name="referralLink"
-                                    class="form-control w-100"
-                                    value="Daftar dan ajukan refferal code untuk memulai"
-                                    readonly
-                                />
-                            </div>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-primary btn-icon me-2">
-                                    <i class="bx bx-copy text-white bx-sm"></i>
-                                </button>
-                                <a href="{{ route('refferal') }}" class="btn btn-success btn-icon">
-                                    <i class="bx bx-user-plus text-white bx-sm"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @else
-                    <div>
-                        <h5>Bagikan tautan undangan</h5>
-                        <div class="d-flex flex-wrap flex-lg-nowrap gap-3 align-items-end">
-                            <div class="w-75">
-                                <label class="form-label mb-0" for="referralLink">Bagikan tautan undangan ini di social media</label>
-                                <input
-                                    type="text"
-                                    id="referralLink"
-                                    name="referralLink"
-                                    class="form-control w-100"
-                                    value="https://bilikhukum.com/join?token={{$hasReferralCode->code}}"
-                                    readonly
-                                />
-                            </div>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard()">
-                                    <i class="bx bx-copy text-white bx-sm"></i>
-                                </button>
-                                <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
-                                    <i class="bx bxl-whatsapp text-white bx-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-       
-                </div>
             </div>
         </div>
     </div>
@@ -369,8 +440,8 @@
 @push('footer-Sec-script')
     {{-- <script src="{{ asset('assets') }}/js/app-ecommerce-referral.js"></script> --}}
     <script>
-        function copyURLToClipboard() {
-            var referralLink = document.getElementById("referralLink");
+        function copyURLToClipboard(referralLinkId) {
+            var referralLink = document.getElementById(referralLinkId);
             referralLink.select();
             document.execCommand("copy");
             var response = {
@@ -388,16 +459,19 @@
                 text: response.message,
             });
         }
+    
         document.addEventListener('DOMContentLoaded', function() {
             @if(session('response'))
                 var response = @json(session('response'));
                 showSweetAlert(response);
             @endif
         });
-        function shareToWhatsApp(url) {            
+    
+        function shareToWhatsApp(url) {
             window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
         }
     </script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#refferal-table').DataTable({
@@ -413,5 +487,5 @@
                 ]
             });
         });
-      </script>
+    </script>
 @endpush

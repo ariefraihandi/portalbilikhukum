@@ -249,36 +249,6 @@
               </div>
           </div>
         </div>
-        @if(!is_null($hasReferralCode))  
-          <div class="col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <div class="card-icon mb-3">
-                  <div class="avatar">
-                    <div class="avatar-initial rounded bg-label-infp">
-                        <i class="bx bx-link-alt bx-sm"></i>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-info">           
-                  <div class="w-100 mb-3">
-                  <label class="form-label mb-0" for="referralLink">Tautan Undangan:</label>
-                    <div class="d-flex align-items-center">
-                        <input type="text"id="referralLink"name="referralLink"class="form-control me-2" value="https://bilikhukum.com/join?token={{ $hasReferralCode->code }}" readonly/>
-                        <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard()">
-                          <i class="bx bx-copy text-white bx-sm"></i>
-                        </button>
-                        <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
-                          <i class="bx bxl-whatsapp text-white bx-sm"></i>
-                        </button>
-                    </div>
-                    <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        @endif
         <div class="col-md-6 mb-4">
           <div class="card">
             <div class="card-body">
@@ -297,6 +267,66 @@
             </div>
           </div>
         </div>
+        @if(!is_null($hasReferralCode))  
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-icon mb-3">
+                <div class="avatar">
+                  <div class="avatar-initial rounded bg-label-infp">
+                      <i class="bx bx-link-alt bx-sm"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="card-info">           
+                <div class="w-100 mb-3">
+                <label class="form-label mb-0" for="referralLink1">Tautan Undangan (Calon Lawyer, Notaris, Mediator):</label>
+                  <div class="d-flex align-items-center">
+                      <input type="text" id="referralLink1" name="referralLink1" class="form-control me-2" value="https://bilikhukum.com/join?token={{ $hasReferralCode->code }}" readonly/>
+                      <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink1')">
+                        <i class="bx bx-copy text-white bx-sm"></i>
+                      </button>
+                      <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
+                        <i class="bx bxl-whatsapp text-white bx-sm"></i>
+                      </button>
+                  </div>
+                  <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="card-icon mb-3">
+                <div class="avatar">
+                  <div class="avatar-initial rounded bg-label-infp">
+                      <i class="bx bx-link-alt bx-sm"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="card-info">           
+                <div class="w-100 mb-3">
+                <label class="form-label mb-0" for="referralLink2">Tautan Undangan (Calon Klien):</label>
+                  <div class="d-flex align-items-center">
+                      <input type="text" id="referralLink2" name="referralLink2" class="form-control me-2" value="https://bilikhukum.com/?token={{$hasReferralCode->code}}#service" readonly/>
+                      <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink2')">
+                        <i class="bx bx-copy text-white bx-sm"></i>
+                      </button>
+                      <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/?token={{$hasReferralCode->code}}#service')">
+                        <i class="bx bxl-whatsapp text-white bx-sm"></i>
+                      </button>
+                  </div>
+                  <p class="text-muted mb-0 text-truncate">Bagikan Kepada Calon Klien</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      @endif
+      
+       
         {{-- <div class="col-md-6 mb-4">
           <div class="card">
             <div class="card-body">
@@ -495,22 +525,18 @@
 </script>
 
 <script>
-  function copyURLToClipboard() {
-    var referralLink = document.getElementById("referralLink");
-    referralLink.select();
-    document.execCommand("copy");
-    var response = {
-        success: true, // Anda dapat menentukan apakah operasi berhasil atau tidak
-        title: "Success", // Judul Sweet Alert
-        message: "Tautan undangan berhasil disalin!" // Pesan Sweet Alert
-    };
-    showSweetAlert(response); // Panggil fungsi untuk menampilkan Sweet Alert
+  function copyURLToClipboard(referralLinkId) {
+      var referralLink = document.getElementById(referralLinkId);
+      referralLink.select();
+      document.execCommand("copy");
+      var response = {
+          success: true, // Anda dapat menentukan apakah operasi berhasil atau tidak
+          title: "Success", // Judul Sweet Alert
+          message: "Tautan undangan berhasil disalin!" // Pesan Sweet Alert
+      };
+      showSweetAlert(response); // Panggil fungsi untuk menampilkan Sweet Alert
   }
 
-  function shareToWhatsApp(url) {            
-    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
-  }
-  
   function showSweetAlert(response) {
       Swal.fire({
           icon: response.success ? 'success' : 'error',
@@ -518,12 +544,17 @@
           text: response.message,
       });
   }
-  
+
   document.addEventListener('DOMContentLoaded', function() {
       @if(session('response'))
           var response = @json(session('response'));
           showSweetAlert(response);
       @endif
   });
+
+  function shareToWhatsApp(url) {
+      window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
+  }
+
 </script>
 @endpush

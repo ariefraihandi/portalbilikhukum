@@ -12,11 +12,13 @@ use App\Models\OfficeCase;
 use App\Models\OfficeSite;
 use App\Models\OfficeMember;
 use App\Models\KlienChat;
+use Illuminate\Support\Facades\Session;
 
 class PengacaraController extends Controller
 {
     public function showLandingPage($website)
     {
+        $referralToken = Session::get('referral_token', null);
         $office = Office::where('website', $website)->with(['village', 'district', 'regency', 'province'])->first();
 
         // Check if the office exists
@@ -50,6 +52,7 @@ class PengacaraController extends Controller
                 $data = [
                     'nama_kantor' => $office->nama_kantor,
                     'id' => $office->id,
+                    'referralToken' => $referralToken,
                     'type' => $office->type,
                     'alamat' => $office->alamat,
                     'slogan' => $office->slogan,
@@ -93,6 +96,9 @@ class PengacaraController extends Controller
 
     public function showIndex()
     {
+      
+        $referralToken = Session::get('referral_token', null);
+
         $title      = 'Jasa Pengacara Profesional';
         $subTitle   = 'Bilik Hukum';
         $offices    = Office::with(['user', 'village', 'regency', 'district', 'province'])
@@ -132,6 +138,7 @@ class PengacaraController extends Controller
             'title' => $title,
             'subTitle' => $subTitle,
             'offices' => $offices,
+            'referralToken' => $referralToken,
         ];
 
         return view('Pengacara.cariPengacara', compact('data'));

@@ -261,16 +261,8 @@
                                 </h2>
                             </div>
                             <div class="choose_form_area">                   
-                                <form id="contact_form" action="{{ route('join.post') }}" method="POST">
-                                    @csrf
-                                    <div class="contact-info">
-                                        <label>Nama Lengkap Anda</label>
-                                        <input class="email" name="name" id="name" type="text" placeholder="Masukkan nama lengkap Anda" required value="{{ old('name') }}">
-                                        <div class="icon-bg">
-                                            <i class="far fa-user"></i>
-                                        </div>
-                                    </div>
-                                
+                                <form id="contact_form" action="{{ route('store.mailing') }}" method="POST">
+                                    @csrf                                
                                     <div class="contact-info">
                                         <label>Email Anda</label>
                                         <input class="email" name="email" id="email" type="email" placeholder="Masukkan alamat email Anda" required value="{{ old('email') }}">
@@ -283,7 +275,7 @@
                                         <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" required /><br>                                        
                                         <label for="terms">Saya setuju dengan <a href="#">syarat dan ketentuan</a></label>
                                     </div>
-                               
+									{!! htmlFormSnippet() !!}
                                     <div class="sub-button text-uppercase">
                                         <button type="submit" value="Submit">Daftar Sekarang</button>
                                     </div>
@@ -291,7 +283,6 @@
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>

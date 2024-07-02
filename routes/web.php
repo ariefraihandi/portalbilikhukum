@@ -21,6 +21,7 @@
 //!Controllers
 
 Route::get('/',                             [IndexController::class, 'index'])->name('index.index');
+Route::post('/mailing',                     [IndexController::class, 'storeMailing'])->name('store.mailing');
 
 Route::get('/login',                        [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);
 
