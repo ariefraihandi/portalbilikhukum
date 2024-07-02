@@ -147,13 +147,7 @@
               @endif
             </ul>
             <div class="d-flex justify-content-center">
-              <a
-                href="javascript:;"
-                class="btn btn-primary me-3"
-                data-bs-target="#editUser"
-                data-bs-toggle="modal"
-                >Edit Details</a
-              >
+              <a href="{{ route('account.detil') }}" class="btn btn-primary me-3">Edit Details</a>
             </div>
           </div>
         </div>

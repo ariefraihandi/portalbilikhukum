@@ -27,6 +27,7 @@ use App\Mail\VerificationMail;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
+use App\Notifications\VerifyEmailNotification;
 
 class AuthController extends Controller
 {
@@ -148,114 +149,108 @@ class AuthController extends Controller
     }
 
     public function registerJoin(Request $request)
-    {
-        try {
-            $token = $request->input('token');
-            $officeId = $request->input('office_id');
-            $type = $request->input('type');
-    
-            if (empty($token)) {
-                // Jika tidak ada, kembalikan respons dengan pesan tautan pendaftaran tidak valid
-                $response = [
-                    'success' => false,
-                    'title' => 'Error',
-                    'message' => 'Tautan pendaftaran Anda tidak valid.',
-                ];
-                return redirect()->back()->with('response', $response);
-            }
-    
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'username' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:6|confirmed',
-                'terms' => 'accepted',
-            ]);
-    
-            // Cek apakah persyaratan disetujui
-            if ($request->has('terms')) {                
-                $username = strtolower($validatedData['username']);
-    
-                DB::beginTransaction();
-    
-                $user = User::create([
-                    'username' => $username,
-                    'referedby' => $token,
-                    'name' => $validatedData['name'],
-                    'email' => $validatedData['email'],
-                    'password' => bcrypt($validatedData['password']),   
-                    'role' => $officeId ? 4 : 3, // Jika ada office_id, set role 4, jika tidak set role 3
-                    'verified' => 0,
-                    'email_verified_at' => null,
-                    'whatsapp' => 'default_value',
-                    'address' => 'default_value',
-                    'gender' => 'default_value',
-                    'image' => 'default.webp',
-                    'dob' => null, // or '1900-01-01'         
-                ]);
-    
-                // Jika ada office_id, tambahkan user ke dalam office_members
-                if ($officeId) {
-                    OfficeMember::create([
-                        'id_user' => $user->id,
-                        'id_office' => $officeId,
-                        'level' => $type,
-                    ]);
-                }
-    
-                $token = Str::random(64);
-                $emailVerificationToken = EmailVerificationToken::create([
-                    'user_id' => $user->id,
-                    'token' => $token,
-                    'email' => $request->input('email'),
-                    'expires_at' => now()->addHours(24),
-                ]);
-    
-                MailingList::create([
-                    'user_id' => $user->id,
-                    'email' => $request->input('email'),
-                    'status' => 1, // Default status is 1
-                ]);
-    
-                $email = $request->input('email');
-                $name = $request->input('name');
-                $url = $request->input('url');
-                $encryptedParams = base64_encode("email=$email&token=$token");
-    
-                Mail::to($email)->send(new VerificationMail($name, $url, $encryptedParams));
-    
-                DB::commit();
-    
-                $response = [
-                    'success' => true,
-                    'title' => 'Berhasil',
-                    'message' => 'Akun Anda berhasil terdaftar. Periksa email untuk verifikasi dan Login.',
-                ];
-                return redirect()->route('login')->with('response', $response);
-            } else {
-                // Redirect kembali ke halaman sebelumnya jika persyaratan tidak disetujui
-                return redirect()->back()->with([
-                    'response' => [
-                        'success' => false,
-                        'title' => 'Error',
-                        'message' => 'Silakan centang persyaratan dan ketentuan.',
-                    ],
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Rollback transaksi jika terjadi error
-            DB::rollback();
-    
-            // Tampilkan pesan kesalahan dengan sweet alert dan redirect kembali
+{
+    try {
+        $token = $request->input('token');
+        $officeId = $request->input('office_id');
+        $type = $request->input('type');
+
+        if (empty($token)) {
             $response = [
                 'success' => false,
                 'title' => 'Error',
-                'message' => 'Terjadi kesalahan saat proses registrasi: ' . $e->getMessage(),
+                'message' => 'Tautan pendaftaran Anda tidak valid.',
             ];
             return redirect()->back()->with('response', $response);
         }
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
+            'whatsapp' => 'required',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'terms' => 'accepted',
+        ]);
+
+        if ($request->has('terms')) {
+            $username = strtolower($validatedData['username']);
+
+            DB::beginTransaction();
+
+            $user = User::create([
+                'username' => $username,
+                'referedby' => $token,
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => bcrypt($validatedData['password']),
+                'role' => $officeId ? 4 : 3,
+                'verified' => 0,
+                'email_verified_at' => null,
+                'whatsapp' => $validatedData['whatsapp'],
+                'address' => 'default_value',
+                'gender' => 'default_value',
+                'image' => 'default.webp',
+                'dob' => null,
+            ]);
+
+            if ($officeId) {
+                OfficeMember::create([
+                    'id_user' => $user->id,
+                    'id_office' => $officeId,
+                    'level' => $type,
+                ]);
+            }
+
+            $token = Str::random(64);
+            $emailVerificationToken = EmailVerificationToken::create([
+                'user_id' => $user->id,
+                'token' => $token,
+                'email' => $request->input('email'),
+                'expires_at' => now()->addHours(24),
+            ]);
+
+            MailingList::create([
+                'user_id' => $user->id,
+                'email' => $request->input('email'),
+                'status' => 1,
+            ]);
+
+            $email = $request->input('email');
+            $name = $request->input('name');
+            $url = $request->input('url');
+            $encryptedParams = base64_encode("email=$email&token=$token");
+
+            $user->notify(new VerifyEmailNotification($name, $url, $encryptedParams));
+
+            DB::commit();
+
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Akun Anda berhasil terdaftar. Periksa email untuk verifikasi dan Login.',
+            ];
+            return redirect()->route('login')->with('response', $response);
+        } else {
+            return redirect()->back()->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Silakan centang persyaratan dan ketentuan.',
+                ],
+            ]);
+        }
+    } catch (\Exception $e) {
+        DB::rollback();
+
+        $response = [
+            'success' => false,
+            'title' => 'Error',
+            'message' => 'Terjadi kesalahan saat proses registrasi: ' . $e->getMessage(),
+        ];
+        return redirect()->back()->with('response', $response);
     }
-    
+}
 
     public function submitFormDaftar(Request $request)
     {

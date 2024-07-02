@@ -54,6 +54,17 @@ document.addEventListener('DOMContentLoaded', function (e) {
               }
             }
           },
+          'whatsapp': {
+            validators: {
+              notEmpty: {
+                message: 'Please enter whatsapp number'
+              },
+              stringLength: {
+                min: 7,
+                message: 'Whatsapp number must be more than 7 characters'
+              }
+            }
+          },
           password: {
             validators: {
               notEmpty: {
