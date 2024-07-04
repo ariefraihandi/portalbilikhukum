@@ -24,6 +24,7 @@ Route::get('/',                             [IndexController::class, 'index'])->
 Route::post('/mailing',                     [IndexController::class, 'storeMailing'])->name('store.mailing');
 
 Route::get('/login',                        [AuthController::class, 'showLoginForm'])->name('login')->middleware(RedirectIfAuthenticated::class);
+Route::get('/verifymail',                   [AuthController::class, 'showVerifyMail'])->name('verifyMail')->middleware(RedirectIfAuthenticated::class);
 
 Route::post('/login',                       [AuthController::class, 'login'])->name('submitLogin');
 Route::get('/logout',                       [AuthController::class, 'logout'])->name('logout');
@@ -150,6 +151,8 @@ Route::post('/register/member',             [AuthController::class, 'registerMem
 
 Route::get('/join',                         [AuthController::class, 'showRegisterJoin'])->name('join');
 Route::post('/join',                        [AuthController::class, 'registerJoin'])->name('join.post');
+Route::post('/email',                       [AuthController::class, 'registerJoin'])->name('join.post');
+Route::post('/verifymail',                  [AuthController::class, 'sendEmailVerify'])->name('send.emailverify');
 
 Route::get('/search',                       [PengacaraController::class, 'search'])->name('search');
 Route::get('/location/{code}',              [PengacaraController::class, 'getNameByCode'])->name('getNameByCode');

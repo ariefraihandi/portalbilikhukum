@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Exception;
 use Illuminate\Support\Str;
@@ -41,7 +42,70 @@ class AuthController extends Controller
 
         return view('Auth.login', $data);
     }
+    
+    public function showVerifyMail()
+    {
+        $data = [
+            'title' => 'Verifikasi Email',
+            'subTitle' => 'Bilik Hukum',  
+        ];
 
+        return view('Auth.verifyMail', $data);
+    }
+
+    public function sendEmailVerify(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+    
+        // Check if the email exists in the users table
+        $user = User::where('email', $request->input('email'))->first();
+    
+        if ($user) {
+            // Check if a verification token already exists for this user
+            $token = EmailVerificationToken::where('email', $request->input('email'))->first();
+    
+            if ($token) {
+                // Update the expires_at field
+                $token->update([
+                    'expires_at' => Carbon::now()->addMinutes(60),
+                ]);
+            } else {
+                // Create a new token
+                $token = EmailVerificationToken::create([
+                    'user_id' => $user->id,
+                    'token' => bin2hex(random_bytes(16)),
+                    'email' => $request->input('email'),
+                    'expires_at' => Carbon::now()->addMinutes(60),
+                ]);
+            }
+    
+            // Prepare the URL and parameters
+            $url = config('app.url') === 'http://localhost' ? 
+                   "http://127.0.0.1:8000/verify-email?uniqueid=" : 
+                   "https://bilikhukum.com/verify-email?uniqueid=";
+            $encryptedParams = base64_encode("email={$request->input('email')}&token={$token->token}");
+    
+            // Send the email
+            $user->notify(new VerifyEmailNotification($user->name, $url, $encryptedParams));
+    
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Email Verifikasi Berhasil Dikirimkan.',
+            ];
+            return redirect()->route('login')->with('response', $response);
+        } else {
+            $response = [
+                'success' => false,
+                'title' => 'Eror',
+                'message' => 'Email tidak ditemukan',
+            ];
+            return redirect()->back()->with('response', $response);
+        }
+    }
     public function login(Request $request)
     {
         $credentials = $request->only('email-username', 'password');

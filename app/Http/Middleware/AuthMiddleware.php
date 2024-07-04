@@ -37,6 +37,23 @@ class AuthMiddleware
             $request->session()->put('role', $user->role);
             $request->session()->put('user_id', $user->id);
             
+            // Periksa apakah email pengguna sudah diverifikasi
+            if (is_null($user->email_verified_at)) {
+                Auth::logout();
+                
+                $response = [
+                    'success' => false,
+                    'title' => 'Gagal',
+                    'message' => 'Anda perlu memverifikasi email Anda untuk mengakses halaman ini.',
+                ];
+
+                if ($request->expectsJson()) {
+                    return response()->json($response, 403);
+                }
+
+                return redirect()->route('verifyMail')->with('response', $response);
+            }
+            
             // Jika pengguna mengakses /login, arahkan ke profil akun
             if ($request->is('login')) {
                 return redirect()->route('account.profile');

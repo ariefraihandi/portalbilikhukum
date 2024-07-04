@@ -32,21 +32,16 @@
 			<nav class="main_navigation ul-li">
 				<ul>
 					<li class="dropdown">
-						<a href="!#">Home</a>
-						<ul class="dropdown-menu clearfix">
-							<li><a href="index.html">Home Page 1</a></li>
-							<li><a href="index-2.html">Home Page 2</a></li>
-							<li><a href="index-3.html">Home Page 3</a></li>
-						</ul>
+						<a href="{{route('index.index')}}">Home</a>						
 					</li>
 					<li><a href="#about">Tentang Kami</a></li>
 
 					<li class="dropdown">
 						<a href="#service">Layanan</a>
 						<ul class="dropdown-menu clearfix">
-							<li><a href="service.html">Service Page 1</a></li>
-							<li><a href="practice.html">service Page 2</a></li>
-							<li><a href="practice-single.html">service Details</a></li>
+							<li><a href="#">Notaris</a></li>
+							<li><a href="{{route('showPengacara')}}">Pengacara</a></li>
+							<li><a href="#">Mediator</a></li>
 						</ul>
 					</li>				
 					{{-- <li class="dropdown">
@@ -58,7 +53,7 @@
 						</ul>
 					</li> --}}
 					<li><a href="https://article.bilikhukum.com/">Article</a></li>
-					<li><a href="contact.html">contact</a></li>
+					<li><a href="https://wa.me/6282276624504">contact</a></li>
 				</ul>
 			</nav>
 			<!-- /nav Menu -->
@@ -121,54 +116,22 @@
 					<nav class="main-navigation  clearfix ul-li">
 						<ul id="main-nav" class="navbar-nav text-capitalize clearfix">
 							<li class="dropdown">
-								<a  href="#">
+								<a  href="{{route('index.index')}}">
 									Home
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="index.html">Home Page 1</a></li>
-									<li><a href="index-2.html">Home Page 2</a></li>
-									<li><a href="index-3.html">Home Page 3</a></li>
-								</ul>
+								</a>								
 							</li>
 							<li><a href="#about">Tentang Kami</a></li>
+							
 							<li class="dropdown">
-								<a  href="#">
-									Case
-								</a>
+								<a href="#service">Layanan</a>
 								<ul class="dropdown-menu">
-									<li><a href="case.html">Case Page 1</a></li>
-									<li><a href="case-2.html">Case Page 2</a></li>
-									<li><a href="case-single.html">Case Details</a></li>
+									<li><a href="#">Notaris</a></li>
+									<li><a href="{{route('showPengacara')}}">Pengacara</a></li>
+									<li><a href="#">Mediator</a></li>
 								</ul>
-							</li>
-							<li class="dropdown">
-								<a  href="#">
-									Practice
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="practice.html">Practice Page 1</a></li>
-									<li><a href="service.html">Practice Page 2</a></li>
-									<li><a href="practice-single.html">Practice Details</a></li>
-								</ul>
-							</li>
-							<li class="dropdown">
-								<a  href="#">
-									Team
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="team.html">Team Page</a></li>
-									<li><a href="team-single.html">Team Details</a></li>
-								</ul>
-							</li>
-							<li class="dropdown">
-								<a  href="#">
-									Blog
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="blog.html">Blog Page</a></li>
-									<li><a href="blog-single.html">Blog Details</a></li>
-								</ul>
-							</li>
+							</li>							
+							<li><a href="https://article.bilikhukum.com/">Article</a></li>
+							<li><a href="https://wa.me/6282276624504">contact</a></li>
 							{{-- <li class="dropdown">
 								<a  href="#">
 									Pages
@@ -249,7 +212,7 @@
                     <div class="slider_text headline pera-content">
                         <p>Pendekatan Hukum yang Inovatif</p>
                         <h1>Solusi Masalah Anda.</h1>
-                        <p>Kami menggunakan strategi hukum terbaru untuk memastikan kemenangan Anda.</p>
+                        <p>Kami menggunakan strategi hukum terbaik untuk Anda.</p>
                     </div>
                 </div>
             </div>
