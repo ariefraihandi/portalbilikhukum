@@ -16,6 +16,7 @@
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\KlienChatController;
     use App\Http\Controllers\LawyerController;
+    use App\Http\Controllers\WarisController;
     use App\Http\Controllers\Pengacara\PengacaraController;
     use App\Http\Controllers\Index\IndexController;
 //!Controllers
@@ -164,6 +165,11 @@ Route::get('/kamus',                        [JdihController::class, 'showLaw'])-
 Route::get('/kamus/{type?}/{number?}/{year?}/{pasal?}/{ayat?}/{huruf?}/{angka?}', [JdihController::class, 'showLaw'])->name('showLaw');
 
 Route::post('/klienchat/store',             [KlienChatController::class, 'klienChat'])->name('klienchat.store');
+
+//App Hitung Waris
+Route::get('/hitung-waris',                     [WarisController::class, 'index'])->name('hitungWaris');
+//!App Hitung Waris
+
 
 // getData
     Route::get('/provinces',                [AuthController::class, 'getProvinces'])->name('getProvinces');

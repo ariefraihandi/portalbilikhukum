@@ -168,7 +168,7 @@
                 <small class="text-muted text-uppercase">About</small>
                 <ul class="list-unstyled mb-4 mt-3">
                 <li class="d-flex align-items-center mb-3">
-                    <i class="bx bx-user"></i><span class="fw-medium mx-2">Alamat:</span> <span>{{$office->nama_kantor}}</span>
+                    <i class="bx bx-user"></i><span class="fw-medium mx-2">Nama Kantor:</span> <span>{{$office->nama_kantor}}</span>
                 </li>
                 <li class="d-flex align-items-center mb-3">
                     <i class="bx bx-map"></i><span class="fw-medium mx-2">Alamat Kantor:</span> <span>{{$office->alamat}}, {{$villageName}}</span>
