@@ -9,7 +9,7 @@ class WarisController extends Controller
     public function index()
     {
         $title      = 'Hitung Waris';
-    $subTitle   = 'Bilik Hukum';
+        $subTitle   = 'Bilik Hukum';
 
     $data = [
         'meta_description' => 'Layanan hitung waris profesional di bilikhukum.com. Kami siap membantu Anda menghitung pembagian waris sesuai dengan hukum yang berlaku. Konsultasi gratis tersedia.',
