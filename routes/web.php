@@ -46,6 +46,7 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
     
     Route::get('/account/profile',          [AccountController::class, 'showAccount'])->name('account.profile');
     Route::get('/account/detil',            [AccountController::class, 'showAccountDetil'])->name('account.detil');
+    Route::get('/account/security',         [AccountController::class, 'showSecurity'])->name('account.security');
     Route::get('/refferal',                 [ReferralController::class, 'showReferral'])->name('refferal');
     
     Route::get('/jdih/uu/list',             [JdihController::class, 'showUUList'])->name('jdih.uu.list');
@@ -58,6 +59,8 @@ Route::middleware([AuthMiddleware::class, SidebarMiddleware::class])->group(func
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
+
+    Route::post('/change-password',          [AuthController::class, 'changePassword'])->name('change.password');
 
     Route::post('/jdih/uu/store',           [JdihController::class, 'storeRule'])->name('store.rule');
     Route::post('/jdih/uu/bab',             [JdihController::class, 'storeBab'])->name('storeBab');
@@ -140,6 +143,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::post('/addWebsite',                  [LawyerController::class, 'addWebsite'])->name('addWebsite');
         Route::get('/getdata/klien',                [KlienChatController::class, 'getDataKlien'])->name('getDataKlien');
     //Get Data
+    
+    
 });
 
 Route::get('/register',                     [AuthController::class, 'showRegister'])->name('showRegister');

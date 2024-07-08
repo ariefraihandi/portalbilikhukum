@@ -617,7 +617,57 @@ class AuthController extends Controller
             return redirect()->route('login')->with('response', $response);
         }
     }
+
+    public function changePassword(Request $request)
+    {
+        $messages = [
+            'current_password.required' => 'Password lama wajib diisi.',
+            'new_password.required' => 'Password baru wajib diisi.',
+            'new_password.min' => 'Password baru harus minimal 6 karakter.',
+            'new_password.confirmed' => 'Konfirmasi password baru tidak cocok.'
+        ];
     
+        try {
+            $request->validate([
+                'current_password' => 'required',
+                'new_password' => 'required|min:6|confirmed',
+            ], $messages);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => implode(', ', $errors) // Menggabungkan semua pesan kesalahan
+            ];
+            return redirect()->back()->with('response', $response)->withErrors($e->validator);
+        }
+    
+        // Cek apakah kata sandi saat ini cocok
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => 'Password lama tidak cocok'
+            ];
+            return redirect()->back()->with('response', $response);
+        }
+    
+        // Ubah kata sandi
+        Auth::user()->update(['password' => Hash::make($request->new_password)]);
+    
+        // Hapus sesi dan redirect ke login
+        Auth::logout();
+    
+        $response = [
+            'success' => true,
+            'title' => 'Berhasil',
+            'message' => 'Password berhasil diubah. Silakan login kembali.',
+        ];
+    
+        return redirect()->route('login')->with('response', $response);
+    }
+    
+
     public function logout(Request $request)
     {
         Auth::logout();

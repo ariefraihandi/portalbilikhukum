@@ -186,8 +186,7 @@
       <!-- Customer Pills -->
       <ul class="nav nav-pills flex-column flex-md-row mb-4">
         <li class="nav-item position-relative">
-          <a class="nav-link active" href="{{ route('account.profile') }}"><i class="bx bx-user me-1"></i>Profile</a>
-          
+          <a class="nav-link" href="{{ route('account.profile') }}"><i class="bx bx-user me-1"></i>Profile</a>
         </li>
         <li class="nav-item position-relative">
           <a class="nav-link" href="{{ route('account.detil') }}">
@@ -197,10 +196,10 @@
                   <span class="badge badge-center bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.8rem;">{{ $erorDetil }}</span>
               @endif
           </a>
-        </li>            
+        </li>      
         <li class="nav-item position-relative">
-          <a class="nav-link" href="{{ route('account.security') }}"><i class="bx bx-cog me-1"></i>Security</a>
-        </li>                                                      
+            <a class="nav-link active" href="{{ route('account.security') }}"><i class="bx bx-cog me-1"></i>Security</a>
+          </li>                                                  
         {{-- <li class="nav-item">
           <a class="nav-link" href="app-ecommerce-customer-details-billing.html"
             ><i class="bx bx-detail me-1"></i>Address & Billing</a
@@ -212,209 +211,56 @@
           >
         </li> --}}
       </ul>
-      <!--/ Customer Pills -->
-
-      <!-- / Customer cards -->
-      <div class="row text-nowrap">
-        <div class="col-md-6 mb-4">
-          <div class="card h-100">
-              <div class="card-body">
-                  <div class="card-icon mb-3">
-                      @if(!is_null($hasReferralCode))
-                      <div class="avatar">
-                          <div class="avatar-initial rounded bg-label-primary">
-                              <i class="bx bx-wallet-alt bx-sm"></i>
-                          </div>
-                      </div>
-                      @else
-                      <div class="avatar">
-                          <div class="avatar-initial rounded bg-label-primary">
-                              <i class="bx bx-user-plus bx-sm"></i>
-                          </div>
-                      </div>
-                      @endif
-                  </div>
-                  <div class="card-info">
-                    @if(!is_null($hasReferralCode))
-                      <h4 class="card-title mb-3">Dompet</h4>
-                      <div class="d-flex align-items-end mb-1 gap-1">
-                          <h4 class="text-primary mb-0">Rp. 0,-</h4>
-                      </div>
-                      <p class="text-muted mb-0 text-truncate">Total Penarikan Rp. 0,-</p>
-                      @else
-                      <h4 class="card-title mb-3">Ikuti Program Loyalitas</h4>
-                      <div class="d-flex align-items-end mb-1 gap-1">
-                        <a href="{{ route('refferal') }}" class="btn btn-primary">Berbagi dan Dapatkan Keuntungan</a>
-                      </div>
-                      {{-- <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>                                   --}}
-                      @endif
-                  </div>
-              </div>
-          </div>
-        </div>
-        <div class="col-md-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-icon mb-3">
-                <div class="avatar">
-                  <div class="avatar-initial rounded bg-label-warning">
-                    <i class="bx bxs-calendar-event bx-sm"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="card-info">
-                <h4 class="card-title mb-3">Next Event</h4>
-                <span class="badge bg-label-warning mb-1">Coming Soon..!</span>
-                <p class="text-muted mb-0">Nantikan kegiatan seru lainnya</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        @if(!is_null($hasReferralCode))  
-        <div class="col-md-6 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <div class="card-icon mb-3">
-                <div class="avatar">
-                  <div class="avatar-initial rounded bg-label-infp">
-                      <i class="bx bx-link-alt bx-sm"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="card-info">           
-                <div class="w-100 mb-3">
-                <label class="form-label mb-0" for="referralLink1">Tautan Undangan (Calon Lawyer, Notaris, Mediator):</label>
-                  <div class="d-flex align-items-center">
-                      <input type="text" id="referralLink1" name="referralLink1" class="form-control me-2" value="https://bilikhukum.com/join?token={{ $hasReferralCode->code }}" readonly/>
-                      <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink1')">
-                        <i class="bx bx-copy text-white bx-sm"></i>
-                      </button>
-                      <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/join?token={{$hasReferralCode->code}}')">
-                        <i class="bx bxl-whatsapp text-white bx-sm"></i>
-                      </button>
-                  </div>
-                  <p class="text-muted mb-0 text-truncate">Ajak teman & Mulai Menghasilkan</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <div class="card-icon mb-3">
-                <div class="avatar">
-                  <div class="avatar-initial rounded bg-label-infp">
-                      <i class="bx bx-link-alt bx-sm"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="card-info">           
-                <div class="w-100 mb-3">
-                <label class="form-label mb-0" for="referralLink2">Tautan Undangan (Calon Klien):</label>
-                  <div class="d-flex align-items-center">
-                      <input type="text" id="referralLink2" name="referralLink2" class="form-control me-2" value="https://bilikhukum.com/?token={{$hasReferralCode->code}}#service" readonly/>
-                      <button type="button" class="btn btn-primary btn-icon me-2" onclick="copyURLToClipboard('referralLink2')">
-                        <i class="bx bx-copy text-white bx-sm"></i>
-                      </button>
-                      <button type="button" class="btn btn-success btn-icon" onclick="shareToWhatsApp('https://bilikhukum.com/?token={{$hasReferralCode->code}}#service')">
-                        <i class="bx bxl-whatsapp text-white bx-sm"></i>
-                      </button>
-                  </div>
-                  <p class="text-muted mb-0 text-truncate">Bagikan Kepada Calon Klien</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      @endif
-      
-       
-        {{-- <div class="col-md-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-icon mb-3">
-                <div class="avatar">
-                  <div class="avatar-initial rounded bg-label-warning">
-                    <i class="bx bx-star bx-sm"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="card-info">
-                <h4 class="card-title mb-3">Wishlist</h4>
-                <div class="d-flex align-items-end mb-1 gap-1">
-                  <h4 class="text-warning mb-0">15</h4>
-                  <p class="mb-0">Items in wishlist</p>
-                </div>
-                <p class="text-muted mb-0 text-truncate">Receive notification when items go on sale</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-icon mb-3">
-                <div class="avatar">
-                  <div class="avatar-initial rounded bg-label-info">
-                    <i class="bx bxs-discount bx-sm"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="card-info">
-                <h4 class="card-title mb-3">Coupons</h4>
-                <div class="d-flex align-items-end mb-1 gap-1">
-                  <h4 class="text-info mb-0">21</h4>
-                  <p class="mb-0">Coupons you win</p>
-                </div>
-
-                <p class="text-muted mb-0 text-truncate">Use coupon on next purchase</p>
-              </div>
-            </div>
-          </div>
-        </div> --}}
-      </div>
-
-      <!-- / customer cards -->
-
-      <!-- Invoice table -->
       <div class="card mb-4">
-        <h5 class="card-header">Last Activity</h5>
-        <div class="table-responsive text-nowrap">
-          <table class="table">
-            <thead>
-              <tr>
-                  <th>No</th>
-                  <th>User</th>
-                  <th>IP Address</th>
-                  <th>User Agent</th>
-              </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-                @foreach($sessions as $session)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $session->user->name }}</td>
-                    <td>{{ $session->ip_address }}</td>
-                    <td>
-                        @php
-                        $userAgent = $session->user_agent;
-                        $device = 'Unknown';
-                        if (strpos(strtolower($userAgent), 'mobile') !== false || strpos(strtolower($userAgent), 'android') !== false || strpos(strtolower($userAgent), 'iphone') !== false || strpos(strtolower($userAgent), 'ipad') !== false) {
-                            $device = 'Mobile';
-                        } elseif (strpos(strtolower($userAgent), 'macintosh') !== false || strpos(strtolower($userAgent), 'windows') !== false || strpos(strtolower($userAgent), 'linux') !== false) {
-                            $device = 'Laptop/Desktop';
-                        }
-                        echo $device;
-                        @endphp
-                    </td>
-                    
-                </tr>
-                @endforeach
-            </tbody>
-          </table>
+        <h5 class="card-header">Ganti Password</h5>
+            <div class="card-body">
+                <form id="formChangePassword" method="POST" action="{{ route('change.password') }}">
+                    @csrf
+                    <div class="alert alert-warning" role="alert">
+                        <h6 class="alert-heading mb-1">Password Minimal 6 Karakter</h6>
+                        <span>Gunakan Kombinasi Symbol & Angka</span>
+                    </div>             
+                    <div class="mb-3 col-12 col-sm-12 form-password-toggle">
+                        <label class="form-label" for="current_password">Password Lama</label>
+                        <div class="input-group input-group-merge">
+                            <input
+                                class="form-control"
+                                type="password"
+                                id="current_password"
+                                name="current_password"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-12 form-password-toggle">
+                        <label class="form-label" for="new_password">Password Baru</label>
+                        <div class="input-group input-group-merge">
+                            <input
+                                class="form-control"
+                                type="password"
+                                id="new_password"
+                                name="new_password"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-12 form-password-toggle">
+                        <label class="form-label" for="new_password_confirmation">Konfirmasi Password Baru</label>
+                        <div class="input-group input-group-merge">
+                            <input
+                                class="form-control"
+                                type="password"
+                                name="new_password_confirmation"
+                                id="new_password_confirmation"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                    </div>                
+                    <button type="submit" class="btn btn-primary me-2">Change Password</button>
+                </form>
+                
+            </div>
         </div>
-      </div>
     </div>
     <!--/ Customer Content -->
   </div>
@@ -502,6 +348,7 @@
 @endpush
 
 @push('footer-Sec-script')
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       // Event listener untuk tombol Mendaftar
@@ -528,19 +375,7 @@
 </script>
 
 <script>
-  function copyURLToClipboard(referralLinkId) {
-      var referralLink = document.getElementById(referralLinkId);
-      referralLink.select();
-      document.execCommand("copy");
-      var response = {
-          success: true, // Anda dapat menentukan apakah operasi berhasil atau tidak
-          title: "Success", // Judul Sweet Alert
-          message: "Tautan undangan berhasil disalin!" // Pesan Sweet Alert
-      };
-      showSweetAlert(response); // Panggil fungsi untuk menampilkan Sweet Alert
-  }
-
-  function showSweetAlert(response) {
+   function showSweetAlert(response) {
       Swal.fire({
           icon: response.success ? 'success' : 'error',
           title: response.title,
@@ -554,10 +389,5 @@
           showSweetAlert(response);
       @endif
   });
-
-  function shareToWhatsApp(url) {
-      window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
-  }
-
 </script>
 @endpush

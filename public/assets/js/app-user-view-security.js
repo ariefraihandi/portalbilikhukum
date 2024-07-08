@@ -17,8 +17,8 @@
               message: 'Please enter new password'
             },
             stringLength: {
-              min: 8,
-              message: 'Password must be more than 8 characters'
+              min: 6,
+              message: 'Password must be more than 6 characters'
             }
           }
         },

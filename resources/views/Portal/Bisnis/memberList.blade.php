@@ -163,6 +163,7 @@
                         <th>Member</th>                       
                         <th>Alamat & Type</th>
                         <th>Refered By</th>
+                        <th>Status</th>
                         <th>referring</th>
                         <th>Profit</th>
                         <th>ACTIONS</th>
@@ -221,6 +222,7 @@
                     { data: 'member', name: 'member' },                  
                     { data: 'type', name: 'type' },
                     { data: 'refered_by', name: 'refered_by' },
+                    { data: 'status', name: 'status' },
                     { data: 'referring', name: 'referring' },
                     { data: 'profit', name: 'profit' },
                     { data: 'action', name: 'action' }

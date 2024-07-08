@@ -498,7 +498,10 @@ class BisnisController extends Controller
                         }
                     }
                     return 'N/A';
-                })             
+                })        
+                ->addColumn('status', function ($user) {
+                    return $user->verified ? 'Yes' : 'No';
+                })     
                 ->addColumn('referring', function ($user) {
                     // Cari data RefferalCode berdasarkan user_id
                     $refferalCode = RefferalCode::where('user_id', $user->id)->first();
@@ -511,7 +514,6 @@ class BisnisController extends Controller
                         return 'No referrals';
                     }
                 })
-                
                 ->addColumn('profit', function ($user) {
                     // Contoh pengolahan data profit jika ada
                     return number_format($user->profit, 2, ',', '.');

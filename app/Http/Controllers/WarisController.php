@@ -12,7 +12,7 @@ class WarisController extends Controller
         $subTitle   = 'Bilik Hukum';
 
     $data = [
-        'meta_description' => 'Layanan hitung waris profesional di bilikhukum.com. Kami siap membantu Anda menghitung pembagian waris sesuai dengan hukum yang berlaku. Konsultasi gratis tersedia.',
+        'meta_description' => 'Layanan hitung waris paling akurat di bilikhukum.com. Kami siap membantu Anda menghitung pembagian waris sesuai dengan hukum yang berlaku. Konsultasi gratis tersedia.',
         'meta_keywords' => 'hitung waris, jasa hitung waris, konsultasi waris, bantuan hukum waris, pembagian waris, hukum waris',
         'meta_author' => 'Bilik Hukum',
             'title' => $title,
