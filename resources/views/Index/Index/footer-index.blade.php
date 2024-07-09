@@ -28,9 +28,9 @@
 							
 							<div class="practice_list ul-li-block clearfix">
 								<ul>
+									<li><a href="https://article.bilikhukum.com/berita-hukum/" target="_blank">Berita Hukum</a></li>
 									<li><a href="https://article.bilikhukum.com/category/hukum-pidana/" target="_blank">Hukum Pidana</a></li>
-									<li><a href="!#">Family Matters</a></li>
-									<li><a href="!#">Arbitration & ADR</a></li>
+									{{-- <li><a href="!#">Arbitration & ADR</a></li>
 									<li><a href="!#">Social Issue</a></li>
 									<li><a href="!#">Accounting & Finance</a></li>
 									<li><a href="!#">Life Insurance</a></li>
@@ -42,7 +42,7 @@
 									<li><a href="!#">Fruad Matters</a></li>
 									<li><a href="!#">Auditing Problem</a></li>
 									<li><a href="!#">High Court Matters</a></li>
-									<li><a href="!#">Case Solution</a></li>
+									<li><a href="!#">Case Solution</a></li> --}}
 								</ul>
 							</div>
 						</div>
